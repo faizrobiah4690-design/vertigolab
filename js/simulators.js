@@ -1,9 +1,17 @@
 // ============================================================================
-// VertigoLab — Enjin Simulasi Visual, Fizik Otolith & Pemeriksaan Klinikal
+// VertigoLab — Bilingual Visual Simulators, Otolith Physics & Clinical Exams
+// Supports Bahasa Melayu (ms) & English (en) seamlessly
 // ============================================================================
 
 (function () {
   "use strict";
+
+  window.__vertigoCalmMode = false;
+  const refreshHooks = [];
+
+  function isEn() {
+    return window.currentLang === "en";
+  }
 
   // Polyfill roundRect for maximum browser compatibility
   if (typeof CanvasRenderingContext2D !== "undefined" && !CanvasRenderingContext2D.prototype.roundRect) {
@@ -65,6 +73,30 @@
 
     let currentPresetKey = "acuteVertigo";
     let startTime = performance.now();
+    let fixationActive = false;
+
+    const fixBtn = document.getElementById("btnVisualFixation");
+
+    function updateFixBtnLabel() {
+      if (!fixBtn) return;
+      fixBtn.classList.toggle("active", fixationActive);
+      if (isEn()) {
+        fixBtn.textContent = fixationActive
+          ? "🎯 Visual Fixation Target: ON (Click to Turn Off)"
+          : "🎯 Try Visual Fixation on One Still Point (First-Aid)";
+      } else {
+        fixBtn.textContent = fixationActive
+          ? "🎯 Fokus Titik Pegun: AKTIF (Klik Matikan)"
+          : "🎯 Cuba Fokus Satu Titik Pegun (Pertolongan Pertama)";
+      }
+    }
+
+    if (fixBtn) {
+      fixBtn.addEventListener("click", () => {
+        fixationActive = !fixationActive;
+        updateFixBtnLabel();
+      });
+    }
 
     function setPreset(key) {
       if (!window.VERTIGO_DATA.sensorPresets[key]) return;
@@ -93,7 +125,7 @@
       }
       if (conflictNumEl) conflictNumEl.textContent = preset.conflictLevel + "%";
       if (nauseaEl) {
-        nauseaEl.textContent = "Refleks Loya: " + preset.nausea;
+        nauseaEl.textContent = (isEn() ? "Nausea Reflex: " : "Refleks Loya: ") + preset.nausea;
         nauseaEl.className =
           "pill-badge " +
           (preset.conflictLevel >= 80 ? "pill-danger" : preset.conflictLevel >= 20 ? "pill-warn" : "pill-ok");
@@ -112,6 +144,11 @@
       });
     });
 
+    refreshHooks.push(() => {
+      updateFixBtnLabel();
+      setPreset(currentPresetKey);
+    });
+
     function drawEye(cx, cy, offsetX, offsetY, dimVision) {
       ctx.save();
       ctx.beginPath();
@@ -126,14 +163,12 @@
       ctx.stroke();
       ctx.clip();
 
-      // Sclera subtle shadow
       const scleraGrad = ctx.createRadialGradient(cx, cy, 18, cx, cy, 58);
       scleraGrad.addColorStop(0, "rgba(255,255,255,0)");
       scleraGrad.addColorStop(1, "rgba(148,163,184,0.35)");
       ctx.fillStyle = scleraGrad;
       ctx.fillRect(cx - 60, cy - 40, 120, 80);
 
-      // Iris
       const ix = cx + offsetX;
       const iy = cy + offsetY;
       const irisGrad = ctx.createRadialGradient(ix - 3, iy - 3, 4, ix, iy, 21);
@@ -145,13 +180,11 @@
       ctx.fillStyle = irisGrad;
       ctx.fill();
 
-      // Pupil
       ctx.beginPath();
       ctx.arc(ix, iy, 9, 0, Math.PI * 2);
       ctx.fillStyle = "#020617";
       ctx.fill();
 
-      // Corneal light reflex
       ctx.beginPath();
       ctx.arc(ix - 6, iy - 6, 3.5, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(255,255,255,0.92)";
@@ -165,12 +198,12 @@
     }
 
     function render(now) {
-      const t = (now - startTime) / 1000;
+      const en = isEn();
+      const t = window.__vertigoCalmMode ? 0 : (now - startTime) / 1000;
       const preset = window.VERTIGO_DATA.sensorPresets[currentPresetKey];
 
       ctx.clearRect(0, 0, W, H);
 
-      // Background grid
       ctx.fillStyle = "#0f172a";
       ctx.fillRect(0, 0, W, H);
       ctx.strokeStyle = "rgba(148, 163, 184, 0.08)";
@@ -188,56 +221,92 @@
         ctx.stroke();
       }
 
-      // Compute eye nystagmus offset
       let ox = 0;
       let oy = 0;
       let dimVision = 0;
-      let statusLabel = "Bebola Mata Stabil (Tiada Nystagmus)";
+      let statusLabel = en
+        ? "Stable Eyes (No Nystagmus)"
+        : "Bebola Mata Stabil (Tiada Nystagmus)";
       let statusColor = "#34d399";
 
-      if (preset.nystagmus === "horizontal-jerk") {
-        // Sawtooth wave: slow drift left, fast saccade snap right!
+      if (window.__vertigoCalmMode) {
+        statusLabel = en
+          ? "🧘 Calm Mode Active — Motion Paused for Eye Comfort"
+          : "🧘 Mod Tenang Aktif — Pergerakan Animasi Dijeda Untuk Keselesaan Mata";
+        statusColor = "#38bdf8";
+      } else if (preset.nystagmus === "horizontal-jerk") {
         const cycle = (t * 1.9) % 1;
+        const rawAmp = fixationActive ? 3.5 : 14;
         if (cycle < 0.82) {
-          ox = 14 - (cycle / 0.82) * 28; // Slow phase
+          ox = rawAmp - (cycle / 0.82) * (rawAmp * 2);
         } else {
-          ox = -14 + ((cycle - 0.82) / 0.18) * 28; // Fast phase (saccade)
+          ox = -rawAmp + ((cycle - 0.82) / 0.18) * (rawAmp * 2);
         }
-        statusLabel = "Nystagmus Mendatar Satu Arah (Fasa Perlahan + Sentakan Pantas)";
-        statusColor = "#fbbf24";
+        if (en) {
+          statusLabel = fixationActive
+            ? "✅ Visual Fixation Suppresses Peripheral Nystagmus (~75% Calmer!)"
+            : "Unidirectional Peripheral Nystagmus (Slow Drift + Fast Snap)";
+        } else {
+          statusLabel = fixationActive
+            ? "✅ Fokus Titik Pegun Menekan Nystagmus Periferi (~75% Lebih Tenang!)"
+            : "Nystagmus Periferi Satu Arah (Fasa Perlahan + Sentakan Pantas)";
+        }
+        statusColor = fixationActive ? "#34d399" : "#fbbf24";
       } else if (preset.nystagmus === "vertical-bidirectional") {
-        // Vertical + direction-changing central nystagmus
         const subMode = Math.floor(t / 2.5) % 2;
         if (subMode === 0) {
           const cycle = (t * 2.2) % 1;
           oy = cycle < 0.8 ? -11 + (cycle / 0.8) * 22 : 11 - ((cycle - 0.8) / 0.2) * 22;
-          statusLabel = "AMARAN SENTRAL: Vertical Nystagmus (Menegak Tulen)";
+          if (en) {
+            statusLabel = fixationActive
+              ? "⚠️ CENTRAL RED FLAG: Visual Fixation FAILS to Suppress Vertical Nystagmus!"
+              : "CENTRAL RED FLAG: Pure Vertical Nystagmus";
+          } else {
+            statusLabel = fixationActive
+              ? "⚠️ AMARAN SENTRAL: Fokus Titik TIDAK Menekan Nystagmus Menegak!"
+              : "AMARAN SENTRAL: Vertical Nystagmus (Menegak Tulen)";
+          }
         } else {
           ox = Math.sin(t * 6.5) * 15;
-          statusLabel = "AMARAN SENTRAL: Nystagmus Bertukar Arah";
+          if (en) {
+            statusLabel = fixationActive
+              ? "⚠️ CENTRAL RED FLAG: Nystagmus Persists Despite Visual Fixation!"
+              : "CENTRAL RED FLAG: Direction-Changing Nystagmus";
+          } else {
+            statusLabel = fixationActive
+              ? "⚠️ AMARAN SENTRAL: Nystagmus Kekal Kuat Walaupun Fokus Satu Titik!"
+              : "AMARAN SENTRAL: Nystagmus Bertukar Arah";
+          }
         }
         statusColor = "#f87171";
       } else if (preset.nystagmus === "physiologic") {
         ox = Math.sin(t * 2.5) * 12;
-        statusLabel = "Refleks VOR Fisiologi (Menstabilkan Fokus Semasa Pusing)";
+        statusLabel = en
+          ? "Physiologic VOR Reflex (Stabilizing Vision During True Spin)"
+          : "Refleks VOR Fisiologi (Menstabilkan Fokus Semasa Pusing)";
         statusColor = "#38bdf8";
       } else if (currentPresetKey === "presyncope") {
         dimVision = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 2.2));
-        statusLabel = "Tiada Nystagmus — Pandangan Gelap Sementara (Bukan Vertigo!)";
+        statusLabel = en
+          ? "No Nystagmus — Transient Visual Dimming (Presyncope, Not Vertigo!)"
+          : "Tiada Nystagmus — Pandangan Gelap Sementara (Bukan Vertigo!)";
         statusColor = "#a78bfa";
       }
 
-      // Header label inside canvas
       ctx.fillStyle = "#94a3b8";
       ctx.font = "600 12px system-ui, -apple-system, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("SIMULASI MASA NYATA BEBOLA MATA PESAKIT (PEMERHATIAN KLINIKAL)", W / 2, 26);
+      ctx.fillText(
+        en
+          ? "REAL-TIME PATIENT EYE SIMULATION (CLINICAL OBSERVATION)"
+          : "SIMULASI MASA NYATA BEBOLA MATA PESAKIT (PEMERHATIAN KLINIKAL)",
+        W / 2,
+        26
+      );
 
-      // Draw pair of eyes
       drawEye(W / 2 - 92, 102, ox, oy, dimVision);
       drawEye(W / 2 + 92, 102, ox, oy, dimVision);
 
-      // Draw Nose Bridge hint
       ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -245,7 +314,6 @@
       ctx.quadraticCurveTo(W / 2, 130, W / 2 - 12, 148);
       ctx.stroke();
 
-      // Status Pill
       ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
       ctx.strokeStyle = statusColor;
       ctx.lineWidth = 1.5;
@@ -255,17 +323,28 @@
       ctx.stroke();
 
       ctx.fillStyle = statusColor;
-      ctx.font = "600 12.5px system-ui, -apple-system, sans-serif";
+      ctx.font = "600 12.2px system-ui, -apple-system, sans-serif";
       ctx.fillText(statusLabel, W / 2, 186);
 
-      // Bottom 3-sensor telemetry bars
       const nodes = [
-        { label: "Vestibular (Telinga)", x: 105, alert: preset.conflictLevel >= 80 },
-        { label: "Batang Otak (Pusat)", x: W / 2, alert: preset.conflictLevel >= 80, hub: true },
-        { label: "Visual & Propriosepsi", x: W - 105, alert: currentPresetKey === "centralStroke" }
+        {
+          label: en ? "Vestibular (Inner Ear)" : "Vestibular (Telinga)",
+          x: 105,
+          alert: preset.conflictLevel >= 80
+        },
+        {
+          label: en ? "Brainstem (Central Hub)" : "Batang Otak (Pusat)",
+          x: W / 2,
+          alert: preset.conflictLevel >= 80,
+          hub: true
+        },
+        {
+          label: en ? "Vision & Proprioception" : "Visual & Propriosepsi",
+          x: W - 105,
+          alert: currentPresetKey === "centralStroke"
+        }
       ];
 
-      // Connecting pulse lines
       ctx.strokeStyle = preset.conflictLevel >= 80 ? "rgba(248, 113, 113, 0.55)" : "rgba(56, 189, 248, 0.45)";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -274,7 +353,6 @@
       ctx.lineTo(nodes[2].x, 236);
       ctx.stroke();
 
-      // Animated pulse dots
       const pulsePos = (t * (preset.conflictLevel >= 80 ? 2.4 : 0.9)) % 1;
       const p1x = nodes[0].x + (nodes[1].x - nodes[0].x) * pulsePos;
       const p2x = nodes[2].x - (nodes[2].x - nodes[1].x) * ((t * 0.9) % 1);
@@ -303,13 +381,14 @@
         ctx.stroke();
 
         ctx.fillStyle = "#f1f5f9";
-        ctx.font = "600 11.5px system-ui, -apple-system, sans-serif";
+        ctx.font = "600 11.2px system-ui, -apple-system, sans-serif";
         ctx.fillText(n.label, n.x, 241);
       });
 
       requestAnimationFrame(render);
     }
 
+    updateFixBtnLabel();
     setPreset("acuteVertigo");
     requestAnimationFrame(render);
   }
@@ -326,6 +405,7 @@
     const ctx = setupHiDPICanvas(canvas, W, H);
 
     let activeZone = "utricle";
+    let currentPartId = "utricle-saccule";
     let headTiltDeg = 0;
     let bppvLooseMode = false;
     let looseAngle = 0.35;
@@ -334,6 +414,20 @@
     const tiltSlider = document.getElementById("headTiltSlider");
     const tiltValLabel = document.getElementById("headTiltVal");
     const bppvToggleBtn = document.getElementById("toggleBppvCrystalBtn");
+
+    function updateBppvBtnText() {
+      if (!bppvToggleBtn) return;
+      bppvToggleBtn.classList.toggle("btn-danger-active", bppvLooseMode);
+      if (isEn()) {
+        bppvToggleBtn.textContent = bppvLooseMode
+          ? "⚠️ BPPV Mode ON: Loose Crystals! (Click to Restore)"
+          : "🔬 Simulate Detached Crystals (BPPV)";
+      } else {
+        bppvToggleBtn.textContent = bppvLooseMode
+          ? "⚠️ Mod BPPV Aktif: Kristal Tersesat! (Klik Pulihkan)"
+          : "🔬 Simulasikan Kristal Tanggal (BPPV)";
+      }
+    }
 
     if (tiltSlider) {
       tiltSlider.addEventListener("input", () => {
@@ -346,10 +440,7 @@
     if (bppvToggleBtn) {
       bppvToggleBtn.addEventListener("click", () => {
         bppvLooseMode = !bppvLooseMode;
-        bppvToggleBtn.classList.toggle("btn-danger-active", bppvLooseMode);
-        bppvToggleBtn.textContent = bppvLooseMode
-          ? "⚠️ Mod BPPV Aktif: Kristal Tersesat! (Klik Pulihkan)"
-          : "🔬 Simulasikan Kristal Tanggal (BPPV)";
+        updateBppvBtnText();
         if (bppvLooseMode) {
           activeZone = "bppv";
           selectAnatomyCard("bppv-trigger");
@@ -361,11 +452,11 @@
     function selectAnatomyCard(partId) {
       const part = window.VERTIGO_DATA.anatomyParts.find((p) => p.id === partId);
       if (!part) return;
+      currentPartId = partId;
       activeZone = part.highlightZone;
       if (part.id === "bppv-trigger" && !bppvLooseMode && bppvToggleBtn) {
         bppvLooseMode = true;
-        bppvToggleBtn.classList.add("btn-danger-active");
-        bppvToggleBtn.textContent = "⚠️ Mod BPPV Aktif: Kristal Tersesat! (Klik Pulihkan)";
+        updateBppvBtnText();
       }
 
       document.querySelectorAll("[data-anatomy-id]").forEach((el) => {
@@ -390,11 +481,13 @@
     }
 
     window.refreshAnatomyAudienceText = function () {
-      const textEl = document.getElementById("anatomyDetailText");
-      if (!textEl) return;
-      const partId = textEl.getAttribute("data-part-id") || "utricle-saccule";
-      selectAnatomyCard(partId);
+      selectAnatomyCard(currentPartId);
     };
+
+    refreshHooks.push(() => {
+      updateBppvBtnText();
+      selectAnatomyCard(currentPartId);
+    });
 
     document.querySelectorAll("[data-anatomy-id]").forEach((el) => {
       el.addEventListener("click", () => {
@@ -404,11 +497,11 @@
     });
 
     function animate() {
+      const en = isEn();
       ctx.clearRect(0, 0, W, H);
       ctx.fillStyle = "#0f172a";
       ctx.fillRect(0, 0, W, H);
 
-      // Left Panel: Vestibular Labyrinth (Canals + Utricle/Saccule)
       ctx.save();
       ctx.translate(168, 175);
       ctx.rotate((headTiltDeg * Math.PI) / 180);
@@ -428,7 +521,7 @@
       ctx.ellipse(-42, 4, 48, 22, -0.2, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Posterior Canal (Main BPPV target)
+      // Posterior Canal
       const postRadius = 64;
       const postCx = 18;
       const postCy = 8;
@@ -443,7 +536,6 @@
       ctx.arc(postCx, postCy, postRadius, -Math.PI * 0.45, Math.PI * 0.92);
       ctx.stroke();
 
-      // Inner fluid channel of Posterior Canal
       ctx.strokeStyle = "#0f172a";
       ctx.lineWidth = 9;
       ctx.beginPath();
@@ -478,12 +570,11 @@
       ctx.fillText("Utricle", -12, 20);
       ctx.fillText("Saccule", -6, 55);
 
-      // Loose BPPV Otolith Crystal Physics inside Posterior Canal
       if (bppvLooseMode) {
         const gravAngle = Math.PI * 0.5 - (headTiltDeg * Math.PI) / 180;
         const torque = Math.sin(gravAngle - looseAngle) * 0.018;
-        looseVel = (looseVel + torque) * 0.93;
-        looseAngle += looseVel;
+        looseVel = window.__vertigoCalmMode ? 0 : (looseVel + torque) * 0.93;
+        looseAngle += window.__vertigoCalmMode ? (gravAngle - looseAngle) * 0.08 : looseVel;
         if (looseAngle < -Math.PI * 0.35) {
           looseAngle = -Math.PI * 0.35;
           looseVel = 0;
@@ -505,7 +596,6 @@
       }
       ctx.restore();
 
-      // Divider
       ctx.strokeStyle = "rgba(148, 163, 184, 0.2)";
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -513,16 +603,14 @@
       ctx.lineTo(318, H - 24);
       ctx.stroke();
 
-      // Right Panel: Microscopic Zoom of Otolithic Membrane & Hair Cells (Stereocilia)
       ctx.fillStyle = "#94a3b8";
       ctx.font = "600 11.5px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("TELINGA DALAM (MAKRO)", 160, 24);
-      ctx.fillText("MIKROSKOPIK: OTOLITH & HAIR CELLS", 438, 24);
+      ctx.fillText(en ? "INNER EAR (MACROSCOPIC)" : "TELINGA DALAM (MAKRO)", 160, 24);
+      ctx.fillText(en ? "MICROSCOPIC: OTOLITHS & HAIR CELLS" : "MIKROSKOPIK: OTOLITH & HAIR CELLS", 438, 24);
 
       const shear = (headTiltDeg / 60) * 26;
 
-      // Base Sensory Epithelium
       ctx.fillStyle = "#1e293b";
       ctx.strokeStyle = activeZone === "otoliths" ? "#f59e0b" : "#334155";
       ctx.lineWidth = 1.5;
@@ -535,7 +623,6 @@
       ctx.font = "600 11px system-ui, sans-serif";
       ctx.fillText("Hair Cells → Vestibular Nerve", 439, 250);
 
-      // Gel layer (Otolithic Membrane)
       ctx.fillStyle = "rgba(56, 189, 248, 0.18)";
       ctx.strokeStyle = "rgba(56, 189, 248, 0.45)";
       ctx.beginPath();
@@ -543,7 +630,6 @@
       ctx.fill();
       ctx.stroke();
 
-      // Stereocilia (Bending hairs!)
       for (let h = 0; h < 5; h++) {
         const baseX = 372 + h * 34;
         for (let s = -1; s <= 1; s++) {
@@ -558,7 +644,6 @@
         }
       }
 
-      // Calcium carbonate Otolith crystals on top of membrane
       const crystalCount = bppvLooseMode ? 5 : 8;
       for (let c = 0; c < crystalCount; c++) {
         const cx = 362 + c * 22 + shear * 0.78;
@@ -577,15 +662,27 @@
         ctx.stroke();
       }
 
-      // Firing Rate Indicator
-      const firingPct = Math.min(100, Math.max(10, Math.round(50 + headTiltDeg * 0.75 + (bppvLooseMode ? Math.abs(looseVel) * 900 : 0))));
+      const firingPct = Math.min(
+        100,
+        Math.max(10, Math.round(50 + headTiltDeg * 0.75 + (bppvLooseMode ? Math.abs(looseVel) * 900 : 0)))
+      );
       ctx.fillStyle = "#94a3b8";
       ctx.font = "500 11px system-ui, sans-serif";
-      ctx.fillText(`Isyarat Saraf Vestibular: ${firingPct}%`, 439, 296);
+      ctx.fillText(
+        en ? `Vestibular Nerve Firing: ${firingPct}%` : `Isyarat Saraf Vestibular: ${firingPct}%`,
+        439,
+        296
+      );
 
       ctx.fillStyle = bppvLooseMode ? "#fca5a5" : "#7dd3fc";
       ctx.fillText(
-        bppvLooseMode ? "⚠️ Kristal mengocak kanal separuh bulat!" : `Condong Kepala: ${headTiltDeg}°`,
+        bppvLooseMode
+          ? en
+            ? "⚠️ Crystals stirring semicircular canal fluid!"
+            : "⚠️ Kristal mengocak kanal separuh bulat!"
+          : en
+          ? `Head Tilt: ${headTiltDeg}°`
+          : `Condong Kepala: ${headTiltDeg}°`,
         160,
         296
       );
@@ -593,6 +690,7 @@
       requestAnimationFrame(animate);
     }
 
+    updateBppvBtnText();
     selectAnatomyCard("utricle-saccule");
     requestAnimationFrame(animate);
   }
@@ -608,29 +706,32 @@
     const H = 265;
     const ctx = setupHiDPICanvas(canvas, W, H);
 
-    let caseMode = "central"; // 'peripheral' | 'central'
-    let activeStep = "hi"; // 'hi' | 'nystagmus' | 'skew'
+    let caseMode = "central";
+    let activeStep = "hi";
     let impulseStart = -10;
-    let gazeDir = 0; // -1 left, 0 center, +1 right, 2 up
-    let coveredEye = "none"; // 'none' | 'left' | 'right'
+    let gazeDir = 0;
+    let coveredEye = "none";
     let coverSwitchTime = -10;
 
     function updateHintsExplanation() {
       const verdictEl = document.getElementById("hintsClinicalVerdict");
       const detailEl = document.getElementById("hintsStepDetail");
       if (!verdictEl || !detailEl) return;
+      const en = isEn();
 
       if (caseMode === "central") {
         verdictEl.className = "alert-banner alert-critical";
-        verdictEl.innerHTML =
-          "<strong>🚨 KEPUTUSAN HINTS: SUSPEK STROK SENTRAL (INFARKSI POSTERIOR)!</strong> Rujuk Jabatan Kecemasan segera. Ingat: HINTS lebih sensitif daripada MRI dalam 24 jam pertama!";
+        verdictEl.innerHTML = en
+          ? "<strong>🚨 HINTS PLUS VERDICT: SUSPECT CENTRAL STROKE (POSTERIOR INFARCTION)!</strong> Any SINGLE central finding in <em>Acute Vestibular Syndrome</em> (continuous vertigo + nystagmus) mandates an immediate emergency stroke workup (~99% sensitivity vs ~80–85% for early MRI)."
+          : "<strong>🚨 KEPUTUSAN HINTS PLUS: SUSPEK STROK SENTRAL (INFARKSI POSTERIOR)!</strong> Mana-mana SATU tanda sentral pada pesakit <em>Acute Vestibular Syndrome</em> (vertigo berterusan + nystagmus) mewajibkan protokol strok kecemasan segera (~99% sensitiviti berbanding MRI awal ~80–85%).";
       } else {
         verdictEl.className = "alert-banner alert-safe";
-        verdictEl.innerHTML =
-          "<strong>✅ CORAK HINTS PERIFERI (cth: Vestibular Neuritis):</strong> Ketiga-tiga komponen konsisten dengan punca telinga dalam (pastikan TIADA tanda 5D & pesakit boleh berdiri).";
+        verdictEl.innerHTML = en
+          ? "<strong>✅ PERIPHERAL HINTS PLUS PATTERN (e.g., Vestibular Neuritis):</strong> All 3 ocular motor signs match an inner-ear cause — ONLY valid if <strong>hearing remains intact</strong> (no new unilateral deafness / AICA stroke), <strong>no 5D signs</strong>, and the patient <strong>can stand unassisted</strong>."
+          : "<strong>✅ CORAK HINTS PLUS PERIFERI (cth: Vestibular Neuritis):</strong> Ketiga-tiga ujian selari punca telinga dalam — dengan syarat wajib: <strong>pendengaran kekal normal</strong> (tiada pekak mendadak AICA), <strong>tiada tanda 5D</strong>, dan pesakit <strong>boleh berdiri sendiri</strong>.";
       }
 
-      const descriptions = {
+      const descriptionsMs = {
         hi:
           caseMode === "central"
             ? "HEAD IMPULSE (Kes Strok): Apabila kepala dipusingkan pantas, mata KEKAL TERPAKU SEMPURNA pada hidung pemeriksa tanpa tersentak (Impulse Normal). Dalam vertigo akut berterusan, ujian yang 'nampak normal' ini justru membuktikan laluan VOR telinga tidak rosak—sebaliknya strok berlaku di batang otak/serebelum!"
@@ -645,9 +746,23 @@
             : "TEST OF SKEW (Kes Periferi): Klik tutup-buka mata secara berselang-seli! Kedua-dua mata kekal sejajar secara menegak tanpa anjakan atas-bawah apabila penutup dialihkan."
       };
 
-      detailEl.textContent = descriptions[activeStep];
+      const descriptionsEn = {
+        hi:
+          caseMode === "central"
+            ? "HEAD IMPULSE (Stroke Case): When the head is briskly turned, the eyes STAY PERFECTLY LOCKED on the examiner's nose without a catch-up saccade (Normal Impulse). In continuous acute vertigo with nystagmus, this 'normal-looking' reflex proves the ear VOR is intact—pointing to a brainstem or cerebellar stroke!"
+            : "HEAD IMPULSE (Peripheral Case): When the head is briskly turned toward the affected ear, the eyes drag briefly with the head and then SNAP BACK (corrective catch-up saccade) to the examiner's nose—confirming peripheral vestibular nerve weakness.",
+        nystagmus:
+          caseMode === "central"
+            ? "NYSTAGMUS (Stroke Case): Click the gaze buttons below! Nystagmus CHANGES DIRECTION with left vs right gaze, or beats PURELY VERTICALLY—a classic sign of brainstem/cerebellar pathology."
+            : "NYSTAGMUS (Peripheral Case): Click the gaze buttons below! The fast phase beats in ONE FIXED DIRECTION regardless of whether the patient looks left or right (obeying Alexander's Law).",
+        skew:
+          caseMode === "central"
+            ? "TEST OF SKEW (Stroke Case): Alternate covering the left and right eye! The newly uncovered eye shifts VERTICALLY (up/down) to re-align—indicating central brainstem otolith pathway imbalance."
+            : "TEST OF SKEW (Peripheral Case): Alternate covering the left and right eye! Both eyes stay vertically aligned with zero vertical refixation shift."
+      };
 
-      // Toggle sub-controls visibility
+      detailEl.textContent = (en ? descriptionsEn : descriptionsMs)[activeStep];
+
       const hiCtrl = document.getElementById("hintsCtrlHi");
       const nysCtrl = document.getElementById("hintsCtrlNys");
       const skewCtrl = document.getElementById("hintsCtrlSkew");
@@ -655,6 +770,8 @@
       if (nysCtrl) nysCtrl.style.display = activeStep === "nystagmus" ? "flex" : "none";
       if (skewCtrl) skewCtrl.style.display = activeStep === "skew" ? "flex" : "none";
     }
+
+    refreshHooks.push(updateHintsExplanation);
 
     document.querySelectorAll("[data-hints-case]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -700,6 +817,7 @@
     });
 
     function drawHintsFrame(nowMs) {
+      const en = isEn();
       const now = nowMs / 1000;
       ctx.clearRect(0, 0, W, H);
       ctx.fillStyle = "#0f172a";
@@ -715,7 +833,6 @@
       if (activeStep === "hi") {
         const dt = now - impulseStart;
         if (dt >= 0 && dt < 1.3) {
-          // Fast thrust between 0..0.18s, hold until 0.85s, return smoothly
           if (dt < 0.18) {
             headShiftX = (dt / 0.18) * 34;
           } else if (dt < 0.85) {
@@ -725,30 +842,34 @@
           }
 
           if (caseMode === "central") {
-            // Eyes remain counter-rotated perfectly locked onto center target!
             leftIrisX = -headShiftX * 0.48;
             rightIrisX = -headShiftX * 0.48;
-            caption = "⚠️ IMPULSE NORMAL: Mata kekal terpaku sempurna tanpa tersentak → AMARAN STROK SENTRAL!";
+            caption = en
+              ? "⚠️ NORMAL IMPULSE: Eyes stay locked with no saccade → CENTRAL STROKE RED FLAG!"
+              : "⚠️ IMPULSE NORMAL: Mata kekal terpaku sempurna tanpa tersentak → AMARAN STROK SENTRAL!";
           } else {
-            // Peripheral: eyes drag WITH head first, then snap back (corrective catch-up saccade at dt=0.28s)
             if (dt < 0.28) {
               leftIrisX = 4;
               rightIrisX = 4;
-              caption = "Mata hanyut ikut pusingan kepala...";
+              caption = en ? "Eyes drag briefly with head turn..." : "Mata hanyut ikut pusingan kepala...";
             } else {
               const snap = Math.min(1, (dt - 0.28) / 0.08);
               leftIrisX = 4 + (-headShiftX * 0.48 - 4) * snap;
               rightIrisX = leftIrisX;
-              caption = "✅ SACCADE PEMBETULAN: Mata tersentak balik ke hidung pemeriksa (Tanda Periferi)";
+              caption = en
+                ? "✅ CORRECTIVE SACCADE: Eyes snap back to examiner's nose (Peripheral Sign)"
+                : "✅ SACCADE PEMBETULAN: Mata tersentak balik ke hidung pemeriksa (Tanda Periferi)";
             }
           }
         } else {
-          caption = "Klik butang 'Pusing Kepala Pantas' di bawah untuk melakukan Head Impulse Test";
+          caption = en
+            ? "Click 'Test Fast Head Impulse!' below to perform the Head Impulse Test"
+            : "Klik butang 'Uji Pusing Kepala Pantas!' di bawah untuk melakukan Head Impulse Test";
         }
       } else if (activeStep === "nystagmus") {
         const baseX = gazeDir === 2 ? 0 : gazeDir * 14;
         const baseY = gazeDir === 2 ? -10 : 0;
-        const cycle = (now * 2.1) % 1;
+        const cycle = window.__vertigoCalmMode ? 0.5 : (now * 2.1) % 1;
         const saw = cycle < 0.8 ? (cycle / 0.8) * 10 - 5 : 5 - ((cycle - 0.8) / 0.2) * 10;
 
         if (caseMode === "central") {
@@ -757,48 +878,58 @@
             rightIrisX = baseX;
             leftIrisY = baseY + saw * 1.3;
             rightIrisY = leftIrisY;
-            caption = "⚠️ VERTICAL NYSTAGMUS (Menegak Tulen) → Tanda Sentral!";
+            caption = en
+              ? "⚠️ PURE VERTICAL NYSTAGMUS → Central Sign!"
+              : "⚠️ VERTICAL NYSTAGMUS (Menegak Tulen) → Tanda Sentral!";
           } else {
             const dirSign = gazeDir === 0 ? 1 : gazeDir;
             leftIrisX = baseX + saw * dirSign * 1.3;
             rightIrisX = leftIrisX;
-            caption = "⚠️ NYSTAGMUS BERTUKAR ARAH mengikut lirikan → Tanda Sentral!";
+            caption = en
+              ? "⚠️ DIRECTION-CHANGING NYSTAGMUS with gaze → Central Sign!"
+              : "⚠️ NYSTAGMUS BERTUKAR ARAH mengikut lirikan → Tanda Sentral!";
           }
         } else {
-          // Peripheral always beats same direction (e.g., fast phase left)
           const amp = gazeDir === -1 ? 1.4 : gazeDir === 1 ? 0.5 : 0.95;
           leftIrisX = baseX - saw * amp;
           rightIrisX = leftIrisX;
           leftIrisY = baseY;
           rightIrisY = baseY;
-          caption = "✅ NYSTAGMUS KEKAL SATU ARAH walaupun lirikan berubah (Corak Periferi)";
+          caption = en
+            ? "✅ UNIDIRECTIONAL NYSTAGMUS across gaze positions (Peripheral Pattern)"
+            : "✅ NYSTAGMUS KEKAL SATU ARAH walaupun lirikan berubah (Corak Periferi)";
         }
       } else if (activeStep === "skew") {
         const dt = now - coverSwitchTime;
         if (caseMode === "central") {
-          // Uncovered eye makes vertical corrective shift!
           if (coveredEye === "left") {
-            // Right eye was just uncovered -> drops from +9 to 0
             const settle = Math.min(1, Math.max(0, dt / 0.35));
             rightIrisY = -10 * (1 - settle);
-            leftIrisY = 9; // drifted under cover
-            caption = "⚠️ SKEW POSITIF: Mata kanan bergerak menegak sebaik penutup dialih → Keabnormalan Batang Otak!";
+            leftIrisY = 9;
+            caption = en
+              ? "⚠️ POSITIVE SKEW: Right eye shifts vertically upon uncovering → Brainstem Sign!"
+              : "⚠️ SKEW POSITIF: Mata kanan bergerak menegak sebaik penutup dialih → Keabnormalan Batang Otak!";
           } else if (coveredEye === "right") {
             const settle = Math.min(1, Math.max(0, dt / 0.35));
             leftIrisY = 10 * (1 - settle);
             rightIrisY = -9;
-            caption = "⚠️ SKEW POSITIF: Mata kiri bergerak menegak sebaik penutup dialih → Keabnormalan Batang Otak!";
+            caption = en
+              ? "⚠️ POSITIVE SKEW: Left eye shifts vertically upon uncovering → Brainstem Sign!"
+              : "⚠️ SKEW POSITIF: Mata kiri bergerak menegak sebaik penutup dialih → Keabnormalan Batang Otak!";
           } else {
             leftIrisY = 4;
             rightIrisY = -4;
-            caption = "Klik Tutup Kiri / Tutup Kanan berselang-seli untuk menguji Skew Deviation";
+            caption = en
+              ? "Click Cover Left / Cover Right alternately to test Skew Deviation"
+              : "Klik Tutup Kiri / Tutup Kanan berselang-seli untuk menguji Skew Deviation";
           }
         } else {
-          caption = "✅ TIADA SKEW: Kedua-dua mata kekal sejajar secara menegak apabila ditutup-buka";
+          caption = en
+            ? "✅ NO SKEW: Both eyes remain vertically aligned on alternate cover testing"
+            : "✅ TIADA SKEW: Kedua-dua mata kekal sejajar secara menegak apabila ditutup-buka";
         }
       }
 
-      // Draw Patient Head Outline
       const hcx = W / 2 + headShiftX;
       const hcy = 112;
       ctx.save();
@@ -810,7 +941,6 @@
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw Both Eyes inside Head
       [-74, 74].forEach((dx, idx) => {
         const ex = hcx + dx;
         const ey = hcy - 4;
@@ -846,7 +976,6 @@
         ctx.fill();
         ctx.restore();
 
-        // Occluder Paddle if covered in Test of Skew
         if (
           activeStep === "skew" &&
           ((idx === 0 && coveredEye === "left") || (idx === 1 && coveredEye === "right"))
@@ -861,12 +990,11 @@
           ctx.fillStyle = "#94a3b8";
           ctx.font = "600 10px system-ui, sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText("DITUTUP", ex, ey + 4);
+          ctx.fillText(en ? "COVERED" : "DITUTUP", ex, ey + 4);
         }
       });
       ctx.restore();
 
-      // Examiner Nose Fixation Crosshair (Fixed in room center for HI)
       if (activeStep === "hi") {
         ctx.strokeStyle = "rgba(250, 204, 21, 0.75)";
         ctx.setLineDash([4, 4]);
@@ -879,10 +1007,9 @@
         ctx.fillStyle = "#fde047";
         ctx.font = "600 11px system-ui, sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText("Sasaran Hidung Pemeriksa", W / 2, 18);
+        ctx.fillText(en ? "Examiner Nose Target" : "Sasaran Hidung Pemeriksa", W / 2, 18);
       }
 
-      // Caption bar
       ctx.fillStyle = "rgba(15, 23, 42, 0.92)";
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 1;
@@ -892,7 +1019,7 @@
       ctx.stroke();
 
       ctx.fillStyle = "#f1f5f9";
-      ctx.font = "600 12px system-ui, -apple-system, sans-serif";
+      ctx.font = "600 11.8px system-ui, -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(caption, W / 2, 235);
 
@@ -914,8 +1041,8 @@
     const H = 310;
     const ctx = setupHiDPICanvas(canvas, W, H);
 
-    let affectedEar = "left"; // 'left' | 'right'
-    let currentStepIdx = 0; // 0..4
+    let affectedEar = "left";
+    let currentStepIdx = 0;
     let animProgress = 0.1;
     let animHeadAngle = -45;
     let timerRemaining = 15;
@@ -925,13 +1052,22 @@
       return window.VERTIGO_DATA.epleySteps[affectedEar];
     }
 
+    function updateTimerButtonIdleLabel() {
+      const startBtn = document.getElementById("epleyTimerToggleBtn");
+      if (!startBtn) return;
+      if (timerInterval) {
+        startBtn.textContent = isEn() ? "⏸️ Pause Step Timer" : "⏸️ Jeda Pemasa";
+      } else {
+        startBtn.textContent = isEn() ? "⏱️ Start Timer for This Step" : "⏱️ Mulakan Pemasa Langkah Ini";
+      }
+    }
+
     function stopTimer() {
       if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
       }
-      const startBtn = document.getElementById("epleyTimerToggleBtn");
-      if (startBtn) startBtn.textContent = "⏱️ Mulakan Pemasa Langkah Ini";
+      updateTimerButtonIdleLabel();
     }
 
     function updateTimerUI() {
@@ -943,26 +1079,40 @@
       }
     }
 
-    function applyStep(idx) {
-      stopTimer();
+    function renderStepTexts() {
       const steps = getSteps();
-      currentStepIdx = Math.max(0, Math.min(steps.length - 1, idx));
       const s = steps[currentStepIdx];
-      timerRemaining = s.timerSec;
-      updateTimerUI();
+      const en = isEn();
 
       const titleEl = document.getElementById("epleyStepTitle");
       const instrEl = document.getElementById("epleyStepInstruction");
       const mechEl = document.getElementById("epleyStepMechanism");
       const badgeEl = document.getElementById("epleyEarBadge");
 
-      if (titleEl) titleEl.textContent = `Langkah ${s.step}/5: ${s.title}`;
+      if (titleEl) {
+        titleEl.textContent = en ? `Step ${s.step}/5: ${s.title}` : `Langkah ${s.step}/5: ${s.title}`;
+      }
       if (instrEl) instrEl.textContent = s.instruction;
       if (mechEl) mechEl.textContent = s.mechanism;
       if (badgeEl) {
-        badgeEl.textContent =
-          affectedEar === "left" ? "Telinga Kiri Terjejas (Urutan Playbook)" : "Telinga Kanan Terjejas (Arah Terbalik)";
+        if (en) {
+          badgeEl.textContent =
+            affectedEar === "left" ? "Left Ear Affected (Standard Sequence)" : "Right Ear Affected (Mirrored Sequence)";
+        } else {
+          badgeEl.textContent =
+            affectedEar === "left" ? "Telinga Kiri Terjejas (Urutan Playbook)" : "Telinga Kanan Terjejas (Arah Terbalik)";
+        }
       }
+    }
+
+    function applyStep(idx, silent) {
+      stopTimer();
+      const steps = getSteps();
+      currentStepIdx = Math.max(0, Math.min(steps.length - 1, idx));
+      const s = steps[currentStepIdx];
+      timerRemaining = s.timerSec;
+      updateTimerUI();
+      renderStepTexts();
 
       document.querySelectorAll("[data-epley-step]").forEach((btn) => {
         const bIdx = parseInt(btn.getAttribute("data-epley-step"), 10);
@@ -970,21 +1120,28 @@
         btn.classList.toggle("completed", bIdx < currentStepIdx);
       });
 
-      playGentleTone(440 + currentStepIdx * 55, 160);
-      if (window.markModuleExplored) window.markModuleExplored("epley");
+      if (!silent) {
+        playGentleTone(440 + currentStepIdx * 55, 160);
+        if (window.markModuleExplored) window.markModuleExplored("epley");
+      }
     }
+
+    refreshHooks.push(() => {
+      renderStepTexts();
+      updateTimerButtonIdleLabel();
+    });
 
     document.querySelectorAll("[data-epley-ear]").forEach((btn) => {
       btn.addEventListener("click", () => {
         affectedEar = btn.getAttribute("data-epley-ear");
         document.querySelectorAll("[data-epley-ear]").forEach((b) => b.classList.toggle("active", b === btn));
-        applyStep(0);
+        applyStep(0, false);
       });
     });
 
     document.querySelectorAll("[data-epley-step]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        applyStep(parseInt(btn.getAttribute("data-epley-step"), 10));
+        applyStep(parseInt(btn.getAttribute("data-epley-step"), 10), false);
       });
     });
 
@@ -992,15 +1149,15 @@
     const nextBtn = document.getElementById("epleyNextBtn");
     const timerBtn = document.getElementById("epleyTimerToggleBtn");
 
-    if (prevBtn) prevBtn.addEventListener("click", () => applyStep(currentStepIdx - 1));
-    if (nextBtn) nextBtn.addEventListener("click", () => applyStep(currentStepIdx + 1));
+    if (prevBtn) prevBtn.addEventListener("click", () => applyStep(currentStepIdx - 1, false));
+    if (nextBtn) nextBtn.addEventListener("click", () => applyStep(currentStepIdx + 1, false));
 
     if (timerBtn) {
       timerBtn.addEventListener("click", () => {
         if (timerInterval) {
           stopTimer();
         } else {
-          timerBtn.textContent = "⏸️ Jeda Pemasa";
+          timerBtn.textContent = isEn() ? "⏸️ Pause Step Timer" : "⏸️ Jeda Pemasa";
           timerInterval = setInterval(() => {
             if (timerRemaining > 0) {
               timerRemaining--;
@@ -1009,9 +1166,13 @@
                 playGentleTone(784, 380);
                 stopTimer();
                 if (currentStepIdx < 4) {
-                  timerBtn.textContent = "✅ Selesai! Klik Langkah Seterusnya →";
+                  timerBtn.textContent = isEn()
+                    ? "✅ Done! Click Next Step →"
+                    : "✅ Selesai! Klik Langkah Seterusnya →";
                 } else {
-                  timerBtn.textContent = "🎉 Manuver Epley Lengkap!";
+                  timerBtn.textContent = isEn()
+                    ? "🎉 Epley Maneuver Complete!"
+                    : "🎉 Manuver Epley Lengkap!";
                 }
               }
             }
@@ -1021,6 +1182,7 @@
     }
 
     function renderEpley() {
+      const en = isEn();
       const targetStep = getSteps()[currentStepIdx];
       animProgress += (targetStep.canalProgress - animProgress) * 0.08;
       animHeadAngle += (targetStep.headAngle - animHeadAngle) * 0.1;
@@ -1029,18 +1191,24 @@
       ctx.fillStyle = "#0f172a";
       ctx.fillRect(0, 0, W, H);
 
-      // LEFT HALF: Posterior Semicircular Canal + Utricle Otolith Path
       ctx.fillStyle = "#94a3b8";
-      ctx.font = "600 11.5px system-ui, sans-serif";
+      ctx.font = "600 11.2px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("PERGERAKAN HABLUR OTOLITH DALAM KANAL", 155, 24);
-      ctx.fillText("POSISI KEPALA & BADAN PESAKIT DI KATIL", 450, 24);
+      ctx.fillText(
+        en ? "OTOLITH CRYSTAL PATH IN CANAL" : "PERGERAKAN HABLUR OTOLITH DALAM KANAL",
+        155,
+        24
+      );
+      ctx.fillText(
+        en ? "PATIENT HEAD & BODY POSTURE ON BED" : "POSISI KEPALA & BADAN PESAKIT DI KATIL",
+        450,
+        24
+      );
 
       const cx = 155;
       const cy = 160;
       const r = 78;
 
-      // Utricle chamber
       ctx.beginPath();
       ctx.ellipse(cx - 52, cy - 32, 34, 42, -0.25, 0, Math.PI * 2);
       ctx.fillStyle = animProgress > 0.94 ? "rgba(16, 185, 129, 0.28)" : "#1e3a5f";
@@ -1054,9 +1222,8 @@
       ctx.fillText("UTRICLE", cx - 52, cy - 34);
       ctx.font = "500 9.5px system-ui, sans-serif";
       ctx.fillStyle = "#94a3b8";
-      ctx.fillText("(Zon Selamat)", cx - 52, cy - 20);
+      ctx.fillText(en ? "(Safe Zone)" : "(Zon Selamat)", cx - 52, cy - 20);
 
-      // Posterior Canal Ring
       const startAng = Math.PI * 0.65;
       const endAng = -Math.PI * 0.72;
 
@@ -1073,7 +1240,6 @@
       ctx.arc(cx + 12, cy + 6, r, -Math.PI * 0.72, Math.PI * 0.68);
       ctx.stroke();
 
-      // Ampulla (start danger zone)
       const ampX = cx + 12 + Math.cos(Math.PI * 0.68) * r;
       const ampY = cy + 6 + Math.sin(Math.PI * 0.68) * r;
       ctx.beginPath();
@@ -1087,7 +1253,6 @@
       ctx.font = "600 9.5px system-ui, sans-serif";
       ctx.fillText("Ampulla", ampX - 24, ampY + 24);
 
-      // Compute Otolith coordinates along arc -> utricle
       let ox, oy;
       if (animProgress <= 0.88) {
         const norm = animProgress / 0.88;
@@ -1102,7 +1267,6 @@
         oy = exitY + (cy - 10 - exitY) * uNorm;
       }
 
-      // Draw glowing cluster of Otolith crystals
       for (let k = -1; k <= 1; k++) {
         ctx.beginPath();
         ctx.arc(ox + k * 4.5, oy + (k % 2) * 3.5, 4.5, 0, Math.PI * 2);
@@ -1117,13 +1281,16 @@
       ctx.font = "600 11.5px system-ui, sans-serif";
       ctx.fillText(
         animProgress > 0.94
-          ? "✅ Kristal Selamat Kembali ke Utricle!"
+          ? en
+            ? "✅ Crystals Safely Returned to Utricle!"
+            : "✅ Kristal Selamat Kembali ke Utricle!"
+          : en
+          ? `Crystal Repositioning Progress: ${Math.round(animProgress * 100)}%`
           : `Kemajuan Reposisi Kristal: ${Math.round(animProgress * 100)}%`,
         155,
         286
       );
 
-      // Divider
       ctx.strokeStyle = "rgba(148, 163, 184, 0.2)";
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -1131,10 +1298,8 @@
       ctx.lineTo(308, H - 20);
       ctx.stroke();
 
-      // RIGHT HALF: Bed + Pillow + Patient Posture & Head Compass
       const bx = 340;
       const by = 195;
-      // Bed mattress
       ctx.fillStyle = "#1e293b";
       ctx.strokeStyle = "#475569";
       ctx.lineWidth = 2;
@@ -1143,26 +1308,23 @@
       ctx.fill();
       ctx.stroke();
 
-      // Shoulder Pillow (Crucial clinical detail from PDF!)
       ctx.fillStyle = "#38bdf8";
       ctx.beginPath();
       ctx.ellipse(bx + 68, by - 6, 22, 8, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = "#7dd3fc";
       ctx.font = "500 9.5px system-ui, sans-serif";
-      ctx.fillText("Bantal di bawah bahu", bx + 68, by + 38);
+      ctx.fillText(en ? "Pillow under shoulders" : "Bantal di bawah bahu", bx + 68, by + 38);
 
-      // Side-view silhouette depending on bodyState
       ctx.strokeStyle = "#e2e8f0";
       ctx.lineWidth = 6;
       ctx.lineCap = "round";
       if (targetStep.bodyState === "sitting" || targetStep.bodyState === "sitting-recovery") {
-        // Sitting upright on bed
         ctx.beginPath();
-        ctx.moveTo(bx + 125, by - 4); // hips
-        ctx.lineTo(bx + 185, by - 4); // legs
         ctx.moveTo(bx + 125, by - 4);
-        ctx.lineTo(bx + 125, by - 58); // torso upright
+        ctx.lineTo(bx + 185, by - 4);
+        ctx.moveTo(bx + 125, by - 4);
+        ctx.lineTo(bx + 125, by - 58);
         ctx.stroke();
 
         ctx.beginPath();
@@ -1170,11 +1332,10 @@
         ctx.fillStyle = "#f8fafc";
         ctx.fill();
       } else {
-        // Supine with shoulders on pillow & head extended 25 deg below horizontal!
         ctx.beginPath();
-        ctx.moveTo(bx + 195, by - 6); // feet
-        ctx.lineTo(bx + 68, by - 12); // torso to pillow
-        ctx.lineTo(bx + 36, by + 2); // neck extended 20-30 deg!
+        ctx.moveTo(bx + 195, by - 6);
+        ctx.lineTo(bx + 68, by - 12);
+        ctx.lineTo(bx + 36, by + 2);
         ctx.stroke();
 
         ctx.beginPath();
@@ -1183,7 +1344,6 @@
         ctx.fill();
       }
 
-      // Head Rotation Compass (Top-Down Nose Indicator)
       const compX = 452;
       const compY = 92;
       ctx.beginPath();
@@ -1198,7 +1358,6 @@
       ctx.translate(compX, compY);
       ctx.rotate((animHeadAngle * Math.PI) / 180);
 
-      // Head oval
       ctx.beginPath();
       ctx.ellipse(0, 0, 20, 24, 0, 0, Math.PI * 2);
       ctx.fillStyle = "#334155";
@@ -1207,14 +1366,12 @@
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Affected ear marker
       const earSide = affectedEar === "left" ? -21 : 21;
       ctx.beginPath();
       ctx.arc(earSide, 0, 5, 0, Math.PI * 2);
       ctx.fillStyle = "#ef4444";
       ctx.fill();
 
-      // Nose pointer
       ctx.beginPath();
       ctx.moveTo(-6, -22);
       ctx.lineTo(0, -34);
@@ -1226,16 +1383,20 @@
 
       ctx.fillStyle = "#cbd5e1";
       ctx.font = "600 11px system-ui, sans-serif";
-      ctx.fillText(`Sudut Putaran Hidung: ${Math.round(animHeadAngle)}°`, compX, compY + 54);
+      ctx.fillText(
+        en ? `Nose Rotation Angle: ${Math.round(animHeadAngle)}°` : `Sudut Putaran Hidung: ${Math.round(animHeadAngle)}°`,
+        compX,
+        compY + 54
+      );
 
       ctx.fillStyle = "#fca5a5";
       ctx.font = "500 10px system-ui, sans-serif";
-      ctx.fillText("Titik Merah = Telinga Terjejas", 452, 286);
+      ctx.fillText(en ? "Red Dot = Affected Ear" : "Titik Merah = Telinga Terjejas", 452, 286);
 
       requestAnimationFrame(renderEpley);
     }
 
-    applyStep(0);
+    applyStep(0, true);
     requestAnimationFrame(renderEpley);
   }
 
@@ -1243,15 +1404,17 @@
   // 5. GRAF PERANGKAP UBAT (<72 JAM) & JURULATIH VRT GAZE STABILIZATION
   // --------------------------------------------------------------------------
   function initRecoveryAndVrt() {
-    // Part A: Central Compensation Chart
     const chartCanvas = document.getElementById("compensationCanvas");
+    let drawChartFn = null;
+
     if (chartCanvas) {
       const W = 520;
       const H = 230;
       const ctx = setupHiDPICanvas(chartCanvas, W, H);
-      let mode = "compare"; // 'optimal' | 'trap' | 'compare'
+      let mode = "compare";
 
-      function drawChart() {
+      drawChartFn = function drawChart() {
+        const en = isEn();
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle = "#0f172a";
         ctx.fillRect(0, 0, W, H);
@@ -1263,7 +1426,6 @@
         const gw = W - padL - padR;
         const gh = H - padT - padB;
 
-        // Axes
         ctx.strokeStyle = "#334155";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -1272,7 +1434,6 @@
         ctx.lineTo(W - padR, H - padB);
         ctx.stroke();
 
-        // 72-hour acute window highlight
         const x72 = padL + gw * 0.14;
         ctx.fillStyle = "rgba(245, 158, 11, 0.14)";
         ctx.fillRect(padL, padT, x72 - padL, gh);
@@ -1287,9 +1448,8 @@
         ctx.fillStyle = "#fbbf24";
         ctx.font = "600 10px system-ui, sans-serif";
         ctx.textAlign = "left";
-        ctx.fillText("Had 72 Jam Ubat Akut", x72 + 5, padT + 12);
+        ctx.fillText(en ? "72h Acute Med Limit" : "Had 72 Jam Ubat Akut", x72 + 5, padT + 12);
 
-        // Optimal Curve (Stop meds <72h + VRT)
         if (mode === "optimal" || mode === "compare") {
           ctx.strokeStyle = "#10b981";
           ctx.lineWidth = 3;
@@ -1305,7 +1465,6 @@
           ctx.stroke();
         }
 
-        // Medication Trap Curve (Months of Vestibular Suppressants)
         if (mode === "trap" || mode === "compare") {
           ctx.strokeStyle = "#ef4444";
           ctx.lineWidth = 3;
@@ -1321,42 +1480,51 @@
           ctx.stroke();
         }
 
-        // Labels
         ctx.fillStyle = "#94a3b8";
         ctx.font = "500 10.5px system-ui, sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText("Hari 1", padL + 14, H - 14);
-        ctx.fillText("Minggu 1", padL + gw * 0.33, H - 14);
-        ctx.fillText("Minggu 2", padL + gw * 0.66, H - 14);
-        ctx.fillText("Minggu 4+", W - padR - 18, H - 14);
+        ctx.fillText(en ? "Day 1" : "Hari 1", padL + 14, H - 14);
+        ctx.fillText(en ? "Week 1" : "Minggu 1", padL + gw * 0.33, H - 14);
+        ctx.fillText(en ? "Week 2" : "Minggu 2", padL + gw * 0.66, H - 14);
+        ctx.fillText(en ? "Week 4+" : "Minggu 4+", W - padR - 18, H - 14);
 
         ctx.save();
         ctx.translate(16, H / 2);
         ctx.rotate(-Math.PI / 2);
-        ctx.fillText("Pampasan Otak (%)", 0, 0);
+        ctx.fillText(en ? "Brain Compensation (%)" : "Pampasan Otak (%)", 0, 0);
         ctx.restore();
 
-        // Legend
         ctx.textAlign = "right";
         ctx.fillStyle = "#34d399";
-        ctx.font = "600 11px system-ui, sans-serif";
-        ctx.fillText("● Henti Pil <72j + Latihan VRT (Pulih ~95%)", W - padR, padT + 16);
+        ctx.font = "600 10.8px system-ui, sans-serif";
+        ctx.fillText(
+          en
+            ? "● Stop Pills ≤72h + VRT Exercises (~95% Recovery)"
+            : "● Henti Pil <72j + Latihan VRT (Pulih ~95%)",
+          W - padR,
+          padT + 16
+        );
         ctx.fillStyle = "#f87171";
-        ctx.fillText("● Makan Pil Tahan Pening Berbulan-bulan (Otak Malas)", W - padR, padT + 34);
-      }
+        ctx.fillText(
+          en
+            ? "● Daily Suppressants for Months (Uncompensated)"
+            : "● Makan Pil Tahan Pening Berbulan-bulan (Otak Malas)",
+          W - padR,
+          padT + 34
+        );
+      };
 
       document.querySelectorAll("[data-comp-mode]").forEach((btn) => {
         btn.addEventListener("click", () => {
           mode = btn.getAttribute("data-comp-mode");
           document.querySelectorAll("[data-comp-mode]").forEach((b) => b.classList.toggle("active", b === btn));
-          drawChart();
+          drawChartFn();
         });
       });
 
-      drawChart();
+      drawChartFn();
     }
 
-    // Part B: Interactive VRT Gaze Stabilization Metronome (VOR x1)
     const vrtToggleBtn = document.getElementById("vrtStartBtn");
     const vrtSpeedSlider = document.getElementById("vrtBpmSlider");
     const vrtBpmLabel = document.getElementById("vrtBpmVal");
@@ -1370,14 +1538,32 @@
     let vrtCountdown = null;
     let beatSide = 1;
 
+    function updateVrtLabels() {
+      const en = isEn();
+      if (vrtBpmLabel) vrtBpmLabel.textContent = vrtBpm + (en ? " beats/min" : " rentak/min");
+      if (!vrtRunning) {
+        if (vrtToggleBtn) {
+          vrtToggleBtn.textContent = en
+            ? "▶️ Start Gaze Stabilization Practice (30s)"
+            : "▶️ Mulakan Latihan Gaze Stabilization (30s)";
+        }
+        if (vrtHeadGuide) {
+          vrtHeadGuide.textContent = en
+            ? "Keep eyes locked on 'X' & get ready for small left-right head turns"
+            : "Renung huruf 'X' & sedia gerakkan kepala kecil kiri-kanan";
+        }
+      } else if (vrtToggleBtn) {
+        vrtToggleBtn.textContent = en ? "⏹️ Stop Practice" : "⏹️ Berhenti Latihan";
+      }
+    }
+
     function stopVrt() {
       vrtRunning = false;
       if (vrtBeatInterval) clearInterval(vrtBeatInterval);
       if (vrtCountdown) clearInterval(vrtCountdown);
       vrtBeatInterval = null;
       vrtCountdown = null;
-      if (vrtToggleBtn) vrtToggleBtn.textContent = "▶️ Mulakan Latihan Gaze Stabilization (30s)";
-      if (vrtHeadGuide) vrtHeadGuide.textContent = "Renung huruf 'X' & sedia gerakkan kepala kecil kiri-kanan";
+      updateVrtLabels();
     }
 
     function startBeatLoop() {
@@ -1387,10 +1573,17 @@
         beatSide *= -1;
         playGentleTone(beatSide > 0 ? 660 : 528, 70);
         if (vrtHeadGuide) {
-          vrtHeadGuide.textContent =
-            beatSide > 0
-              ? "⬅️ Pusing Kepala Sedikit ke KIRI (Mata Kekal pada X!)"
-              : "Pusing Kepala Sedikit ke KANAN (Mata Kekal pada X!) ➡️";
+          if (isEn()) {
+            vrtHeadGuide.textContent =
+              beatSide > 0
+                ? "⬅️ Turn Head Slightly LEFT (Keep Eyes on X!)"
+                : "Turn Head Slightly RIGHT (Keep Eyes on X!) ➡️";
+          } else {
+            vrtHeadGuide.textContent =
+              beatSide > 0
+                ? "⬅️ Pusing Kepala Sedikit ke KIRI (Mata Kekal pada X!)"
+                : "Pusing Kepala Sedikit ke KANAN (Mata Kekal pada X!) ➡️";
+          }
         }
       }, ms);
     }
@@ -1398,7 +1591,7 @@
     if (vrtSpeedSlider) {
       vrtSpeedSlider.addEventListener("input", () => {
         vrtBpm = parseInt(vrtSpeedSlider.value, 10);
-        if (vrtBpmLabel) vrtBpmLabel.textContent = vrtBpm + " rentak/min";
+        if (vrtBpmLabel) vrtBpmLabel.textContent = vrtBpm + (isEn() ? " beats/min" : " rentak/min");
         if (vrtRunning) startBeatLoop();
       });
     }
@@ -1411,7 +1604,7 @@
           vrtRunning = true;
           vrtTimerSec = 30;
           if (vrtTimerEl) vrtTimerEl.textContent = "30s";
-          vrtToggleBtn.textContent = "⏹️ Berhenti Latihan";
+          vrtToggleBtn.textContent = isEn() ? "⏹️ Stop Practice" : "⏹️ Berhenti Latihan";
           startBeatLoop();
           if (window.markModuleExplored) window.markModuleExplored("rehab");
 
@@ -1421,13 +1614,30 @@
             if (vrtTimerSec <= 0) {
               playGentleTone(880, 320);
               stopVrt();
-              if (vrtHeadGuide) vrtHeadGuide.textContent = "✅ Sesi 30 saat selesai! Rehat sebentar sebelum ulang.";
+              if (vrtHeadGuide) {
+                vrtHeadGuide.textContent = isEn()
+                  ? "✅ 30-second session complete! Rest briefly before repeating."
+                  : "✅ Sesi 30 saat selesai! Rehat sebentar sebelum ulang.";
+              }
             }
           }, 1000);
         }
       });
     }
+
+    refreshHooks.push(() => {
+      if (drawChartFn) drawChartFn();
+      updateVrtLabels();
+    });
   }
+
+  window.refreshSimulatorsLang = function () {
+    refreshHooks.forEach((fn) => {
+      try {
+        fn();
+      } catch (_) {}
+    });
+  };
 
   window.initAllSimulators = function () {
     initSensorySimulator();
