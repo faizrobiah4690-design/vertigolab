@@ -1027,16 +1027,341 @@ body.light-theme .analogy-use {
   color: var(--text-muted);
 }
 
+/* ============================================================================
+   PAUTAN PANTAS PESAKIT PENING & MODAL BANTUAN KECEMASAN / KENDIRI
+   ============================================================================ */
+
+.quick-sos-bar {
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.16), rgba(16, 185, 129, 0.14), rgba(239, 68, 68, 0.14));
+  border-bottom: 1px solid var(--border-strong);
+  padding: 9px 20px;
+}
+
+.quick-sos-inner {
+  max-width: 1260px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-sos-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quick-sos-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-sos-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-sos-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-danger-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #dc2626;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.floating-sos-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 150;
+  background: linear-gradient(135deg, #ef4444, #be123c);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(190, 18, 60, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.18s ease;
+}
+
+.floating-sos-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Modal Backdrop & Dialog */
+.qh-modal-backdrop[hidden] {
+  display: none !important;
+}
+
+.qh-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.qh-modal-card {
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+}
+
+.qh-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.qh-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.qh-tab-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 10px 10px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.qh-tab-btn.active {
+  background: rgba(14, 165, 233, 0.18);
+  border-color: #38bdf8;
+  color: var(--text-primary);
+}
+
+/* Breathing & Visual Fixation First Aid Box */
+.first-aid-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.breathing-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+}
+
+.breathing-orb {
+  width: 84px;
+  height: 84px;
+  margin: 10px auto 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde047 0%, #eab308 30%, rgba(14, 165, 233, 0.35) 75%);
+  border: 3px solid #38bdf8;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #0f172a;
+  font-size: 1.2rem;
+  transition: transform 3.6s ease-in-out, box-shadow 3.6s ease-in-out;
+}
+
+.breathing-orb.inhale {
+  transform: scale(1.22);
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.45);
+}
+
+.breathing-orb.exhale {
+  transform: scale(0.92);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.18);
+}
+
+body.calm-motion .breathing-orb {
+  transition: none !important;
+  transform: scale(1) !important;
+}
+
+.pattern-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pattern-card-btn {
+  text-align: left;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pattern-card-btn:hover,
+.pattern-card-btn.active {
+  border-color: var(--accent-cyan);
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.pattern-card-btn strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 3px;
+}
+
+.pattern-card-btn span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.doc-note-textarea {
+  width: 100%;
+  min-height: 175px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* Medical Evidence Audit Strip */
+.audit-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.audit-pill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+}
+
+.audit-pill-card strong {
+  display: block;
+  font-size: 0.83rem;
+  color: var(--accent-cyan);
+  margin-bottom: 3px;
+}
+
+body.light-theme .audit-pill-card strong {
+  color: #0284c7;
+}
+
+.audit-pill-card span {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 960px) {
   .hero,
   .two-col,
-  .three-col {
+  .three-col,
+  .first-aid-grid,
+  .pattern-cards-grid,
+  .audit-strip {
     grid-template-columns: 1fr;
+  }
+  .qh-tabs {
+    grid-template-columns: 1fr 1fr;
   }
   .sensor-readouts,
   .redflag-grid,
   .food-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .topbar,
+  .quick-sos-bar,
+  .floating-sos-btn,
+  main.container,
+  .qh-tabs,
+  .qh-modal-header button,
+  #copyDocNoteBtn,
+  #printDocNoteBtn {
+    display: none !important;
+  }
+  .qh-modal-backdrop {
+    position: static !important;
+    background: #fff !important;
+    padding: 0 !important;
+  }
+  .qh-modal-card {
+    max-height: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .doc-note-textarea {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: #fff !important;
+    min-height: 320px !important;
   }
 }
