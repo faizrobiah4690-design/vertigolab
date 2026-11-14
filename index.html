@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VertigoLab — Playbook Pintar, Interaktif & Makmal Klinikal Vertigo</title>
+  <title>VertigoLab — Panduan Pintar, Interaktif &amp; Bantuan Pesakit Vertigo</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="mode-clinical">
+<body class="mode-layman">
   <!-- ======================= STICKY TOP NAVIGATION ======================= -->
   <header class="topbar">
     <div class="topbar-inner">
@@ -14,24 +14,28 @@
         <div class="brand-mark" aria-hidden="true">🌀</div>
         <div>
           <span class="brand-title">VertigoLab</span>
-          <span class="brand-sub">Playbook Pintar • Makmal Klinikal & Edukatif</span>
+          <span class="brand-sub" data-en="Patient Helper • Visual Lab &amp; Audited Medical Facts">Bantuan Pesakit • Makmal Visual &amp; Fakta Perubatan Diaudit</span>
         </div>
       </a>
 
-      <nav class="nav-links" aria-label="Navigasi Utama">
-        <a href="#sec-anatomi">1. Anatomi & Sensor</a>
-        <a href="#sec-matriks">2. Matriks & Triaj Pintar</a>
-        <a href="#sec-hints" class="nav-emergency">3. Saringan Strok (HINTS & 5D)</a>
-        <a href="#sec-epley">4. Simulator Epley</a>
-        <a href="#sec-pemulihan">5. Pemulihan & VRT</a>
-        <a href="#sec-analogi">6. 3 Analogi</a>
-        <a href="#sec-kuiz">7. Kuiz Klinikal</a>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="#sec-anatomi" data-en="1. Why Spinning?">1. Kenapa Berpusing?</a>
+        <a href="#sec-matriks" data-en="2. Symptom Checker">2. Semak Simptom</a>
+        <a href="#sec-hints" class="nav-emergency" data-en="3. Stroke Alert (5D &amp; HINTS)">3. Bahaya Strok (5D &amp; HINTS)</a>
+        <a href="#sec-epley" data-en="4. Epley Guide">4. Panduan Epley</a>
+        <a href="#sec-pemulihan" data-en="5. Rehab &amp; Meds">5. Senaman &amp; Ubat</a>
+        <a href="#sec-analogi" data-en="6. Visual Analogies">6. Analogi Mudah</a>
+        <a href="#sec-kuiz" data-en="7. Quiz">7. Kuiz</a>
       </nav>
 
       <div class="top-actions">
-        <div class="segmented-toggle" role="group" aria-label="Mod Penerangan">
-          <button type="button" data-audience-mode="clinical" class="active">🩺 Mod Klinikal</button>
-          <button type="button" data-audience-mode="layman">🗣️ Mod Mudah Hadam</button>
+        <div class="segmented-toggle" role="group" aria-label="Language / Bahasa">
+          <button type="button" data-lang-switch="ms" class="active" title="Bahasa Melayu">🇲🇾 BM</button>
+          <button type="button" data-lang-switch="en" title="English">🇬🇧 EN</button>
+        </div>
+        <div class="segmented-toggle" role="group" aria-label="Explanation Mode">
+          <button type="button" data-audience-mode="layman" class="active" data-en="🗣️ Plain Language">🗣️ Mudah Faham</button>
+          <button type="button" data-audience-mode="clinical" data-en="🩺 Clinical Mode">🩺 Mod Klinikal</button>
         </div>
         <button type="button" id="themeToggleBtn" class="btn-secondary" style="padding:6px 11px; font-size:0.76rem;">
           ☀️ Mod Cerah
@@ -40,22 +44,276 @@
     </div>
   </header>
 
+  <!-- ============== PAUTAN PANTAS UNTUK ORANG SEDANG PENING ============== -->
+  <div class="quick-sos-bar" role="region" aria-label="Quick Help for Dizziness">
+    <div class="quick-sos-inner">
+      <div class="quick-sos-label">
+        <span data-en="👋 &lt;strong&gt;Feeling dizzy or spinning right now?&lt;/strong&gt; Use quick-access patient tools:">👋 <strong>Sedang rasa pening atau berpusing sekarang?</strong> Gunakan pautan bantuan pantas:</span>
+      </div>
+      <div class="quick-sos-links">
+        <button type="button" class="btn-sos-primary" data-open-quickhelp="step1" data-en="🆘 I Feel Dizzy Right Now!">
+          🆘 Saya Sedang Pening Sekarang!
+        </button>
+        <button type="button" class="chip-btn" data-open-quickhelp="step2" data-en="🚨 30s Emergency Screen">
+          🚨 Saringan Kecemasan 30s
+        </button>
+        <button type="button" class="chip-btn" data-open-quickhelp="step3" data-en="🔍 Identify My Dizziness">
+          🔍 Kenal Pasti Jenis Pening
+        </button>
+        <button type="button" class="chip-btn" data-open-quickhelp="step4" data-en="📋 Note for Doctor">
+          📋 Nota Untuk Doktor
+        </button>
+        <button type="button" id="calmModeToggleBtn" class="chip-btn">
+          🧘 Mod Mesra Pening (Jeda Animasi)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== BUTANG TERAPUNG BANTUAN PANTAS (SOS) ============== -->
+  <button type="button" class="floating-sos-btn" data-open-quickhelp="step1" data-en="🆘 Dizzy Now? Click Here">
+    🆘 Sedang Pening? Klik Sini
+  </button>
+
+  <!-- ======== MODAL BANTUAN PANTAS PESAKIT (4 LANGKAH MUDAH & TENANG) ======== -->
+  <div id="quickHelpModal" class="qh-modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="qhModalTitle">
+    <div class="qh-modal-card">
+      <div class="qh-modal-header">
+        <div>
+          <span class="pill-badge pill-info" data-en="Quick Patient &amp; Family Relief Guide">Panduan Bantuan Pantas Pesakit &amp; Keluarga</span>
+          <h2 id="qhModalTitle" style="margin:6px 0 2px; font-size:1.35rem;" data-en="Immediate Help While Feeling Dizzy / Spinning">Bantuan Segera Semasa Rasa Pening / Berpusing</h2>
+          <p style="margin:0; font-size:0.85rem; color:var(--text-muted);" data-en="Follow the 4 calm steps below — designed for easy reading even while you feel unwell.">
+            Ikuti 4 langkah tenang di bawah — direka khas supaya mudah dibaca walaupun anda sedang kurang selesa.
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div class="segmented-toggle" role="group" aria-label="Modal Language">
+            <button type="button" data-lang-switch="ms" class="active">🇲🇾 BM</button>
+            <button type="button" data-lang-switch="en">🇬🇧 EN</button>
+          </div>
+          <button type="button" id="modalCalmModeBtn" class="btn-secondary" style="font-size:0.76rem; padding:7px 11px;">
+            🧘 Mod Mesra Pening (Jeda Animasi)
+          </button>
+          <button type="button" data-close-quickhelp class="btn-secondary" style="padding:7px 12px;" data-en="✕ Close">
+            ✕ Tutup
+          </button>
+        </div>
+      </div>
+
+      <div class="qh-tabs" role="tablist">
+        <button type="button" class="qh-tab-btn active" data-qh-tab="step1" data-en="1. Stabilize Safely">1. Tenangkan Diri</button>
+        <button type="button" class="qh-tab-btn" data-qh-tab="step2" data-en="2. 30s Danger Check">2. Saringan Bahaya 30s</button>
+        <button type="button" class="qh-tab-btn" data-qh-tab="step3" data-en="3. My Dizziness Type">3. Jenis Pening Saya</button>
+        <button type="button" class="qh-tab-btn" data-qh-tab="step4" data-en="4. Doctor Summary Note">4. Nota Untuk Doktor</button>
+      </div>
+
+      <!-- PANE 1: IMMEDIATE FIRST AID -->
+      <div data-qh-pane="step1">
+        <div class="first-aid-grid">
+          <div>
+            <div class="alert-banner alert-safe" style="margin-bottom:12px;">
+              <strong data-en="Immediate Safety Steps (First 60 Seconds):">Langkah Keselamatan Serta-Merta (60 Saat Pertama):</strong>
+            </div>
+            <ol style="margin:0; padding-left:20px; font-size:0.92rem; display:grid; gap:9px;">
+              <li data-en="&lt;strong&gt;Sit or lie down immediately&lt;/strong&gt; on a safe surface to prevent falls or head injury. If driving, pull over safely—&lt;strong&gt;do not keep driving&lt;/strong&gt;. "><strong>Duduk atau baring segera</strong> di tempat selamat untuk mengelakkan jatuh atau terhantuk kepala. Jika di jalan raya, berhenti di bahu jalan selamat—<strong>jangan terus memandu</strong>.</li>
+              <li data-en="&lt;strong&gt;Keep your eyes open and lock onto ONE stationary object&lt;/strong&gt; (such as the yellow dot beside this box) if the room is spinning. Visual fixation helps your brain suppress inner-ear involuntary eye jerks (&lt;em&gt;peripheral nystagmus&lt;/em&gt;) by ~70%!"><strong>Jangan pejam mata rapat jika dunia berpusing:</strong> Sebaliknya, <strong>renung satu objek pegun</strong> (contohnya bulatan kuning di sebelah). Fokus visual membantu otak menekan pergerakan luar kawal mata (<em>nystagmus periferi</em>) sehingga ~70%!</li>
+              <li data-en="&lt;strong&gt;Avoid sudden head turns&lt;/strong&gt;, avoid bending forward abruptly, and dim harsh overhead lights or bright screens."><strong>Elakkan pusing kepala mengejut</strong>, elakkan membongkok tiba-tiba, dan kurangkan cahaya skrin atau lampu yang menyilaukan.</li>
+              <li data-en="&lt;strong&gt;Take small sips of plain water slowly&lt;/strong&gt; only once severe nausea settles (seek medical care if persistent vomiting prevents fluid intake)."><strong>Minum seteguk air kosong perlahan-lahan</strong> hanya selepas rasa loya reda (jika muntah teruk berterusan, dapatkan pemeriksaan doktor).</li>
+            </ol>
+            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button type="button" class="btn-primary" data-qh-goto="step2" data-en="Next: 30-Second Danger Screen ➡️">
+                Seterusnya: Semak Tanda Bahaya (30 Saat) ➡️
+              </button>
+            </div>
+          </div>
+
+          <div class="breathing-box">
+            <small style="text-transform:uppercase; font-weight:700; color:var(--text-muted);" data-en="Still Fixation Target &amp; Breathing Pacer">
+              Titik Fokus Pegun &amp; Rentak Nafas
+            </small>
+            <div id="breathingPacerOrb" class="breathing-orb" aria-hidden="true">●</div>
+            <div id="breathingPhaseText" style="font-weight:700; font-size:0.9rem; margin-bottom:6px;">
+              Tarik Nafas Perlahan Melalui Hidung...
+            </div>
+            <p style="margin:0; font-size:0.78rem; color:var(--text-muted);" data-en="Keep your gaze steady on the center dot while breathing slowly (4s inhale, 6s exhale) to calm nausea and anxiety.">
+              Pandang titik tengah di atas sambil bernafas perlahan (4 saat tarik, 6 saat hembus) untuk meredakan rasa cemas dan loya.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: 30-SECOND RED FLAG EMERGENCY SCREEN -->
+      <div data-qh-pane="step2" hidden>
+        <p style="margin:0 0 12px; font-size:0.9rem;" data-en="Tick any box below &lt;strong&gt;IF EXPERIENCED RIGHT NOW&lt;/strong&gt; (ask a family member to help check):">
+          Tandakan mana-mana kotak di bawah <strong>JIKA ADA dialami sekarang</strong> (minta ahli keluarga bantu semak):
+        </p>
+        <div class="redflag-grid" style="margin-bottom:14px;">
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Penglihatan berganda / cakap pelat / sukar menelan" data-en-label="Double vision / slurred speech / difficulty swallowing" />
+            <span data-en="&lt;strong&gt;Double vision (Diplopia)&lt;/strong&gt;, sudden slurred speech, or choking/difficulty swallowing"><strong>Nampak dua imej (Diplopia)</strong>, percakapan tiba-tiba pelat/cadel, atau tersedak/sukar menelan</span>
+          </label>
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Kebas/lemah sebelah badan atau tangan tersasar" data-en-label="Facial/limb numbness or weakness / clumsy hand coordination" />
+            <span data-en="&lt;strong&gt;Numbness or weakness&lt;/strong&gt; on one side of the face/arm/leg, or clumsy hand missing your nose"><strong>Kebas atau lemah</strong> sebelah muka/tangan/kaki, atau tangan tersasar bila cuba menyentuh hidung</span>
+          </label>
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Gagal berdiri tegak tanpa dipapah" data-en-label="Unable to stand or walk unassisted" />
+            <span data-en="&lt;strong&gt;Completely unable to stand upright&lt;/strong&gt; even with eyes open (falling without support)"><strong>Langsung tidak boleh berdiri tegak</strong> walaupun mata terbuka (terumbang-ambing jatuh tanpa dipapah)</span>
+          </label>
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Pekak mendadak sebelah telinga atau sakit kepala/leher teruk" data-en-label="Sudden one-sided hearing loss or severe headache/neck pain" />
+            <span data-en="Continuous spinning with &lt;strong&gt;new sudden deafness in one ear&lt;/strong&gt; OR &lt;strong&gt;severe thunderclap headache/neck pain&lt;/strong&gt;">Pusing berterusan disertai <strong>pekak mendadak sebelah telinga</strong> ATAU <strong>sakit kepala/belakang leher paling teruk</strong></span>
+          </label>
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Sakit dada / sesak nafas / berdebar / pengsan" data-en-label="Chest pain / shortness of breath / palpitations / fainting" />
+            <span data-en="&lt;strong&gt;Chest pain, shortness of breath, racing palpitations&lt;/strong&gt;, or actual &lt;strong&gt;fainting/blackout&lt;/strong&gt;"><strong>Sakit dada, sesak nafas, jantung berdebar laju</strong>, atau sempat <strong>pitam/pengsan</strong> tidak sedarkan diri</span>
+          </label>
+          <label class="check-tile">
+            <input type="checkbox" class="qh-redflag-cb" data-label="Pusing berterusan pertama kali pada pesakit risiko vaskular tinggi" data-en-label="First-ever continuous vertigo (>1h) in high vascular-risk patient" />
+            <span data-en="Non-stop continuous spinning (&gt;1 hour) for the &lt;strong&gt;first time&lt;/strong&gt; with hypertension / diabetes / heart disease">Pusing berterusan tanpa henti (&gt;1 jam) buat <strong>pertama kali</strong> pada penghidap darah tinggi / kencing manis / sakit jantung</span>
+          </label>
+        </div>
+
+        <div id="qhEmergencyVerdict" class="alert-banner alert-safe"></div>
+
+        <div style="margin-top:14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-secondary" data-qh-goto="step1" data-en="⬅️ Back">⬅️ Kembali</button>
+          <button type="button" class="btn-primary" data-qh-goto="step3" data-en="Step 3: Identify My Dizziness Pattern ➡️">Langkah 3: Kenal Pasti Jenis Pening ➡️</button>
+        </div>
+      </div>
+
+      <!-- PANE 3: PLAIN-LANGUAGE SYMPTOM MATCHER -->
+      <div data-qh-pane="step3" hidden>
+        <p style="margin:0 0 10px; font-size:0.9rem;" data-en="Choose the description that &lt;strong&gt;closest matches&lt;/strong&gt; what you feel for tailored guidance:">
+          Pilih penerangan yang <strong>paling hampir</strong> dengan apa yang anda rasai untuk melihat panduan khusus:
+        </p>
+        <div class="pattern-cards-grid">
+          <button type="button" class="pattern-card-btn active" data-qh-pattern="bppv">
+            <strong data-en="🌀 Brief room-spinning (&lt;1 min) when lying down / rolling over">🌀 Bilik berpusing singkat (&lt;1 minit) bila baring / mengiring</strong>
+            <span data-en="Stops once head stays still; no hearing loss or ear ringing (BPPV Pattern)">Berhenti bila kepala diam; tiada pekak atau desing telinga (Corak BPPV)</span>
+          </button>
+          <button type="button" class="pattern-card-btn" data-qh-pattern="orthostatic">
+            <strong data-en="⚡ Dimming vision / feeling faint right after standing up">⚡ Gelap mata / rasa nak pitam masa bangun berdiri</strong>
+            <span data-en="Room does NOT spin; lightheaded for seconds upon standing fast">Bilik TIDAK berpusing; rasa melayang beberapa saat bila bangun cepat</span>
+          </button>
+          <button type="button" class="pattern-card-btn" data-qh-pattern="migraine">
+            <strong data-en="✨ Spinning for mins to days + light glare / poor sleep">✨ Pusing minit ke berhari + rasa silau cahaya / kurang tidur</strong>
+            <span data-en="Can happen with or WITHOUT a concurrent throbbing headache">Boleh berlaku dengan atau TANPA sakit kepala berdenyut serentak</span>
+          </button>
+          <button type="button" class="pattern-card-btn" data-qh-pattern="meniere">
+            <strong data-en="🌊 Spinning 20 mins–12 hrs + roaring tinnitus &amp; ear fullness">🌊 Pusing 20 minit–12 jam + telinga berdesing &amp; rasa penuh</strong>
+            <span data-en="One ear feels plugged, ringing (tinnitus) &amp; muffled hearing">Sebelah telinga rasa tersumbat, berdesing (tinnitus) &amp; kurang dengar</span>
+          </button>
+          <button type="button" class="pattern-card-btn" data-qh-pattern="neuritis">
+            <strong data-en="🦠 Non-stop spinning for days after a viral flu / cold">🦠 Pusing berterusan berhari-hari selepas demam / selesema</strong>
+            <span data-en="Strong nausea for the first 2–3 days even while lying still">Loya kuat pada 2–3 hari pertama walaupun sedang baring diam</span>
+          </button>
+          <button type="button" class="pattern-card-btn" data-qh-pattern="pppd">
+            <strong data-en="🛒 Chronic swaying/rocking for months (worse in supermarkets)">🛒 Rasa terhuyung-hayang berbulan-bulan (teruk di pasar raya)</strong>
+            <span data-en="Floating/unsteady when upright, walking, or scrolling screens (PPPD)">Rasa lantai goyang bila berdiri/berjalan atau tengok skrin bergerak (PPPD)</span>
+          </button>
+        </div>
+
+        <div id="qhPatternAdviceBox" class="reasoning-box" style="margin-top:0;"></div>
+
+        <div style="margin-top:14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-secondary" data-qh-goto="step2" data-en="⬅️ Back">⬅️ Kembali</button>
+          <button type="button" class="btn-primary" data-qh-goto="step4" data-en="Step 4: Generate Doctor Note ➡️">Langkah 4: Jana Nota Untuk Doktor ➡️</button>
+        </div>
+      </div>
+
+      <!-- PANE 4: DOCTOR SYMPTOM SUMMARY GENERATOR -->
+      <div data-qh-pane="step4" hidden>
+        <p style="margin:0 0 12px; font-size:0.88rem; color:var(--text-secondary);" data-en="Many patients struggle to describe dizziness clearly during a clinic visit. Select your answers below to generate a structured &lt;strong&gt;Clinical Symptom Summary&lt;/strong&gt; you can show your doctor or copy to WhatsApp:">
+          Ramai pesakit sukar menceritakan detail pening apabila berjumpa doktor. Pilih jawapan di bawah untuk menjana <strong>Ringkasan Klinikal Pesakit</strong> yang boleh terus ditunjukkan di klinik/hospital atau disalin ke WhatsApp:
+        </p>
+
+        <div class="two-col" style="gap:14px;">
+          <div>
+            <div class="form-group">
+              <label class="field-title" for="docSensation" data-en="1. What sensation do you feel?">1. Apa yang anda rasai?</label>
+              <select id="docSensation" class="form-select">
+                <option data-en="Room / surroundings spinning around me (True Vertigo)">Bilik / persekitaran terasa berpusing-pusing (Vertigo)</option>
+                <option data-en="Vision dimming / feeling faint upon standing up (Presyncope)">Pandangan gelap / rasa nak pitam masa bangun berdiri (Gelap mata)</option>
+                <option data-en="Unsteady swaying / rocking floor without spinning">Badan rasa terhuyung-hayang / lantai rasa bergoyang tanpa pusingan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-title" for="docDuration" data-en="2. How long does ONE attack last?">2. Berapa lama SATU serangan bertahan?</label>
+              <select id="docDuration" class="form-select">
+                <option data-en="Under 1 minute (15–45 seconds each time I change head position)">Kurang 1 minit (15–45 saat sahaja setiap kali tukar posisi)</option>
+                <option data-en="20 minutes to several hours">20 minit hingga beberapa jam</option>
+                <option data-en="Continuous all day / several days non-stop">Berterusan sepanjang hari / berhari-hari tanpa henti</option>
+                <option data-en="Almost daily for more than 3 months">Hampir setiap hari melebihi 3 bulan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-title" for="docTrigger" data-en="3. What triggers the episode?">3. Bila serangan tercetus?</label>
+              <select id="docTrigger" class="form-select">
+                <option data-en="Lying down, rolling over in bed (left/right), or looking up">Semasa baring, mengiring di katil (kiri/kanan), atau mendongak</option>
+                <option data-en="Standing up quickly from sitting / lying / bowing">Semasa bangun berdiri cepat dari duduk / baring / sujud</option>
+                <option data-en="Comes on spontaneously even while sitting still">Datang tiba-tiba (spontan) walaupun sedang duduk diam</option>
+                <option data-en="After poor sleep, stress, or bright lights/screens">Selepas kurang tidur, stres, atau melihat cahaya/skrin terang</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-title" for="docAssoc" data-en="4. Ear or associated symptoms?">4. Simptom telinga atau iringan?</label>
+              <select id="docAssoc" class="form-select">
+                <option data-en="No hearing loss or ear ringing (only spinning/nausea)">Tiada masalah pendengaran atau desing telinga (cuma loya/pusing)</option>
+                <option data-en="Ear ringing (tinnitus) + ear fullness + reduced hearing in one ear">Telinga berdesing (tinnitus) + rasa penuh + kurang dengar sebelah</option>
+                <option data-en="Light sensitivity (photophobia) / migraine history">Silau cahaya (fotofobia) / sejarah migrain</option>
+                <option data-en="Recent viral fever / upper respiratory infection">Baru pulih daripada demam / selesema virus</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-title" for="docMeds" data-en="5. Current medications / medical conditions:">5. Ubat sedang diambil / penyakit sedia ada:</label>
+              <input
+                type="text"
+                id="docMeds"
+                class="form-select"
+                placeholder="Cth: Ubat darah tinggi, cinnarizine 2 minggu, kencing manis..."
+                data-en-placeholder="e.g. Blood pressure meds, cinnarizine for 2 weeks, diabetes..."
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="field-title" for="docNotePreview" style="display:block; font-weight:700; font-size:0.86rem; margin-bottom:6px;" data-en="📄 Doctor Note Preview (Ready to Show or Share):">
+              📄 Pratonton Nota Untuk Ditunjukkan Kepada Doktor:
+            </label>
+            <textarea id="docNotePreview" class="doc-note-textarea" readonly></textarea>
+            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+              <button type="button" id="copyDocNoteBtn" class="btn-primary" style="flex:1;" data-en="📋 Copy Note for Doctor / WhatsApp">
+                📋 Salin Nota Untuk Doktor / WhatsApp
+              </button>
+              <button type="button" id="printDocNoteBtn" class="btn-secondary" data-en="🖨️ Print / PDF">
+                🖨️ Cetak / PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <main id="top" class="container">
     <!-- ========================== HERO SECTION ========================== -->
     <section class="hero">
       <div>
-        <div class="hero-eyebrow">🧠 Intelligence • Interactive • Educative Playbook</div>
-        <h1>Memahami &amp; Menangani Vertigo Secara Tepat, Bukan Sekadar Telan Pil</h1>
-        <p class="hero-lead clinical-only">
-          <strong>[Mod Klinikal]</strong> Vertigo ialah ilusi pergerakan akibat ketidakseimbangan tonus isyarat antara labirin vestibular periferi (80%–85% kes; separuh daripadanya BPPV) atau laluan vestibulo-serebelar sentral (~15% kes akut). Fokus pengurusan moden: bezakan <em>true vertigo</em> daripada <em>presyncope</em>, saring <em>Acute Vestibular Syndrome</em> dengan protokol <strong>HINTS</strong> (lebih sensitif daripada MRI awal &lt;24 jam), rawat BPPV secara mekanikal dengan <strong>Epley Maneuver</strong>, dan hadkan penindas vestibular bawah 72 jam agar tidak merencat <em>central compensation</em>.
+        <div class="hero-eyebrow" data-en="🩺 Audited Against International Medical Guidelines • Visual • Easy to Understand">🩺 Diaudit Mengikut Garis Panduan Perubatan • Visual • Mudah Faham</div>
+        <h1 data-en="Understand the True Cause of Vertigo &amp; Get the Right Relief">Fahami Punca Sebenar Vertigo &amp; Dapatkan Bantuan Yang Tepat</h1>
+        <p class="hero-lead layman-only" data-en="&lt;strong&gt;Vertigo is not a single disease&lt;/strong&gt;—it is an illusion of spinning caused by a balance-sensor mismatch in your &lt;strong&gt;inner ear&lt;/strong&gt; or &lt;strong&gt;brain&lt;/strong&gt;. Many patients suffer for months due to two common mistakes: confusing blood-pressure 'lightheadedness' with vertigo, or swallowing dizziness pills daily when the real culprit is &lt;strong&gt;loose ear crystals (BPPV)&lt;/strong&gt; that pills can never dissolve!">
+          <strong>Vertigo bukanlah satu penyakit tunggal</strong>, sebaliknya rasa diri atau bilik berpusing akibat gangguan sensor keseimbangan di <strong>telinga dalam</strong> atau <strong>otak</strong>. Ramai pesakit menderita berbulan-bulan kerana dua kesilapan: menyamakan rasa "gelap mata" akibat tekanan darah rendah dengan vertigo, atau menelan pil tahan pening setiap hari sedangkan punca sebenar ialah <strong>hablur kristal telinga (BPPV)</strong> yang tidak boleh dicairkan oleh ubat!
         </p>
-        <p class="hero-lead layman-only">
-          <strong>[Mod Mudah Hadam]</strong> Vertigo bukanlah satu penyakit tunggal, sebaliknya rasa diri atau bilik berpusing akibat gangguan sensor keseimbangan di telinga dalam atau otak. Jangan samakan semua rasa "gelap mata" semasa bangun berdiri dengan vertigo! Dan ingat: jika puncanya kristal telinga tercabut (BPPV), makan pil tahan pening berbulan-bulan langsung tidak boleh "mencairkan" kristal itu—ia perlu digolek semula ke tempat asal.
+        <p class="hero-lead clinical-only" data-en="&lt;strong&gt;[Clinical Mode]&lt;/strong&gt; Vertigo is a false perception of motion arising from acute vestibular tone asymmetry in the peripheral labyrinth/CN VIII (80%–85% of cases; ~50% due to BPPV) or central vestibulo-cerebellar pathways (~10%–20% of acute AVS). All modules are audited against &lt;strong&gt;Bárány Society (ICVD)&lt;/strong&gt; diagnostic criteria, &lt;strong&gt;AAO-HNS (BPPV)&lt;/strong&gt;, and &lt;strong&gt;GRACE-3 (2023 Emergency Dizziness Guideline)&lt;/strong&gt;.">
+          <strong>[Mod Klinikal]</strong> Vertigo merupakan ilusi pergerakan akibat asimetri tonus laluan vestibular periferi (80%–85% kes; ~50% daripadanya BPPV) atau struktur vestibulo-serebelar sentral (~10%–20% kes AVS akut). Kandungan aplikasi ini diselaraskan dengan kriteria diagnostik <strong>Bárány Society (ICVD)</strong>, garis panduan <strong>AAO-HNS (BPPV)</strong>, dan <strong>GRACE-3 (2023 Emergency Dizziness Guideline)</strong>.
         </p>
         <div class="hero-cta-row">
-          <a href="#sec-triaj-pintar" class="btn-primary">🩺 Mula Triaj Simptom Pintar</a>
-          <a href="#sec-epley" class="btn-secondary">🔄 Cuba Simulator Epley Maneuver</a>
-          <a href="#sec-hints" class="btn-secondary">🚨 Saringan Strok HINTS &amp; 5D</a>
+          <button type="button" class="btn-sos-primary" data-open-quickhelp="step1" style="padding:10px 18px; font-size:0.9rem;" data-en="🆘 I Feel Dizzy Right Now">
+            🆘 Saya Sedang Pening Sekarang
+          </button>
+          <a href="#sec-triaj-pintar" class="btn-primary" data-en="🧠 Smart Symptom Checker">🧠 Semak Simptom Pintar</a>
+          <a href="#sec-epley" class="btn-secondary" data-en="🔄 5-Step Epley Simulator">🔄 Simulator 5 Langkah Epley</a>
         </div>
       </div>
 
@@ -63,41 +321,61 @@
         <div class="stat-grid">
           <div class="stat-box">
             <div class="stat-num">80%–85%</div>
-            <div class="stat-label">Berpunca dari telinga dalam (periferi), BPPV hampir separuh kes</div>
+            <div class="stat-label" data-en="Inner-ear (peripheral) causes — non-life-threatening &amp; treatable">Punca telinga dalam (periferi) — tidak mengancam nyawa &amp; boleh dirawat</div>
           </div>
           <div class="stat-box">
             <div class="stat-num">~15%</div>
-            <div class="stat-label">Vertigo akut berpunca dari sentral (strok batang otak / serebelum)</div>
+            <div class="stat-label" data-en="Acute continuous vertigo caused by central stroke (screen HINTS Plus &amp; 5D)">Vertigo akut berterusan berpunca dari strok sentral (wajib saring HINTS Plus &amp; 5D)</div>
           </div>
           <div class="stat-box">
             <div class="stat-num">80%–90%</div>
-            <div class="stat-label">Kadar kejayaan Epley Maneuver bagi BPPV kanal posterior</div>
+            <div class="stat-label" data-en="Epley Maneuver success rate for posterior canal BPPV (1–2 sessions)">Kadar kejayaan Epley Maneuver bagi BPPV kanal posterior (1–2 sesi)</div>
           </div>
           <div class="stat-box">
-            <div class="stat-num">&lt; 72 Jam</div>
-            <div class="stat-label">Had maksimum wajar ubat penindas vestibular dalam fasa muntah akut</div>
+            <div class="stat-num" data-en="≤ 72 Hrs">≤ 72 Jam</div>
+            <div class="stat-label" data-en="Maximum limit for vestibular suppressants so brain recovery isn't blocked">Had maksimum ubat penindas pening supaya otak tidak terhalang pulih</div>
           </div>
         </div>
 
         <div class="mastery-bar-wrap">
           <div class="mastery-bar-head">
-            <span>Kemajuan Eksplorasi Makmal Playbook</span>
-            <span id="masteryProgressPct">14%</span>
+            <span data-en="Interactive Learning &amp; Tool Progress">Kemajuan Penerokaan Ilmu &amp; Alat Bantuan</span>
+            <span id="masteryProgressPct">13%</span>
           </div>
           <div class="progress-track">
-            <div id="masteryProgressFill" class="progress-fill" style="width: 14%;"></div>
+            <div id="masteryProgressFill" class="progress-fill" style="width: 13%;"></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ JALUR AUDIT KETEPATAN FAKTA PERUBATAN ============ -->
+    <section class="audit-strip" aria-label="Medical Evidence Standards">
+      <div class="audit-pill-card">
+        <strong data-en="✅ Bárány Society Criteria (ICVD)">✅ Kriteria Bárány Society (ICVD)</strong>
+        <span data-en="Exact duration thresholds for BPPV (&lt;1 min), Meniere's (20 min–12 hr), Vestibular Migraine (5 min–72 hr) &amp; PPPD.">Ambang masa tepat bagi BPPV (&lt;1 min), Meniere (20 min–12 jam), Migrain Vestibular (5 min–72 jam) &amp; PPPD.</span>
+      </div>
+      <div class="audit-pill-card">
+        <strong data-en="✅ GRACE-3 Guideline (2023)">✅ Garis Panduan GRACE-3 (2023)</strong>
+        <span data-en="&lt;em&gt;HINTS Plus&lt;/em&gt; protocol (including sudden AICA hearing loss check) outperforms early MRI (&lt;24–48h) sensitivity.">Protokol <em>HINTS Plus</em> (termasuk semakan pekak mendadak AICA) mengatasi sensitiviti MRI awal &lt;24–48 jam.</span>
+      </div>
+      <div class="audit-pill-card">
+        <strong data-en="✅ AAO-HNS Guideline (BPPV)">✅ Garis Panduan AAO-HNS (BPPV)</strong>
+        <span data-en="Canalith repositioning as first-line care; no 48-hour neck collar restriction needed post-Epley; avoid routine suppressants.">Reposisi kanal sebagai terapi utama; tiada keperluan kolar leher 48 jam selepas Epley; elak ubat penindas rutin.</span>
+      </div>
+      <div class="audit-pill-card">
+        <strong data-en="✅ Older Adult Medication Safety">✅ Keselamatan Ubat Warga Emas</strong>
+        <span data-en="Clear warning on fall risk &amp; &lt;em&gt;drug-induced parkinsonism&lt;/em&gt; from prolonged cinnarizine/prochlorperazine use.">Amaran jelas risiko jatuh &amp; <em>parkinsonisme cetusan ubat</em> akibat pengambilan cinnarizine/Stemetil berpanjangan.</span>
       </div>
     </section>
 
     <!-- ============ BAB 1: ANATOMI & SIMULATOR KONFLIK 3 SENSOR ============ -->
     <section id="sec-anatomi" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 1 • Anatomi &amp; Mekanisme Biologi</div>
-        <h2>Kenapa Dunia Rasa Berpusing &amp; Mencetuskan Muntah?</h2>
-        <p>
-          Keseimbangan manusia dikawal oleh gabungan tiga sensor masa nyata: <strong>sistem vestibular</strong> (telinga dalam), <strong>visual</strong> (mata), dan <strong>propriosepsi</strong> (deria kedudukan sendi &amp; otot). Uji simulasi di bawah untuk melihat bagaimana konflik isyarat memaksa bebola mata bergerak luar kawal (<em>nystagmus</em>) dan mengaktifkan pusat muntah batang otak.
+        <div class="section-num" data-en="Chapter 1 • Visual &amp; Plain-Language Biology">Bab 1 • Visual &amp; Mudah Faham: Mekanisme Biologi</div>
+        <h2 data-en="Why Does the Room Spin &amp; Trigger Severe Nausea?">Kenapa Dunia Rasa Berpusing &amp; Kenapa Rasa Loya?</h2>
+        <p data-en="Your brain maintains balance using three real-time sensors simultaneously: the &lt;strong&gt;inner ear (vestibular)&lt;/strong&gt;, &lt;strong&gt;eyes (vision)&lt;/strong&gt;, and &lt;strong&gt;foot/joint sensors (proprioception)&lt;/strong&gt;. When one inner ear fires a false spinning alarm while your eyes see a stationary room, this sensory clash drives involuntary eye jerks (&lt;em&gt;nystagmus&lt;/em&gt;) and activates the brainstem vomiting center.">
+          Otak mengawal keseimbangan menggunakan tiga sensor seretak: <strong>telinga dalam (vestibular)</strong>, <strong>mata (visual)</strong>, dan <strong>deria tapak kaki/sendi (propriosepsi)</strong>. Apabila sebelah telinga menghantar isyarat palsu kononnya kepala berpusing sedangkan mata melihat bilik sedang diam, percanggahan ini mencetuskan pergerakan mata luar kawal (<em>nystagmus</em>) dan mengaktifkan pusat muntah.
         </p>
       </div>
 
@@ -105,54 +383,65 @@
       <div class="two-col" style="margin-bottom: 22px;">
         <div class="panel-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-            <strong>👁️ Simulator Konflik 3 Sensor &amp; Pergerakan Nystagmus</strong>
+            <strong data-en="👁️ Live Eye Nystagmus &amp; Sensory Conflict Simulator">👁️ Simulator Visual Pergerakan Mata (Nystagmus) &amp; Konflik Sensor</strong>
             <span id="sensorNauseaBadge" class="pill-badge pill-danger">Refleks Loya: Tinggi</span>
           </div>
 
-          <div class="chip-group" role="group" aria-label="Pilih Keadaan Deria">
-            <button type="button" class="chip-btn active" data-sensor-preset="acuteVertigo">🌀 Vertigo Akut (BPPV/Neuritis)</button>
-            <button type="button" class="chip-btn" data-sensor-preset="centralStroke">🚨 Vertigo Sentral (Strok)</button>
-            <button type="button" class="chip-btn" data-sensor-preset="normal">✅ Pegun Normal</button>
-            <button type="button" class="chip-btn" data-sensor-preset="trueRotation">🎠 Pusing Sebenar</button>
-            <button type="button" class="chip-btn" data-sensor-preset="presyncope">⚡ Gelap Mata (Bukan Vertigo!)</button>
+          <div class="chip-group" role="group" aria-label="Select Sensory State">
+            <button type="button" class="chip-btn active" data-sensor-preset="acuteVertigo" data-en="🌀 Inner-Ear Vertigo (BPPV/Neuritis)">🌀 Vertigo Telinga (BPPV/Neuritis)</button>
+            <button type="button" class="chip-btn" data-sensor-preset="centralStroke" data-en="🚨 Central Stroke Vertigo">🚨 Vertigo Strok (Sentral)</button>
+            <button type="button" class="chip-btn" data-sensor-preset="normal" data-en="✅ Normal Stillness">✅ Pegun Normal</button>
+            <button type="button" class="chip-btn" data-sensor-preset="trueRotation" data-en="🎠 True Physical Spin">🎠 Pusing Sebenar</button>
+            <button type="button" class="chip-btn" data-sensor-preset="presyncope" data-en="⚡ Lightheaded / Faint (Not Vertigo!)">⚡ Gelap Mata (Bukan Vertigo!)</button>
           </div>
 
           <div class="canvas-frame">
             <canvas id="sensoryCanvas" width="560" height="280"></canvas>
           </div>
+
+          <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="btnVisualFixation" class="btn-secondary" style="font-size:0.8rem;">
+              🎯 Cuba Fokus Satu Titik Pegun (Pertolongan Pertama)
+            </button>
+            <span style="font-size:0.77rem; color:var(--text-muted);" data-en="Watch how focusing on one point calms inner-ear &lt;em&gt;nystagmus&lt;/em&gt;, but NOT central stroke!">
+              Lihat bagaimana fokus satu titik menenangkan <em>nystagmus</em> telinga dalam, tetapi TIDAK bagi strok!
+            </span>
+          </div>
         </div>
 
         <div class="panel-card">
-          <h3 style="margin-top:0; font-size:1.08rem;">📡 Telemetri Laporan 3 Sensor Ke Otak</h3>
+          <h3 style="margin-top:0; font-size:1.08rem;" data-en="📡 Real-Time 3-Sensor Feed to the Brain">📡 Laporan Masa Nyata 3 Sensor Ke Otak</h3>
           <div class="sensor-readouts">
             <div class="readout-tile">
-              <small>1. Telinga Dalam</small>
-              <strong id="sensorVestVal">KECEMASAN: Berputar 100 km/j!</strong>
+              <small data-en="1. Inner Ear">1. Telinga Dalam</small>
+              <strong id="sensorVestVal">KECEMASAN PALSU: Berputar Laju!</strong>
             </div>
             <div class="readout-tile">
-              <small>2. Visual (Mata)</small>
-              <strong id="sensorVisVal">Bilik Sedang Diam</strong>
+              <small data-en="2. Vision (Eyes)">2. Visual (Mata)</small>
+              <strong id="sensorVisVal">Bilik Sedang Pegun</strong>
             </div>
             <div class="readout-tile">
-              <small>3. Propriosepsi</small>
+              <small data-en="3. Feet / Joints">3. Tapak Kaki / Sendi</small>
               <strong id="sensorPropVal">Katil / Lantai Pegun</strong>
             </div>
           </div>
 
           <div style="margin: 14px 0;">
             <div class="mastery-bar-head">
-              <span>Tahap Percanggahan Isyarat Otak (Sensory Conflict)</span>
-              <strong id="conflictMeterPct">95%</strong>
+              <span data-en="Brain Sensory Conflict Level">Tahap Konflik Isyarat Di Otak</span>
+              <strong id="conflictMeterPct">92%</strong>
             </div>
             <div class="progress-track" style="height:10px;">
-              <div id="conflictMeterFill" class="progress-fill" style="width:95%;"></div>
+              <div id="conflictMeterFill" class="progress-fill" style="width:92%;"></div>
             </div>
           </div>
 
           <p id="sensorSummaryText" style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:14px;"></p>
 
           <div class="alert-banner alert-warn">
-            <strong>💡 Beza Penting:</strong> <em>Lightheadedness</em> (gelap mata semasa bangun berdiri akibat tekanan darah rendah) <strong>tiada</strong> ilusi berpusing dan <strong>tiada</strong> nystagmus vestibular!
+            <span data-en="&lt;strong&gt;💡 Crucial Patient Fact:&lt;/strong&gt; If you feel &lt;em&gt;dimming vision, lightheadedness, or near-fainting&lt;/em&gt; mainly when standing up (without the room spinning), the cause is usually &lt;strong&gt;orthostatic blood pressure drop, dehydration, or anemia&lt;/strong&gt;—not loose ear crystals!">
+              <strong>💡 Fakta Penting Untuk Pesakit:</strong> Jika anda rasa <em>gelap mata, kepala ringan, atau berpinar</em> hanya semasa bangun berdiri (tanpa bilik berpusing), puncanya lazimnya <strong>tekanan darah ortostatik, kurang air, atau kurang darah</strong>—bukan masalah kristal telinga!
+            </span>
           </div>
         </div>
       </div>
@@ -161,7 +450,7 @@
       <div class="two-col">
         <div class="panel-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
-            <strong>🔬 Makmal Interaktif Struktur Sistem Vestibular</strong>
+            <strong data-en="🔬 Inner-Ear Lab: How Loose Crystals Trigger BPPV">🔬 Visual Telinga Dalam: Bagaimana Kristal Tercabut Mencetuskan BPPV</strong>
             <button type="button" id="toggleBppvCrystalBtn" class="btn-secondary" style="font-size:0.78rem; padding:6px 12px;">
               🔬 Simulasikan Kristal Tanggal (BPPV)
             </button>
@@ -173,7 +462,7 @@
 
           <div style="margin-top:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <label for="headTiltSlider" style="font-size:0.84rem; font-weight:600;">
-              Condongkan Kepala (<span id="headTiltVal">0°</span>):
+              <span data-en="Adjust Head Tilt">Gerakkan Condong Kepala</span> (<span id="headTiltVal">0°</span>):
             </label>
             <input
               type="range"
@@ -187,30 +476,30 @@
         </div>
 
         <div class="panel-card">
-          <h3 style="margin-top:0; font-size:1.05rem;">Klik Struktur Kritikal Untuk Terokai Mekanisme:</h3>
+          <h3 style="margin-top:0; font-size:1.05rem;" data-en="Click the 4 Inner-Ear Structures to Explore Their Role:">Klik 4 Bahagian Telinga Dalam Untuk Fahami Fungsinya:</h3>
           <div class="anatomy-cards-list">
             <button type="button" class="anatomy-item-btn active" data-anatomy-id="utricle-saccule">
-              <strong>1. Utricle &amp; Saccule</strong>
-              <span>Kantung sensor graviti &amp; gerakan lurus (naik lif / kereta memecut)</span>
+              <strong data-en="1. Utricle &amp; Saccule (Gravity Sacs)">1. Utricle &amp; Saccule (Kantung Graviti)</strong>
+              <span data-en="Sense upright/tilted posture &amp; linear motion (elevators / accelerating cars)">Mengesan kedudukan tegak/condong &amp; gerakan lurus (naik lif / kereta memecut)</span>
             </button>
             <button type="button" class="anatomy-item-btn" data-anatomy-id="otoliths">
-              <strong>2. Otoliths &amp; Otolithic Membrane</strong>
-              <span>Hablur kalsium karbonat di atas gel yang melenturkan bulu deria (stereocilia)</span>
+              <strong data-en="2. Otolith Crystals &amp; Sensory Hair Cells (Stereocilia)">2. Hablur Otoliths &amp; Bulu Deria (Stereocilia)</strong>
+              <span data-en="Natural calcium crystals resting on a gel membrane that bend sensory hair bundles">Kristal kalsium semula jadi di atas lapisan gel yang membengkokkan sel rambut deria</span>
             </button>
             <button type="button" class="anatomy-item-btn" data-anatomy-id="semicircular-ducts">
-              <strong>3. Semicircular Ducts &amp; Ampulla</strong>
-              <span>Tiga saluran separuh bulat berisi cecair pengesan putaran 3 paksi</span>
+              <strong data-en="3. Three Semicircular Canals &amp; Ampulla">3. Tiga Saluran Separuh Bulat &amp; Ampulla</strong>
+              <span data-en="Fluid-filled loops detecting 3D head rotation across 3 axes">Tiub gelung berisi cecair yang mengesan putaran kepala pada 3 paksi berbeza</span>
             </button>
             <button type="button" class="anatomy-item-btn" data-anatomy-id="bppv-trigger">
-              <strong>4. Pencetus BPPV (Kristal Tersesat)</strong>
-              <span>Hablur tanggal dari utricle lalu mengocak cecair saluran seperti batu dalam tiub air</span>
+              <strong data-en="4. BPPV Mechanism (Stray Crystals in the Canal)">4. Mekanisme BPPV (Kristal Tersesat Masuk Tiub)</strong>
+              <span data-en="Crystals detach from the utricle and stir canal fluid whenever you lie down or roll over">Kristal tanggal dari utricle lalu mengocak air tiub setiap kali baring atau pusing di katil</span>
             </button>
           </div>
 
           <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:14px;">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
               <strong id="anatomyDetailTitle">Utricle &amp; Saccule</strong>
-              <span id="anatomyDetailBadge" class="pill-badge pill-info">Organ Otolith</span>
+              <span id="anatomyDetailBadge" class="pill-badge pill-info">Sensor Graviti</span>
             </div>
             <p id="anatomyDetailText" style="margin:0; font-size:0.88rem; color:var(--text-secondary);"></p>
           </div>
@@ -221,30 +510,32 @@
     <!-- ======== BAB 2 & 7A: MATRIKS PINTAR & ENJIN TRIAJ DIAGNOSTIK ======== -->
     <section id="sec-matriks" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 2 • Matriks Pintar &amp; Kecerdasan Diagnostik</div>
-        <h2>5 Punca Utama Vertigo: Dua Soalan Emas Penentu Diagnosis</h2>
-        <p>
-          Membezakan punca vertigo bergantung pada dua soalan emas: <strong>berapa lama satu episod pusing bertahan</strong> dan <strong>apa yang mencetuskannya</strong>. Klik mana-mana baris dalam jadual untuk membaca mutiara klinikal setiap diagnosis.
+        <div class="section-num" data-en="Chapter 2 • Comparison Matrix &amp; Smart Symptom Triage">Bab 2 • Matriks Perbandingan &amp; Semakan Simptom Pintar</div>
+        <h2 data-en="Pinpoint the Cause of Vertigo Using Two Golden Questions">Kenal Pasti Punca Pening Dengan Dua Soalan Emas</h2>
+        <p data-en="Neuro-otology specialists narrow down vertigo causes using two primary questions: &lt;strong&gt;how long a single spinning episode lasts&lt;/strong&gt; and &lt;strong&gt;what triggers it&lt;/strong&gt;. Click any diagnosis row below to inspect its audited clinical pearl.">
+          Pakar neuro-otologi membezakan punca vertigo melalui dua soalan utama: <strong>berapa lama satu serangan pusing bertahan</strong> dan <strong>apa pencetusnya</strong>. Klik mana-mana baris diagnosis di bawah untuk membaca fakta klinikalnya.
         </p>
       </div>
 
       <div class="panel-card" style="margin-bottom: 24px;">
         <div class="matrix-toolbar">
-          <div class="chip-group" style="margin-bottom:0;" role="group" aria-label="Tapis mengikut durasi">
-            <button type="button" class="chip-btn active" data-matrix-filter="all">Semua (5 Punca)</button>
-            <button type="button" class="chip-btn" data-matrix-filter="seconds">&lt; 1 Minit (BPPV)</button>
-            <button type="button" class="chip-btn" data-matrix-filter="hours">Minit – Jam (Meniere)</button>
-            <button type="button" class="chip-btn" data-matrix-filter="variable">5 Min – 72 Jam (Migrain)</button>
-            <button type="button" class="chip-btn" data-matrix-filter="days">Berhari-hari (Neuritis)</button>
-            <button type="button" class="chip-btn" data-matrix-filter="continuous">Berterusan Akut (Strok)</button>
+          <div class="chip-group" style="margin-bottom:0;" role="group" aria-label="Filter by duration">
+            <button type="button" class="chip-btn active" data-matrix-filter="all" data-en="All Causes (6)">Semua Punca (6)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="seconds" data-en="&lt; 1 Min (BPPV)">&lt; 1 Minit (BPPV)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="hours" data-en="20 Min – 12 Hr (Meniere)">20 Min – 12 Jam (Meniere)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="variable" data-en="5 Min – 72 Hr (Migraine)">5 Min – 72 Jam (Migrain)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="days" data-en="Days (Neuritis)">Berhari-hari (Neuritis)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="continuous" data-en="Acute Continuous (Stroke)">Akut Berterusan (Strok)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="other" data-en="PPPD / Orthostatic">PPPD / Ortostatik</button>
           </div>
 
           <input
             type="search"
             id="matrixSearchInput"
             class="search-input"
-            placeholder="🔍 Cari simptom, tinnitus, Epley, virus..."
-            aria-label="Cari dalam matriks vertigo"
+            placeholder="🔍 Cari simptom, pekak, silau, Epley..."
+            data-en-placeholder="🔍 Search symptom, deafness, glare, Epley..."
+            aria-label="Search vertigo matrix"
           />
         </div>
 
@@ -252,113 +543,117 @@
           <table class="matrix-table">
             <thead>
               <tr>
-                <th>Diagnosis</th>
-                <th>Durasi Serangan</th>
-                <th>Pencetus Utama</th>
-                <th>Simptom Telinga</th>
-                <th>Fokus Rawatan</th>
+                <th data-en="Diagnosis / Condition">Diagnosis / Keadaan</th>
+                <th data-en="Single Attack Duration">Tempoh Satu Serangan</th>
+                <th data-en="Primary Trigger">Pencetus Utama</th>
+                <th data-en="Ear / Associated Signs">Simptom Telinga / Iringan</th>
+                <th data-en="Targeted Treatment">Rawatan Tepat</th>
               </tr>
             </thead>
             <tbody id="causesMatrixBody"></tbody>
           </table>
         </div>
 
-        <div id="matrixActivePearl" class="alert-banner alert-safe" style="margin-top:14px;">
-          <strong>💡 Tip Interaktif:</strong> Klik mana-mana baris diagnosis di atas untuk melihat perincian klinikal (contohnya perbezaan <em>Vestibular Neuritis</em> vs <em>Labyrinthitis</em> serta amaran arteri AICA).
-        </div>
+        <div id="matrixActivePearl" class="alert-banner alert-safe" style="margin-top:14px;"></div>
       </div>
 
       <!-- Intelligent Symptom Filter / Triage Engine -->
       <div id="sec-triaj-pintar" class="two-col" style="scroll-margin-top:84px;">
         <div class="panel-card">
-          <div class="section-num">Enjin Sokongan Keputusan Pintar</div>
-          <h3 style="margin:4px 0 12px;">🧠 Penapis Simptom &amp; Kebarangkalian Punca Vertigo</h3>
+          <div class="section-num" data-en="Self-Check &amp; Clinical Decision Support">Alat Semakan Kendiri &amp; Sokongan Keputusan</div>
+          <h3 style="margin:4px 0 12px;" data-en="🧠 Smart Symptom Triage Filter">🧠 Penapis Simptom Pintar</h3>
           <form id="triageForm">
             <div class="form-group">
-              <label class="field-title" for="selSensation">1. Apakah sifat sebenar rasa pening yang dialami?</label>
+              <label class="field-title" for="selSensation" data-en="1. Which description best fits your dizziness?">1. Apakah jenis rasa pening yang paling tepat?</label>
               <select id="selSensation" name="sensation" class="form-select">
-                <option value="spinning" selected>Dunia / diri sendiri terasa berpusing-pusing (Vertigo sebenar)</option>
-                <option value="lightheaded">Sekadar gelap mata, melayang, atau rasa nak pitam semasa berdiri (Tiada pusingan)</option>
+                <option value="spinning" selected data-en="The room / my body feels like it is spinning (True Vertigo)">Dunia / diri terasa berpusing-pusing (Vertigo sebenar)</option>
+                <option value="lightheaded" data-en="Dimming vision, lightheadedness, or feeling faint when standing up">Sekadar gelap mata, kepala ringan, atau rasa nak pitam semasa bangun berdiri</option>
+                <option value="swayingChronic" data-en="Swaying / rocking floor almost daily (&gt;3 months), worse in busy places">Rasa terhuyung-hayang / lantai bergoyang hampir setiap hari (&gt;3 bulan), teruk di tempat sibuk</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="field-title" for="selDuration">2. Soalan Emas #1: Berapa lama SATU episod pusing bertahan?</label>
+              <label class="field-title" for="selDuration" data-en="2. Golden Question #1: How long does ONE spinning episode last?">2. Soalan Emas #1: Berapa lama SATU episod berpusing bertahan?</label>
               <select id="selDuration" name="duration" class="form-select">
-                <option value="under1m" selected>Kurang 1 minit (15–45 saat sahaja setiap kali gerak kepala)</option>
-                <option value="minsToHours">20 minit hingga 12 jam</option>
-                <option value="hoursToDays">Berhari-hari berterusan (atau 5 minit hingga 72 jam berulang)</option>
-                <option value="continuousAcute">Berterusan mendadak (baru bermula &amp; tidak berhenti langsung)</option>
+                <option value="under1m" selected data-en="Under 1 minute (15–45 seconds right after changing head position)">Kurang 1 minit (15–45 saat sahaja bila tukar posisi kepala)</option>
+                <option value="minsToHours" data-en="20 minutes to 12 hours">20 minit hingga 12 jam</option>
+                <option value="hoursToDays" data-en="Several days (or recurring episodes between 5 mins and 72 hours)">Berhari-hari (atau berulang antara 5 minit hingga 72 jam)</option>
+                <option value="continuousAcute" data-en="Sudden &amp; continuous (just started &amp; non-stop)">Berterusan mendadak (baru bermula &amp; tidak berhenti langsung)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="field-title" for="selTrigger">3. Soalan Emas #2: Apakah pencetus utama serangan?</label>
+              <label class="field-title" for="selTrigger" data-en="3. Golden Question #2: What is the primary trigger?">3. Soalan Emas #2: Apakah pencetus utamanya?</label>
               <select id="selTrigger" name="trigger" class="form-select">
-                <option value="positional" selected>Ubah posisi kepala (baring, mengiring di katil, mendongak)</option>
-                <option value="postViral">Spontan selepas demam / jangkitan virus saluran pernafasan</option>
-                <option value="spontaneous">Spontan berulang tanpa kaitan posisi kepala</option>
-                <option value="sleepStressLight">Kurang tidur, stres, keletihan, atau silau cahaya terang</option>
-                <option value="vascularRisk">Spontan pada penghidap darah tinggi / diabetes / kolesterol / merokok</option>
+                <option value="positional" selected data-en="Head position changes (lying down, rolling over in bed, looking up)">Ubah posisi kepala (baring, mengiring di katil, mendongak, membongkok)</option>
+                <option value="postViral" data-en="Spontaneous onset following a viral flu / cold">Spontan selepas demam / jangkitan virus saluran pernafasan</option>
+                <option value="spontaneous" data-en="Spontaneous recurring attacks unrelated to head movement">Spontan berulang tanpa kaitan posisi kepala</option>
+                <option value="sleepStressLight" data-en="Poor sleep, stress, skipped meals/dehydration, or bright light glare">Kurang tidur, stres, lapar/dehidrasi, atau silau cahaya terang</option>
+                <option value="vascularRisk" data-en="Sudden onset with hypertension / diabetes / heart disease / acute neck pain">Mendadak pada penghidap darah tinggi / diabetes / sakit jantung / sakit leher akut</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="field-title" for="selEar">4. Adakah disertai simptom telinga atau sensitiviti cahaya?</label>
+              <label class="field-title" for="selEar" data-en="4. Are there ear symptoms or light sensitivity?">4. Adakah terdapat simptom telinga atau kepekaan cahaya?</label>
               <select id="selEar" name="ear" class="form-select">
-                <option value="none" selected>Tiada simptom telinga (pendengaran normal, tiada desingan)</option>
-                <option value="meniereTriad">Tinnitus (berdesing) + kurang pendengaran + rasa telinga penuh</option>
-                <option value="suddenDeafness">Kurang pendengaran baharu sebelah telinga secara mendadak</option>
-                <option value="photophobia">Rasa silau cahaya (fotofobia) — dengan atau tanpa sakit kepala</option>
+                <option value="none" selected data-en="No hearing loss or ear ringing">Tiada masalah pendengaran atau desing telinga</option>
+                <option value="meniereTriad" data-en="Tinnitus (ringing) + muffled hearing + ear fullness (one-sided)">Tinnitus (berdesing) + kurang pendengaran + rasa telinga penuh (sebelah telinga)</option>
+                <option value="suddenDeafness" data-en="NEW sudden hearing loss / deafness in one ear">Pekak / kurang pendengaran baharu secara MENDADAK sebelah telinga</option>
+                <option value="photophobia" data-en="Light glare sensitivity (photophobia) / sound sensitivity — with or without headache">Rasa silau cahaya (fotofobia) / sensitif bunyi — dengan atau tanpa sakit kepala</option>
               </select>
             </div>
 
             <div class="form-group" style="margin-bottom:0;">
-              <label class="field-title" style="color:#f87171;">5. Saringan Kecemasan Tanda 5D &amp; Imbangan (Tandakan jika ada):</label>
+              <label class="field-title" style="color:#f87171;" data-en="5. Stroke Emergency Screen (5Ds &amp; Standing Balance):">5. Saringan Kecemasan Strok (Tanda 5D &amp; Keupayaan Berdiri):</label>
               <div class="redflag-grid">
-                <label class="check-tile"><input type="checkbox" data-red-flag="diplopia" /> <span><strong>Diplopia</strong> (Penglihatan berganda)</span></label>
-                <label class="check-tile"><input type="checkbox" data-red-flag="dysarthria" /> <span><strong>Dysarthria</strong> (Percakapan pelat)</span></label>
-                <label class="check-tile"><input type="checkbox" data-red-flag="dysphagia" /> <span><strong>Dysphagia</strong> (Sukar menelan)</span></label>
-                <label class="check-tile"><input type="checkbox" data-red-flag="dysmetria" /> <span><strong>Dysmetria</strong> (Tangan tersasar)</span></label>
-                <label class="check-tile"><input type="checkbox" data-red-flag="numbness" /> <span><strong>Kebas / Lemah</strong> sebelah muka/badan</span></label>
-                <label class="check-tile"><input type="checkbox" data-red-flag="ataxia" /> <span><strong>Gagal berdiri tegak</strong> tanpa dipapah</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="diplopia" /> <span data-en="&lt;strong&gt;Diplopia&lt;/strong&gt; (Double vision)"><strong>Diplopia</strong> (Nampak dua imej)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysarthria" /> <span data-en="&lt;strong&gt;Dysarthria&lt;/strong&gt; (Slurred speech)"><strong>Dysarthria</strong> (Cakap pelat/cadel)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysphagia" /> <span data-en="&lt;strong&gt;Dysphagia&lt;/strong&gt; (Trouble swallowing)"><strong>Dysphagia</strong> (Sukar menelan)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysmetria" /> <span data-en="&lt;strong&gt;Dysmetria&lt;/strong&gt; (Clumsy/inaccurate limbs)"><strong>Dysmetria</strong> (Tangan tersasar)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="numbness" /> <span data-en="&lt;strong&gt;Numbness / Weakness&lt;/strong&gt; on one side"><strong>Kebas / Lemah</strong> sebelah muka/badan</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="ataxia" /> <span data-en="&lt;strong&gt;Unable to stand&lt;/strong&gt; unassisted"><strong>Gagal berdiri tegak</strong> tanpa dipapah</span></label>
               </div>
             </div>
           </form>
         </div>
 
         <div class="panel-card">
-          <div class="section-num">Analisis Kebarangkalian Masa Nyata</div>
-          <h3 style="margin:4px 0 12px;">📊 Keputusan Penapisan &amp; Fokus Tindakan</h3>
+          <div class="section-num" data-en="Analysis Output &amp; Action Guide">Keputusan Analisis &amp; Panduan Tindakan</div>
+          <h3 style="margin:4px 0 12px;" data-en="📊 Estimated Clinical Pattern Match">📊 Anggaran Padanan Klinikal</h3>
           <div id="triageResultsOutput"></div>
-          <p style="font-size:0.75rem; color:var(--text-muted); margin:14px 0 0;">
-            *Penafian Edukatif: Alat pintar ini direka untuk tujuan pembelajaran klinikal dan kesedaran pesakit berasaskan garis panduan triaj vertigo; ia tidak menggantikan pemeriksaan fizikal doktor secara bersemuka.
+          <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-secondary" data-open-quickhelp="step4" style="font-size:0.8rem;" data-en="📋 Generate Summary Note to Show Your Doctor">
+              📋 Jana Nota Ringkas Untuk Ditunjukkan Kepada Doktor
+            </button>
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin:12px 0 0;" data-en="*Medical Disclaimer: This smart educational tool supports patient preparation and clinical literacy based on audited guidelines; it does not replace an in-person physician examination.">
+            *Penafian Perubatan: Alat pintar ini bertujuan membantu pendidikan kesihatan dan persediaan temu janji doktor mengikut garis panduan klinikal; ia tidak menggantikan diagnosis fizikal doktor secara bersemuka.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- ======== BAB 3: SARINGAN STROK PROTOKOL HINTS & TANDA 5D ======== -->
+    <!-- ======== BAB 3: SARINGAN STROK PROTOKOL HINTS PLUS & TANDA 5D ======== -->
     <section id="sec-hints" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 3 • Triaj Kecemasan Sentral (~15% Kes Akut)</div>
-        <h2>Saringan Strok: Protokol Fizikal HINTS &amp; Amaran 5D</h2>
-        <p>
-          Bagi serangan vertigo berterusan yang baru bermula (<em>Acute Vestibular Syndrome</em>), pemeriksaan fizikal <strong>HINTS</strong> terbukti <strong>lebih sensitif mengesan strok awal berbanding imbasan MRI dalam tempoh 24 jam pertama</strong>! Bandingkan tindak balas mata pesakit Strok Sentral berbanding Periferi secara langsung di bawah.
+        <div class="section-num" data-en="Chapter 3 • Life-Saving Triage: Brainstem &amp; Cerebellar Stroke Screening">Bab 3 • Keselamatan Nyawa: Saringan Strok Batang Otak &amp; Serebelum</div>
+        <h2 data-en="When Is Vertigo a Stroke? HINTS Plus Protocol &amp; the 5Ds">Bila Pening Itu Strok? Protokol HINTS Plus &amp; Amaran 5D</h2>
+        <p data-en="Roughly 15% of acute continuous vertigo cases stem from a brainstem or cerebellar stroke. Per the international &lt;strong&gt;GRACE-3 (2023)&lt;/strong&gt; guideline, a bedside &lt;strong&gt;HINTS Plus&lt;/strong&gt; exam performed by a trained clinician in &lt;em&gt;Acute Vestibular Syndrome&lt;/em&gt; (continuous vertigo + &lt;em&gt;nystagmus&lt;/em&gt;) is &lt;strong&gt;more sensitive (~99%) at catching early posterior stroke than an MRI within the first 24–48 hours&lt;/strong&gt;.">
+          Kira-kira 15% kes vertigo berterusan akut berpunca daripada strok pada batang otak atau serebelum. Mengikut garis panduan antarabangsa <strong>GRACE-3 (2023)</strong>, pemeriksaan fizikal <strong>HINTS Plus</strong> oleh doktor terlatih ke atas pesakit <em>Acute Vestibular Syndrome</em> (vertigo berterusan + <em>nystagmus</em>) adalah <strong>lebih sensitif (~99%) mengesan strok awal berbanding MRI dalam 24–48 jam pertama</strong>.
         </p>
       </div>
 
       <div class="two-col">
         <div class="panel-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-            <strong>🩺 Simulator Pemeriksaan Fizikal HINTS</strong>
-            <div class="segmented-toggle" role="group" aria-label="Pilih Kes Pesakit">
-              <button type="button" data-hints-case="central" class="active">🚨 Kes Sentral (Strok)</button>
-              <button type="button" data-hints-case="peripheral">✅ Kes Periferi (Neuritis)</button>
+            <strong data-en="🩺 HINTS Bedside Exam Simulator (Clinical Visual Lab)">🩺 Simulator Pemeriksaan HINTS (Untuk Kefahaman Klinikal)</strong>
+            <div class="segmented-toggle" role="group" aria-label="Select Patient Case">
+              <button type="button" data-hints-case="central" class="active" data-en="🚨 Central Stroke Case">🚨 Kes Strok Sentral</button>
+              <button type="button" data-hints-case="peripheral" data-en="✅ Peripheral Ear Case">✅ Kes Telinga Periferi</button>
             </div>
           </div>
 
-          <div class="chip-group" role="group" aria-label="Komponen Ujian HINTS">
+          <div class="chip-group" role="group" aria-label="HINTS Exam Components">
             <button type="button" class="chip-btn active" data-hints-step="hi">1. Head Impulse (HI)</button>
             <button type="button" class="chip-btn" data-hints-step="nystagmus">2. Nystagmus (N)</button>
             <button type="button" class="chip-btn" data-hints-step="skew">3. Test of Skew (TS)</button>
@@ -368,40 +663,45 @@
             <canvas id="hintsCanvas" width="560" height="265"></canvas>
           </div>
 
-          <!-- Interactive Sub-controls for each HINTS step -->
           <div id="hintsCtrlHi" style="display:flex; gap:10px; margin-top:12px; align-items:center; flex-wrap:wrap;">
-            <button type="button" id="btnTriggerHeadImpulse" class="btn-primary">
-              ⚡ Pusing Kepala Pesakit Dengan Pantas!
+            <button type="button" id="btnTriggerHeadImpulse" class="btn-primary" data-en="⚡ Test Fast Head Impulse!">
+              ⚡ Uji Pusing Kepala Pantas!
             </button>
-            <span style="font-size:0.8rem; color:var(--text-muted);">Perhatikan sama ada mata tersentak atau kekal terpaku sempurna.</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);" data-en="Observe the patient's eye reflex closely.">Perhatikan tindak balas bebola mata pesakit.</span>
           </div>
 
           <div id="hintsCtrlNys" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap;">
-            <button type="button" class="chip-btn" data-gaze-dir="-1">⬅️ Lirik Kiri</button>
-            <button type="button" class="chip-btn active" data-gaze-dir="0">⏺️ Pandang Tengah</button>
-            <button type="button" class="chip-btn" data-gaze-dir="1">➡️ Lirik Kanan</button>
-            <button type="button" class="chip-btn" data-gaze-dir="2">⬆️ Pandang Atas (Uji Vertical)</button>
+            <button type="button" class="chip-btn" data-gaze-dir="-1" data-en="⬅️ Gaze Left">⬅️ Lirik Kiri</button>
+            <button type="button" class="chip-btn active" data-gaze-dir="0" data-en="⏺️ Center Gaze">⏺️ Pandang Tengah</button>
+            <button type="button" class="chip-btn" data-gaze-dir="1" data-en="➡️ Gaze Right">➡️ Lirik Kanan</button>
+            <button type="button" class="chip-btn" data-gaze-dir="2" data-en="⬆️ Gaze Up (Vertical Check)">⬆️ Pandang Atas (Uji Vertical)</button>
           </div>
 
           <div id="hintsCtrlSkew" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap;">
-            <button type="button" class="chip-btn" data-skew-cover="left">🙈 Tutup Mata Kiri</button>
-            <button type="button" class="chip-btn" data-skew-cover="right">🙈 Tutup Mata Kanan</button>
-            <button type="button" class="chip-btn active" data-skew-cover="none">👀 Buka Kedua-dua Mata</button>
+            <button type="button" class="chip-btn" data-skew-cover="left" data-en="🙈 Cover Left Eye">🙈 Tutup Mata Kiri</button>
+            <button type="button" class="chip-btn" data-skew-cover="right" data-en="🙈 Cover Right Eye">🙈 Tutup Mata Kanan</button>
+            <button type="button" class="chip-btn active" data-skew-cover="none" data-en="👀 Uncover Both Eyes">👀 Buka Kedua-dua Mata</button>
           </div>
         </div>
 
         <div class="panel-card">
           <div id="hintsClinicalVerdict" class="alert-banner alert-critical" style="margin-bottom:12px;"></div>
-          <p id="hintsStepDetail" style="font-size:0.9rem; color:var(--text-secondary); margin:0 0 18px;"></p>
+          <p id="hintsStepDetail" style="font-size:0.9rem; color:var(--text-secondary); margin:0 0 14px;"></p>
 
-          <h4 style="margin:0 0 10px; font-size:0.95rem;">🚑 Senarai Semak Pantas Amaran 5D &amp; Imbangan:</h4>
+          <div class="alert-banner alert-warn" style="margin-bottom:14px;">
+            <span data-en="&lt;strong&gt;📌 Medical Audit Note (GRACE-3):&lt;/strong&gt; The HINTS exam applies ONLY when a patient has &lt;strong&gt;active continuous vertigo with spontaneous/gaze nystagmus&lt;/strong&gt; (&lt;em&gt;Acute Vestibular Syndrome&lt;/em&gt;). Healthy individuals or BPPV patients between brief attacks normally have an intact Head Impulse—that does NOT mean stroke!">
+              <strong>📌 Nota Ketepatan Perubatan (GRACE-3):</strong> Ujian HINTS hanya digunakan oleh doktor apabila pesakit sedang mengalami <strong>vertigo berterusan bersama nystagmus</strong> (<em>Acute Vestibular Syndrome</em>). Pada orang sihat atau penghidap BPPV yang sedang tidak berpusing, <em>Head Impulse</em> memang normal dan bukan bermaksud strok!
+            </span>
+          </div>
+
+          <h4 style="margin:0 0 10px; font-size:0.95rem;" data-en="🚑 Home Emergency Red-Flag Checklist (5Ds + Standing Balance):">🚑 Senarai Semak Kecemasan Di Rumah (Tanda 5D + Imbangan):</h4>
           <div class="redflag-grid" style="margin-bottom:12px;">
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Diplopia:</strong> Penglihatan berganda</span></label>
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysarthria:</strong> Percakapan pelat / cadel</span></label>
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysphagia:</strong> Sukar menelan air/makanan</span></label>
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysmetria:</strong> Tangan tersasar capai objek</span></label>
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Kebas Sebelah:</strong> Muka atau anggota badan</span></label>
-            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Ataksia Teruk:</strong> Gagal berdiri tegak tanpa dipapah</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span data-en="&lt;strong&gt;Diplopia:&lt;/strong&gt; Double vision"><strong>Diplopia:</strong> Penglihatan berganda</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span data-en="&lt;strong&gt;Dysarthria:&lt;/strong&gt; Slurred speech"><strong>Dysarthria:</strong> Percakapan pelat / cadel</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span data-en="&lt;strong&gt;Dysphagia:&lt;/strong&gt; Trouble swallowing"><strong>Dysphagia:</strong> Sukar menelan air/makanan</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span data-en="&lt;strong&gt;Dysmetria:&lt;/strong&gt; Clumsy limbs"><strong>Dysmetria:</strong> Tangan tersasar capai objek</span></label>
+            <label class="check-tile"><input type="checkbox" data-five-d class="five-d-check" /> <span data-en="&lt;strong&gt;Numbness / Sudden Deafness:&lt;/strong&gt; Facial/body numbness or sudden hearing loss"><strong>Kebas / Pekak Akut:</strong> Kebas muka/badan atau pekak tiba-tiba</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span data-en="&lt;strong&gt;Cannot Stand:&lt;/strong&gt; Falling without support"><strong>Gagal Berdiri:</strong> Jatuh tanpa dipapah</span></label>
           </div>
           <div id="fiveDStatusBox" class="alert-banner alert-safe"></div>
         </div>
@@ -411,29 +711,29 @@
     <!-- ======== BAB 4 & 7B: SIMULATOR FIZIKAL DIX-HALLPIKE & EPLEY ======== -->
     <section id="sec-epley" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 4 • Pelaksanaan Fizikal BPPV (Kadar Kejayaan 80%–90%)</div>
-        <h2>Simulator Ujian Dix-Hallpike &amp; 5 Langkah Epley Maneuver</h2>
-        <p>
-          Bagi kes BPPV kanal posterior (disahkan apabila ujian baring kepala tergantung <em>Dix-Hallpike</em> mencetuskan pusing singkat selepas sela masa <strong>2 hingga 10 saat</strong>), <strong>Epley Maneuver</strong> menggolekkan semula hablur <em>otoliths</em> keluar dari saluran separuh bulat kembali ke dalam <em>utricle</em>. Pilih telinga yang terjejas dan ikuti pemasa 30–60 saat!
+        <div class="section-num" data-en="Chapter 4 • Step-by-Step Visual BPPV Guide (80%–90% Success Rate)">Bab 4 • Panduan Visual Langkah-demi-Langkah BPPV (Kadar Jaya 80%–90%)</div>
+        <h2 data-en="Crystal Repositioning Physics &amp; 5-Step Epley Maneuver Simulator">Simulator Pergerakan Kristal &amp; 5 Langkah Epley Maneuver</h2>
+        <p data-en="For posterior canal BPPV (85%–90% of BPPV cases; spinning starts after a 2–10s delay upon lying back and resolves under 1 minute), the &lt;strong&gt;Epley Maneuver&lt;/strong&gt; uses gravity to guide stray calcium crystals out of the semicircular canal back into the &lt;em&gt;utricle&lt;/em&gt;. Choose the affected ear (the side that provokes stronger spinning when you lie or roll toward it):">
+          Bagi BPPV kanal posterior (85%–90% kes BPPV; pusing tercetus 2–10 saat selepas baring dan reda bawah 1 minit), <strong>Epley Maneuver</strong> memanfaatkan graviti untuk menggolekkan semula hablur kristal keluar dari saluran separuh bulat balik ke <em>utricle</em>. Pilih sebelah telinga yang bermasalah (telinga yang mencetuskan pusing lebih kuat apabila anda baring mengiring ke arahnya):
         </p>
       </div>
 
       <div class="two-col">
         <div class="panel-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-            <span id="epleyEarBadge" class="pill-badge pill-info">Telinga Kiri Terjejas (Urutan Playbook)</span>
-            <div class="segmented-toggle" role="group" aria-label="Pilih Telinga Terjejas">
-              <button type="button" data-epley-ear="left" class="active">👂 Telinga Kiri Sakit</button>
-              <button type="button" data-epley-ear="right">👂 Telinga Kanan Sakit</button>
+            <span id="epleyEarBadge" class="pill-badge pill-info">Telinga Kiri Terjejas</span>
+            <div class="segmented-toggle" role="group" aria-label="Select Affected Ear">
+              <button type="button" data-epley-ear="left" class="active" data-en="👂 Left Ear Affected">👂 Telinga Kiri Bermasalah</button>
+              <button type="button" data-epley-ear="right" data-en="👂 Right Ear Affected">👂 Telinga Kanan Bermasalah</button>
             </div>
           </div>
 
-          <div class="chip-group" role="group" aria-label="Langkah Epley Maneuver">
-            <button type="button" class="chip-btn active" data-epley-step="0">Langkah 1</button>
-            <button type="button" class="chip-btn" data-epley-step="1">Langkah 2</button>
-            <button type="button" class="chip-btn" data-epley-step="2">Langkah 3</button>
-            <button type="button" class="chip-btn" data-epley-step="3">Langkah 4</button>
-            <button type="button" class="chip-btn" data-epley-step="4">Langkah 5</button>
+          <div class="chip-group" role="group" aria-label="Epley Maneuver Steps">
+            <button type="button" class="chip-btn active" data-epley-step="0" data-en="Step 1">Langkah 1</button>
+            <button type="button" class="chip-btn" data-epley-step="1" data-en="Step 2">Langkah 2</button>
+            <button type="button" class="chip-btn" data-epley-step="2" data-en="Step 3">Langkah 3</button>
+            <button type="button" class="chip-btn" data-epley-step="3" data-en="Step 4">Langkah 4</button>
+            <button type="button" class="chip-btn" data-epley-step="4" data-en="Step 5">Langkah 5</button>
           </div>
 
           <div class="canvas-frame">
@@ -441,8 +741,8 @@
           </div>
 
           <div style="display:flex; justify-content:space-between; gap:10px; margin-top:12px;">
-            <button type="button" id="epleyPrevBtn" class="btn-secondary">⬅️ Langkah Sebelum</button>
-            <button type="button" id="epleyNextBtn" class="btn-primary">Langkah Seterusnya ➡️</button>
+            <button type="button" id="epleyPrevBtn" class="btn-secondary" data-en="⬅️ Previous Step">⬅️ Langkah Sebelum</button>
+            <button type="button" id="epleyNextBtn" class="btn-primary" data-en="Next Step ➡️">Langkah Seterusnya ➡️</button>
           </div>
         </div>
 
@@ -451,20 +751,28 @@
           <p id="epleyStepInstruction" style="font-size:0.93rem; color:var(--text-primary);"></p>
 
           <div style="background:var(--bg-surface); border-left:3px solid #38bdf8; padding:11px 14px; border-radius:0 8px 8px 0; margin:12px 0;">
-            <strong style="font-size:0.82rem; color:var(--accent-cyan); display:block;">⚙️ Apa Berlaku Di Dalam Telinga?</strong>
+            <strong style="font-size:0.82rem; color:var(--accent-cyan); display:block;" data-en="⚙️ What Happens Inside the Ear Canal?">⚙️ Apa Berlaku Pada Kristal Telinga?</strong>
             <span id="epleyStepMechanism" style="font-size:0.86rem; color:var(--text-secondary);"></span>
           </div>
 
           <div class="epley-timer-bar">
             <div>
-              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Pemasa Posisi (Sasaran 30–60s)</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;" data-en="Position Hold Timer (Hold 30–60 Seconds)">Pemasa Posisi (Kekalkan 30–60 Saat)</div>
               <div id="epleyTimerDisplay" class="timer-digits">00:15</div>
             </div>
             <button type="button" id="epleyTimerToggleBtn" class="btn-primary">⏱️ Mulakan Pemasa Langkah Ini</button>
           </div>
 
-          <div class="alert-banner alert-critical" style="margin-top:16px;">
-            <strong>⚠️ Kontraindikasi Wajib:</strong> Elakkan melakukan manuver ini sendiri tanpa pengawasan doktor jika terdapat <strong>kecederaan tulang leher servikal yang teruk</strong>, <strong>penyempitan arteri karotid yang kritikal</strong>, atau masalah <strong>lekangan retina mata</strong>.
+          <div class="alert-banner alert-warn" style="margin-top:12px;">
+            <span data-en="&lt;strong&gt;ℹ️ Horizontal Canal Note:&lt;/strong&gt; About 10%–15% of BPPV affects the &lt;em&gt;horizontal (lateral) canal&lt;/em&gt;, which requires the &lt;strong&gt;BBQ Roll / Gufoni&lt;/strong&gt; maneuver instead. Have a clinician/physiotherapist confirm the affected ear and canal first!">
+              <strong>ℹ️ Nota Kanal Mendatar:</strong> Sekitar 10%–15% BPPV melibatkan <em>kanal mendatar (horizontal canal)</em> yang memerlukan manuver <strong>BBQ Roll / Gufoni</strong>. Sebaiknya sahkan kanal dan sisi telinga bersama doktor/fisioterapi buat kali pertama!
+            </span>
+          </div>
+
+          <div class="alert-banner alert-critical" style="margin-top:10px;">
+            <span data-en="&lt;strong&gt;⚠️ Safety Contraindications:&lt;/strong&gt; Do NOT perform neck-extension maneuvers unsupervised if you have &lt;strong&gt;severe cervical spine instability&lt;/strong&gt;, &lt;strong&gt;critical carotid/vertebral artery stenosis&lt;/strong&gt;, unstable back injury, or &lt;strong&gt;recent retinal detachment&lt;/strong&gt;.">
+              <strong>⚠️ Kontraindikasi Keselamatan:</strong> Jangan lakukan manuver ini sendiri tanpa pengawasan doktor jika mempunyai <strong>kecederaan tulang leher servikal teruk</strong>, <strong>penyempitan arteri karotid kritikal</strong>, penyakit belakang yang tidak stabil, atau <strong>lekangan retina mata</strong>.
+            </span>
           </div>
         </div>
       </div>
@@ -473,22 +781,21 @@
     <!-- ======== BAB 5: KESILAPAN LAZIM, VRT & KAWALAN GAYA HIDUP ======== -->
     <section id="sec-pemulihan" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 5 • Kesilapan Lazim &amp; Strategi Pemulihan Gaya Hidup</div>
-        <h2>Elak Perangkap Ubat Tahan Pening, Latih Semula Otak (VRT) &amp; Kawal Garam</h2>
-        <p>
-          Ubat penindas vestibular (<em>prochlorperazine, cinnarizine, dimenhydrinate</em>) hanya wajar diambil dalam fasa muntah akut <strong>kurang daripada 72 jam</strong>. Pengambilan berpanjangan menghalang otak membina pampasan semula jadi (<em>central compensation</em>).
+        <div class="section-num" data-en="Chapter 5 • True Recovery: Medication Safety, VRT Rehab &amp; Nutrition">Bab 5 • Pemulihan Sebenar: Ubat, Senaman VRT &amp; Pemakanan</div>
+        <h2 data-en="Why Anti-Vertigo Pills Are Only for ≤ 72 Hours &amp; How to Retrain Your Brain">Kenapa Pil Tahan Pening Hanya Untuk ≤ 72 Jam &amp; Bagaimana Melatih Semula Otak</h2>
+        <p data-en="Vestibular suppressants (&lt;em&gt;prochlorperazine / Stemetil, cinnarizine, dimenhydrinate, meclizine&lt;/em&gt;) relieve severe acute vomiting but &lt;strong&gt;should NOT be taken continuously for weeks or months&lt;/strong&gt;. Prolonged sedation blocks the brain's natural recalibration (&lt;em&gt;central compensation&lt;/em&gt;), and long-term cinnarizine/prochlorperazine in older adults raises fall risk and &lt;strong&gt;tremors (drug-induced parkinsonism)&lt;/strong&gt;!">
+          Ubat penindas vestibular (<em>prochlorperazine / Stemetil, cinnarizine, dimenhydrinate, betahistine/meclizine</em> mengikut indikasi) bagi serangan muntah akut <strong>tidak patut diambil berterusan berbulan-bulan</strong>. Penindas saraf menghalang otak membina pampasan semula jadi (<em>central compensation</em>), malah cinnarizine/prochlorperazine jangka panjang pada warga emas meningkatkan risiko jatuh dan <strong>tangan menggigil (parkinsonisme cetusan ubat)</strong>!
         </p>
       </div>
 
       <div class="two-col" style="margin-bottom:22px;">
-        <!-- Compensation Curve -->
         <div class="panel-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-            <strong>📈 Lengkung Pemulihan Otak (Central Compensation)</strong>
+            <strong data-en="📈 Brain Balance Compensation Curve">📈 Perbandingan Pemulihan Keseimbangan Otak</strong>
             <div class="chip-group" style="margin-bottom:0;">
-              <button type="button" class="chip-btn active" data-comp-mode="compare">Bandingkan</button>
-              <button type="button" class="chip-btn" data-comp-mode="optimal">Henti &lt;72j + VRT</button>
-              <button type="button" class="chip-btn" data-comp-mode="trap">Bergantung Pil</button>
+              <button type="button" class="chip-btn active" data-comp-mode="compare" data-en="Compare Both">Bandingkan</button>
+              <button type="button" class="chip-btn" data-comp-mode="optimal" data-en="Stop Pills ≤72h + VRT">Henti Pil ≤72j + VRT</button>
+              <button type="button" class="chip-btn" data-comp-mode="trap" data-en="Pills for Months">Makan Pil Berbulan</button>
             </div>
           </div>
 
@@ -496,16 +803,16 @@
             <canvas id="compensationCanvas" width="520" height="230"></canvas>
           </div>
 
-          <p style="font-size:0.85rem; color:var(--text-secondary); margin:12px 0 0;">
-            Bagi kes pasca-neuritis atau pening baki yang berlarutan, menghentikan ubat penindas selepas 72 jam dan memulakan senaman <strong>Cawthorne-Cooksey / Gaze Stabilization (VRT)</strong> membolehkan otak menentukur semula keseimbangan.
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin:12px 0 0;" data-en="Once the acute vomiting phase (first 2–3 days) subsides, structured eye and head movements (&lt;strong&gt;Vestibular Rehabilitation Therapy / VRT&lt;/strong&gt;) drive cerebellar neuroplasticity to restore steady balance.">
+            Selepas fasa muntah akut (2–3 hari pertama) berlalu, pergerakan mata dan kepala terancang (<strong>Latihan Rehabilitasi Vestibular / VRT</strong>) merangsang neuroplastisiti serebelum untuk menentukur semula keseimbangan.
           </p>
         </div>
 
         <!-- Interactive VRT Gaze Stabilization Trainer -->
         <div class="panel-card">
-          <strong>🎯 Jurulatih Interaktif VRT: Gaze Stabilization (VOR x1)</strong>
-          <p style="font-size:0.85rem; color:var(--text-secondary); margin:6px 0 10px;">
-            Duduk selesa. Renung tepat pada huruf <strong>X</strong> di bawah sambil menggerakkan kepala kecil ke kiri dan kanan (~20°) mengikut rentak tanpa membiarkan huruf X menjadi kabur.
+          <strong data-en="🎯 Interactive VRT Trainer: Gaze Stabilization (VOR x1)">🎯 Alat Latihan VRT Interaktif: Gaze Stabilization (VOR x1)</strong>
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin:6px 0 10px;" data-en="&lt;em&gt;(For post-neuritis residual dizziness / chronic imbalance cleared by a doctor)&lt;/em&gt;: Sit safely in a sturdy chair. Keep your eyes locked sharply on the letter &lt;strong&gt;X&lt;/strong&gt; while turning your head slightly left-right (~20°) to the beat. Slow down if the X blurs.">
+            <em>(Untuk pening baki pasca-neuritis / ketidakseimbangan kronik selepas disahkan doktor)</em>: Duduk di kerusi stabil. Fokus mata tepat pada huruf <strong>X</strong> sambil pusing kepala kecil kiri-kanan (~20°) mengikut bunyi rentak. Jika huruf X mula kabur atau terlalu pening, perlahankan rentak.
           </p>
 
           <div class="vrt-arena">
@@ -514,13 +821,13 @@
               Renung huruf 'X' &amp; sedia gerakkan kepala kecil kiri-kanan
             </div>
             <div style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">
-              Baki Sesi: <strong id="vrtSessionTimer" style="color:#38bdf8;">30s</strong>
+              <span data-en="Session Remaining:">Baki Sesi:</span> <strong id="vrtSessionTimer" style="color:#38bdf8;">30s</strong>
             </div>
           </div>
 
           <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
             <label for="vrtBpmSlider" style="font-size:0.82rem; font-weight:600;">
-              Kelajuan Rentak (<span id="vrtBpmVal">80 rentak/min</span>):
+              <span data-en="Metronome Tempo">Kelajuan Rentak</span> (<span id="vrtBpmVal">80 rentak/min</span>):
             </label>
             <input type="range" id="vrtBpmSlider" min="50" max="130" value="80" style="flex:1; accent-color:#38bdf8;" />
           </div>
@@ -534,15 +841,15 @@
       <!-- Meniere Sodium Calculator & Migraine Checklist -->
       <div class="two-col">
         <div class="panel-card">
-          <h3 style="margin-top:0; font-size:1.05rem;">🧂 Kalkulator Natrium Harian Penyakit Meniere (&lt;1,500–2,000 mg)</h3>
-          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 10px;">
-            Pesakit Penyakit Meniere perlu mengehadkan pengambilan natrium bawah <strong>1,500 hingga 2,000 mg sehari</strong> serta mengurangkan kafein. Tandakan makanan harian untuk menyemak jumlah garam:
+          <h3 style="margin-top:0; font-size:1.05rem;" data-en="🧂 Meniere's Daily Sodium Calculator (&lt;1,500–2,000 mg)">🧂 Kalkulator Garam Harian Penyakit Meniere (&lt;1,500–2,000 mg)</h3>
+          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 10px;" data-en="For &lt;strong&gt;Meniere's Disease&lt;/strong&gt;, keeping daily sodium evenly below &lt;strong&gt;1,500–2,000 mg&lt;/strong&gt; helps stabilize inner-ear &lt;em&gt;endolymph&lt;/em&gt; fluid pressure. Check common meal sodium estimates below:">
+            Bagi penghidap <strong>Penyakit Meniere</strong>, mengehadkan natrium bawah <strong>1,500–2,000 mg sehari secara sekata</strong> membantu mengurangkan tekanan cecair <em>endolymph</em>. Semak anggaran garam makanan harian anda:
           </p>
 
           <div id="sodiumFoodList" class="food-grid"></div>
 
           <div class="mastery-bar-head" style="margin-top:10px;">
-            <span>Anggaran Natrium Hari Ini:</span>
+            <span data-en="Estimated Sodium Today:">Jumlah Anggaran Natrium Hari Ini:</span>
             <strong id="sodiumTotalVal">1,110 mg / 2,000 mg</strong>
           </div>
           <div class="progress-track" style="height:10px; margin-bottom:8px;">
@@ -552,15 +859,15 @@
         </div>
 
         <div class="panel-card">
-          <h3 style="margin-top:0; font-size:1.05rem;">🌙 Pelan Stabiliti Penghidap Vestibular Migraine</h3>
-          <p style="font-size:0.85rem; color:var(--text-secondary);">
-            Otak penghidap Vestibular Migraine sangat peka terhadap perubahan fisiologi mendadak. Tandakan tabiat pelindung harian anda:
+          <h3 style="margin-top:0; font-size:1.05rem;" data-en="🌙 Protective Checklist: Vestibular Migraine &amp; Recurrent BPPV">🌙 Senarai Semak Pelindung Vestibular Migraine &amp; BPPV Berulang</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);" data-en="Evidence-based daily habits proven to lower recurrent vertigo episodes:">
+            Amalan harian berasaskan bukti untuk mengurangkan kekerapan serangan berulang:
           </p>
           <div style="display:grid; gap:9px;">
-            <label class="check-tile"><input type="checkbox" checked /> <span><strong>Jadual Tidur Tetap:</strong> Tidur &amp; bangun pada waktu sama setiap hari (7–8 jam)</span></label>
-            <label class="check-tile"><input type="checkbox" checked /> <span><strong>Hidrasi Sekata:</strong> Minum air kosong mencukupi sepanjang hari; elak berlapar lama</span></label>
-            <label class="check-tile"><input type="checkbox" /> <span><strong>Kawal Kafein &amp; Pencetus:</strong> Hadkan kopi pekat, keju peram, MSG berlebihan</span></label>
-            <label class="check-tile"><input type="checkbox" /> <span><strong>Urus Silau Skrin &amp; Stres:</strong> Gunakan saringan cahaya selesa &amp; rehat mata berkala</span></label>
+            <label class="check-tile"><input type="checkbox" checked /> <span data-en="&lt;strong&gt;Consistent Sleep (7–8 Hours):&lt;/strong&gt; Avoid late nights or irregular sleep shifts (a top Vestibular Migraine trigger)"><strong>Tidur Teratur (7–8 Jam):</strong> Elakkan berjaga lewat atau jadual tidur berubah mendadak (pencetus utama migrain vestibular)</span></label>
+            <label class="check-tile"><input type="checkbox" checked /> <span data-en="&lt;strong&gt;Hydration &amp; Timely Meals:&lt;/strong&gt; Sip plain water steadily throughout the day &amp; avoid skipping meals"><strong>Hidrasi &amp; Jangan Berlapar:</strong> Minum air kosong sekata sepanjang hari &amp; makan ikut waktu</span></label>
+            <label class="check-tile"><input type="checkbox" /> <span data-en="&lt;strong&gt;Check Vitamin D &amp; Calcium (Recurrent BPPV):&lt;/strong&gt; Clinical trials confirm correcting Vitamin D deficiency significantly cuts BPPV recurrence!"><strong>Semak Aras Vitamin D &amp; Kalsium (BPPV Berulang):</strong> Kajian klinikal membuktikan pembetulan kekurangan Vitamin D mengurangkan kadar ulangan BPPV!</span></label>
+            <label class="check-tile"><input type="checkbox" /> <span data-en="&lt;strong&gt;2-Stage Standing (Older Adults):&lt;/strong&gt; Sit on the bed edge for 30 seconds before standing to prevent orthostatic drops &amp; falls"><strong>Bangun 2 Peringkat (Warga Emas):</strong> Duduk di tepi katil 30 saat sebelum berdiri bagi mengelakkan gelap mata ortostatik &amp; risiko jatuh</span></label>
           </div>
         </div>
       </div>
@@ -569,10 +876,10 @@
     <!-- ======== BAB 6: SUDUT KOMUNIKASI EDUKATIF (3 ANALOGI VISUAL) ======== -->
     <section id="sec-analogi" class="section-block">
       <div class="section-head">
-        <div class="section-num">Bab 6 • Sudut Komunikasi Edukatif &amp; Skrip Video Kesedaran</div>
-        <h2>3 Analogi Visual Mudah Hadam (Faham Dalam Beberapa Saat)</h2>
-        <p>
-          Gunakan tiga analogi ini untuk penerangan pesakit di klinik atau skrip video kesedaran kesihatan. Klik <strong>Salin Skrip Komunikasi</strong> untuk menyalin dialog penuh!
+        <div class="section-num" data-en="Chapter 6 • Plain-Language Communication Corner (For Patients, Families &amp; Educators)">Bab 6 • Sudut Komunikasi Mudah Faham (Untuk Pesakit, Keluarga &amp; Edukator)</div>
+        <h2 data-en="3 Visual Analogies Anyone Can Grasp in Seconds">3 Analogi Visual Supaya Faham Dalam Beberapa Saat</h2>
+        <p data-en="Ideal for reassuring anxious parents or family members, counseling patients in clinic, or scripting health-awareness videos.">
+          Sesuai untuk dikongsi bersama ibu bapa, ahli keluarga yang cemas, penerangan pesakit di klinik, atau skrip video kesedaran kesihatan.
         </p>
       </div>
 
@@ -583,15 +890,15 @@
     <section id="sec-kuiz" class="section-block">
       <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap;">
         <div>
-          <div class="section-num">Bab 7 • Uji Ketajaman Keputusan Klinikal</div>
-          <h2>Kuiz Klinikal Interaktif: 5 Senario Triaj &amp; Pengurusan Vertigo</h2>
-          <p>Uji kefahaman anda membezakan BPPV, Strok Posterior (HINTS), Vestibular Neuritis, Vestibular Migraine, dan Presyncope.</p>
+          <div class="section-num" data-en="Chapter 7 • Test Your Understanding &amp; Clinical Acumen">Bab 7 • Uji Kefahaman &amp; Ketajaman Keputusan</div>
+          <h2 data-en="Interactive Quiz: 5 Real-World Dizziness &amp; Vertigo Scenarios">Kuiz Interaktif: 5 Situasi Sebenar Pesakit Pening &amp; Vertigo</h2>
+          <p data-en="Test your ability to tell apart BPPV, Posterior Stroke (HINTS Plus), Vestibular Neuritis, Vestibular Migraine, and Orthostatic Lightheadedness.">Uji kemahiran anda membezakan BPPV, Strok Posterior (HINTS Plus), Vestibular Neuritis, Vestibular Migraine, dan Gelap Mata Ortostatik.</p>
         </div>
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
           <span id="quizScoreDisplay" class="pill-badge pill-info" style="font-size:0.85rem; padding:7px 14px;">
             Skor Ketajaman Klinikal: 0 / 5
           </span>
-          <button type="button" id="quizResetBtn" class="btn-secondary">🔄 Cuba Semula Kuiz</button>
+          <button type="button" id="quizResetBtn" class="btn-secondary" data-en="🔄 Reset Quiz">🔄 Cuba Semula Kuiz</button>
         </div>
       </div>
 
@@ -599,9 +906,10 @@
     </section>
 
     <footer class="footer">
-      <p>
-        <strong>VertigoLab — Playbook Pintar, Interaktif &amp; Edukatif Sistem Keseimbangan</strong><br />
-        Dibangunkan untuk pendidikan kesihatan pesakit, latihan komunikasi klinikal, dan kesedaran triaj kecemasan vertigo. Jika mengalami vertigo akut bersama tanda 5D atau kegagalan berdiri, dapatkan rawatan kecemasan hospital dengan segera.
+      <p data-en="&lt;strong&gt;VertigoLab — Smart, Visual &amp; Medically Audited Vertigo Patient Guide&lt;/strong&gt;&lt;br /&gt;Clinical Evidence References: &lt;em&gt;Bárány Society International Classification of Vestibular Disorders (ICVD)&lt;/em&gt;, &lt;em&gt;AAO-HNS Clinical Practice Guideline: BPPV&lt;/em&gt;, and &lt;em&gt;GRACE-3 Clinical Practice Guideline for Acute Dizziness and Vertigo in the Emergency Department (2023)&lt;/em&gt;.&lt;br /&gt;This application is for health education and patient visit preparation—always consult a qualified physician, or call &lt;strong&gt;999 / 911&lt;/strong&gt; immediately if any red-flag emergency signs occur.">
+        <strong>VertigoLab — Aplikasi Pintar, Visual &amp; Bantuan Pesakit Vertigo</strong><br />
+        Rujukan Fakta Perubatan: <em>Bárány Society International Classification of Vestibular Disorders (ICVD)</em>, <em>AAO-HNS Clinical Practice Guideline: BPPV</em>, dan <em>GRACE-3 Clinical Practice Guideline for Acute Dizziness and Vertigo in the Emergency Department (2023)</em>.<br />
+        Maklumat ini bertujuan pendidikan kesihatan dan persediaan pesakit—sila dapatkan pemeriksaan doktor bertauliah, atau hubungi <strong>999</strong> serta-merta jika terdapat sebarang tanda bahaya kecemasan.
       </p>
     </footer>
   </main>
