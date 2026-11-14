@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VertigoLab — Playbook Pintar, Interaktif & Makmal Klinikal Vertigo</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="mode-clinical">
+  <!-- ======================= STICKY TOP NAVIGATION ======================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#top" class="brand">
+        <div class="brand-mark" aria-hidden="true">🌀</div>
+        <div>
+          <span class="brand-title">VertigoLab</span>
+          <span class="brand-sub">Playbook Pintar • Makmal Klinikal & Edukatif</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Navigasi Utama">
+        <a href="#sec-anatomi">1. Anatomi & Sensor</a>
+        <a href="#sec-matriks">2. Matriks & Triaj Pintar</a>
+        <a href="#sec-hints" class="nav-emergency">3. Saringan Strok (HINTS & 5D)</a>
+        <a href="#sec-epley">4. Simulator Epley</a>
+        <a href="#sec-pemulihan">5. Pemulihan & VRT</a>
+        <a href="#sec-analogi">6. 3 Analogi</a>
+        <a href="#sec-kuiz">7. Kuiz Klinikal</a>
+      </nav>
+
+      <div class="top-actions">
+        <div class="segmented-toggle" role="group" aria-label="Mod Penerangan">
+          <button type="button" data-audience-mode="clinical" class="active">🩺 Mod Klinikal</button>
+          <button type="button" data-audience-mode="layman">🗣️ Mod Mudah Hadam</button>
+        </div>
+        <button type="button" id="themeToggleBtn" class="btn-secondary" style="padding:6px 11px; font-size:0.76rem;">
+          ☀️ Mod Cerah
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <!-- ========================== HERO SECTION ========================== -->
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">🧠 Intelligence • Interactive • Educative Playbook</div>
+        <h1>Memahami &amp; Menangani Vertigo Secara Tepat, Bukan Sekadar Telan Pil</h1>
+        <p class="hero-lead clinical-only">
+          <strong>[Mod Klinikal]</strong> Vertigo ialah ilusi pergerakan akibat ketidakseimbangan tonus isyarat antara labirin vestibular periferi (80%–85% kes; separuh daripadanya BPPV) atau laluan vestibulo-serebelar sentral (~15% kes akut). Fokus pengurusan moden: bezakan <em>true vertigo</em> daripada <em>presyncope</em>, saring <em>Acute Vestibular Syndrome</em> dengan protokol <strong>HINTS</strong> (lebih sensitif daripada MRI awal &lt;24 jam), rawat BPPV secara mekanikal dengan <strong>Epley Maneuver</strong>, dan hadkan penindas vestibular bawah 72 jam agar tidak merencat <em>central compensation</em>.
+        </p>
+        <p class="hero-lead layman-only">
+          <strong>[Mod Mudah Hadam]</strong> Vertigo bukanlah satu penyakit tunggal, sebaliknya rasa diri atau bilik berpusing akibat gangguan sensor keseimbangan di telinga dalam atau otak. Jangan samakan semua rasa "gelap mata" semasa bangun berdiri dengan vertigo! Dan ingat: jika puncanya kristal telinga tercabut (BPPV), makan pil tahan pening berbulan-bulan langsung tidak boleh "mencairkan" kristal itu—ia perlu digolek semula ke tempat asal.
+        </p>
+        <div class="hero-cta-row">
+          <a href="#sec-triaj-pintar" class="btn-primary">🩺 Mula Triaj Simptom Pintar</a>
+          <a href="#sec-epley" class="btn-secondary">🔄 Cuba Simulator Epley Maneuver</a>
+          <a href="#sec-hints" class="btn-secondary">🚨 Saringan Strok HINTS &amp; 5D</a>
+        </div>
+      </div>
+
+      <div class="hero-stats-card">
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-num">80%–85%</div>
+            <div class="stat-label">Berpunca dari telinga dalam (periferi), BPPV hampir separuh kes</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">~15%</div>
+            <div class="stat-label">Vertigo akut berpunca dari sentral (strok batang otak / serebelum)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">80%–90%</div>
+            <div class="stat-label">Kadar kejayaan Epley Maneuver bagi BPPV kanal posterior</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">&lt; 72 Jam</div>
+            <div class="stat-label">Had maksimum wajar ubat penindas vestibular dalam fasa muntah akut</div>
+          </div>
+        </div>
+
+        <div class="mastery-bar-wrap">
+          <div class="mastery-bar-head">
+            <span>Kemajuan Eksplorasi Makmal Playbook</span>
+            <span id="masteryProgressPct">14%</span>
+          </div>
+          <div class="progress-track">
+            <div id="masteryProgressFill" class="progress-fill" style="width: 14%;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BAB 1: ANATOMI & SIMULATOR KONFLIK 3 SENSOR ============ -->
+    <section id="sec-anatomi" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 1 • Anatomi &amp; Mekanisme Biologi</div>
+        <h2>Kenapa Dunia Rasa Berpusing &amp; Mencetuskan Muntah?</h2>
+        <p>
+          Keseimbangan manusia dikawal oleh gabungan tiga sensor masa nyata: <strong>sistem vestibular</strong> (telinga dalam), <strong>visual</strong> (mata), dan <strong>propriosepsi</strong> (deria kedudukan sendi &amp; otot). Uji simulasi di bawah untuk melihat bagaimana konflik isyarat memaksa bebola mata bergerak luar kawal (<em>nystagmus</em>) dan mengaktifkan pusat muntah batang otak.
+        </p>
+      </div>
+
+      <!-- Sub-lab 1A: 3-Sensor Conflict & Nystagmus -->
+      <div class="two-col" style="margin-bottom: 22px;">
+        <div class="panel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+            <strong>👁️ Simulator Konflik 3 Sensor &amp; Pergerakan Nystagmus</strong>
+            <span id="sensorNauseaBadge" class="pill-badge pill-danger">Refleks Loya: Tinggi</span>
+          </div>
+
+          <div class="chip-group" role="group" aria-label="Pilih Keadaan Deria">
+            <button type="button" class="chip-btn active" data-sensor-preset="acuteVertigo">🌀 Vertigo Akut (BPPV/Neuritis)</button>
+            <button type="button" class="chip-btn" data-sensor-preset="centralStroke">🚨 Vertigo Sentral (Strok)</button>
+            <button type="button" class="chip-btn" data-sensor-preset="normal">✅ Pegun Normal</button>
+            <button type="button" class="chip-btn" data-sensor-preset="trueRotation">🎠 Pusing Sebenar</button>
+            <button type="button" class="chip-btn" data-sensor-preset="presyncope">⚡ Gelap Mata (Bukan Vertigo!)</button>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="sensoryCanvas" width="560" height="280"></canvas>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h3 style="margin-top:0; font-size:1.08rem;">📡 Telemetri Laporan 3 Sensor Ke Otak</h3>
+          <div class="sensor-readouts">
+            <div class="readout-tile">
+              <small>1. Telinga Dalam</small>
+              <strong id="sensorVestVal">KECEMASAN: Berputar 100 km/j!</strong>
+            </div>
+            <div class="readout-tile">
+              <small>2. Visual (Mata)</small>
+              <strong id="sensorVisVal">Bilik Sedang Diam</strong>
+            </div>
+            <div class="readout-tile">
+              <small>3. Propriosepsi</small>
+              <strong id="sensorPropVal">Katil / Lantai Pegun</strong>
+            </div>
+          </div>
+
+          <div style="margin: 14px 0;">
+            <div class="mastery-bar-head">
+              <span>Tahap Percanggahan Isyarat Otak (Sensory Conflict)</span>
+              <strong id="conflictMeterPct">95%</strong>
+            </div>
+            <div class="progress-track" style="height:10px;">
+              <div id="conflictMeterFill" class="progress-fill" style="width:95%;"></div>
+            </div>
+          </div>
+
+          <p id="sensorSummaryText" style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:14px;"></p>
+
+          <div class="alert-banner alert-warn">
+            <strong>💡 Beza Penting:</strong> <em>Lightheadedness</em> (gelap mata semasa bangun berdiri akibat tekanan darah rendah) <strong>tiada</strong> ilusi berpusing dan <strong>tiada</strong> nystagmus vestibular!
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-lab 1B: Inner Ear Microscopic & Macroscopic Interactive Lab -->
+      <div class="two-col">
+        <div class="panel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+            <strong>🔬 Makmal Interaktif Struktur Sistem Vestibular</strong>
+            <button type="button" id="toggleBppvCrystalBtn" class="btn-secondary" style="font-size:0.78rem; padding:6px 12px;">
+              🔬 Simulasikan Kristal Tanggal (BPPV)
+            </button>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="anatomyCanvas" width="560" height="330"></canvas>
+          </div>
+
+          <div style="margin-top:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label for="headTiltSlider" style="font-size:0.84rem; font-weight:600;">
+              Condongkan Kepala (<span id="headTiltVal">0°</span>):
+            </label>
+            <input
+              type="range"
+              id="headTiltSlider"
+              min="-55"
+              max="55"
+              value="0"
+              style="flex:1; accent-color:#38bdf8; cursor:pointer;"
+            />
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h3 style="margin-top:0; font-size:1.05rem;">Klik Struktur Kritikal Untuk Terokai Mekanisme:</h3>
+          <div class="anatomy-cards-list">
+            <button type="button" class="anatomy-item-btn active" data-anatomy-id="utricle-saccule">
+              <strong>1. Utricle &amp; Saccule</strong>
+              <span>Kantung sensor graviti &amp; gerakan lurus (naik lif / kereta memecut)</span>
+            </button>
+            <button type="button" class="anatomy-item-btn" data-anatomy-id="otoliths">
+              <strong>2. Otoliths &amp; Otolithic Membrane</strong>
+              <span>Hablur kalsium karbonat di atas gel yang melenturkan bulu deria (stereocilia)</span>
+            </button>
+            <button type="button" class="anatomy-item-btn" data-anatomy-id="semicircular-ducts">
+              <strong>3. Semicircular Ducts &amp; Ampulla</strong>
+              <span>Tiga saluran separuh bulat berisi cecair pengesan putaran 3 paksi</span>
+            </button>
+            <button type="button" class="anatomy-item-btn" data-anatomy-id="bppv-trigger">
+              <strong>4. Pencetus BPPV (Kristal Tersesat)</strong>
+              <span>Hablur tanggal dari utricle lalu mengocak cecair saluran seperti batu dalam tiub air</span>
+            </button>
+          </div>
+
+          <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+              <strong id="anatomyDetailTitle">Utricle &amp; Saccule</strong>
+              <span id="anatomyDetailBadge" class="pill-badge pill-info">Organ Otolith</span>
+            </div>
+            <p id="anatomyDetailText" style="margin:0; font-size:0.88rem; color:var(--text-secondary);"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== BAB 2 & 7A: MATRIKS PINTAR & ENJIN TRIAJ DIAGNOSTIK ======== -->
+    <section id="sec-matriks" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 2 • Matriks Pintar &amp; Kecerdasan Diagnostik</div>
+        <h2>5 Punca Utama Vertigo: Dua Soalan Emas Penentu Diagnosis</h2>
+        <p>
+          Membezakan punca vertigo bergantung pada dua soalan emas: <strong>berapa lama satu episod pusing bertahan</strong> dan <strong>apa yang mencetuskannya</strong>. Klik mana-mana baris dalam jadual untuk membaca mutiara klinikal setiap diagnosis.
+        </p>
+      </div>
+
+      <div class="panel-card" style="margin-bottom: 24px;">
+        <div class="matrix-toolbar">
+          <div class="chip-group" style="margin-bottom:0;" role="group" aria-label="Tapis mengikut durasi">
+            <button type="button" class="chip-btn active" data-matrix-filter="all">Semua (5 Punca)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="seconds">&lt; 1 Minit (BPPV)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="hours">Minit – Jam (Meniere)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="variable">5 Min – 72 Jam (Migrain)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="days">Berhari-hari (Neuritis)</button>
+            <button type="button" class="chip-btn" data-matrix-filter="continuous">Berterusan Akut (Strok)</button>
+          </div>
+
+          <input
+            type="search"
+            id="matrixSearchInput"
+            class="search-input"
+            placeholder="🔍 Cari simptom, tinnitus, Epley, virus..."
+            aria-label="Cari dalam matriks vertigo"
+          />
+        </div>
+
+        <div class="table-scroll">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Diagnosis</th>
+                <th>Durasi Serangan</th>
+                <th>Pencetus Utama</th>
+                <th>Simptom Telinga</th>
+                <th>Fokus Rawatan</th>
+              </tr>
+            </thead>
+            <tbody id="causesMatrixBody"></tbody>
+          </table>
+        </div>
+
+        <div id="matrixActivePearl" class="alert-banner alert-safe" style="margin-top:14px;">
+          <strong>💡 Tip Interaktif:</strong> Klik mana-mana baris diagnosis di atas untuk melihat perincian klinikal (contohnya perbezaan <em>Vestibular Neuritis</em> vs <em>Labyrinthitis</em> serta amaran arteri AICA).
+        </div>
+      </div>
+
+      <!-- Intelligent Symptom Filter / Triage Engine -->
+      <div id="sec-triaj-pintar" class="two-col" style="scroll-margin-top:84px;">
+        <div class="panel-card">
+          <div class="section-num">Enjin Sokongan Keputusan Pintar</div>
+          <h3 style="margin:4px 0 12px;">🧠 Penapis Simptom &amp; Kebarangkalian Punca Vertigo</h3>
+          <form id="triageForm">
+            <div class="form-group">
+              <label class="field-title" for="selSensation">1. Apakah sifat sebenar rasa pening yang dialami?</label>
+              <select id="selSensation" name="sensation" class="form-select">
+                <option value="spinning" selected>Dunia / diri sendiri terasa berpusing-pusing (Vertigo sebenar)</option>
+                <option value="lightheaded">Sekadar gelap mata, melayang, atau rasa nak pitam semasa berdiri (Tiada pusingan)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="field-title" for="selDuration">2. Soalan Emas #1: Berapa lama SATU episod pusing bertahan?</label>
+              <select id="selDuration" name="duration" class="form-select">
+                <option value="under1m" selected>Kurang 1 minit (15–45 saat sahaja setiap kali gerak kepala)</option>
+                <option value="minsToHours">20 minit hingga 12 jam</option>
+                <option value="hoursToDays">Berhari-hari berterusan (atau 5 minit hingga 72 jam berulang)</option>
+                <option value="continuousAcute">Berterusan mendadak (baru bermula &amp; tidak berhenti langsung)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="field-title" for="selTrigger">3. Soalan Emas #2: Apakah pencetus utama serangan?</label>
+              <select id="selTrigger" name="trigger" class="form-select">
+                <option value="positional" selected>Ubah posisi kepala (baring, mengiring di katil, mendongak)</option>
+                <option value="postViral">Spontan selepas demam / jangkitan virus saluran pernafasan</option>
+                <option value="spontaneous">Spontan berulang tanpa kaitan posisi kepala</option>
+                <option value="sleepStressLight">Kurang tidur, stres, keletihan, atau silau cahaya terang</option>
+                <option value="vascularRisk">Spontan pada penghidap darah tinggi / diabetes / kolesterol / merokok</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="field-title" for="selEar">4. Adakah disertai simptom telinga atau sensitiviti cahaya?</label>
+              <select id="selEar" name="ear" class="form-select">
+                <option value="none" selected>Tiada simptom telinga (pendengaran normal, tiada desingan)</option>
+                <option value="meniereTriad">Tinnitus (berdesing) + kurang pendengaran + rasa telinga penuh</option>
+                <option value="suddenDeafness">Kurang pendengaran baharu sebelah telinga secara mendadak</option>
+                <option value="photophobia">Rasa silau cahaya (fotofobia) — dengan atau tanpa sakit kepala</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="field-title" style="color:#f87171;">5. Saringan Kecemasan Tanda 5D &amp; Imbangan (Tandakan jika ada):</label>
+              <div class="redflag-grid">
+                <label class="check-tile"><input type="checkbox" data-red-flag="diplopia" /> <span><strong>Diplopia</strong> (Penglihatan berganda)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysarthria" /> <span><strong>Dysarthria</strong> (Percakapan pelat)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysphagia" /> <span><strong>Dysphagia</strong> (Sukar menelan)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="dysmetria" /> <span><strong>Dysmetria</strong> (Tangan tersasar)</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="numbness" /> <span><strong>Kebas / Lemah</strong> sebelah muka/badan</span></label>
+                <label class="check-tile"><input type="checkbox" data-red-flag="ataxia" /> <span><strong>Gagal berdiri tegak</strong> tanpa dipapah</span></label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-card">
+          <div class="section-num">Analisis Kebarangkalian Masa Nyata</div>
+          <h3 style="margin:4px 0 12px;">📊 Keputusan Penapisan &amp; Fokus Tindakan</h3>
+          <div id="triageResultsOutput"></div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin:14px 0 0;">
+            *Penafian Edukatif: Alat pintar ini direka untuk tujuan pembelajaran klinikal dan kesedaran pesakit berasaskan garis panduan triaj vertigo; ia tidak menggantikan pemeriksaan fizikal doktor secara bersemuka.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== BAB 3: SARINGAN STROK PROTOKOL HINTS & TANDA 5D ======== -->
+    <section id="sec-hints" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 3 • Triaj Kecemasan Sentral (~15% Kes Akut)</div>
+        <h2>Saringan Strok: Protokol Fizikal HINTS &amp; Amaran 5D</h2>
+        <p>
+          Bagi serangan vertigo berterusan yang baru bermula (<em>Acute Vestibular Syndrome</em>), pemeriksaan fizikal <strong>HINTS</strong> terbukti <strong>lebih sensitif mengesan strok awal berbanding imbasan MRI dalam tempoh 24 jam pertama</strong>! Bandingkan tindak balas mata pesakit Strok Sentral berbanding Periferi secara langsung di bawah.
+        </p>
+      </div>
+
+      <div class="two-col">
+        <div class="panel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+            <strong>🩺 Simulator Pemeriksaan Fizikal HINTS</strong>
+            <div class="segmented-toggle" role="group" aria-label="Pilih Kes Pesakit">
+              <button type="button" data-hints-case="central" class="active">🚨 Kes Sentral (Strok)</button>
+              <button type="button" data-hints-case="peripheral">✅ Kes Periferi (Neuritis)</button>
+            </div>
+          </div>
+
+          <div class="chip-group" role="group" aria-label="Komponen Ujian HINTS">
+            <button type="button" class="chip-btn active" data-hints-step="hi">1. Head Impulse (HI)</button>
+            <button type="button" class="chip-btn" data-hints-step="nystagmus">2. Nystagmus (N)</button>
+            <button type="button" class="chip-btn" data-hints-step="skew">3. Test of Skew (TS)</button>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="hintsCanvas" width="560" height="265"></canvas>
+          </div>
+
+          <!-- Interactive Sub-controls for each HINTS step -->
+          <div id="hintsCtrlHi" style="display:flex; gap:10px; margin-top:12px; align-items:center; flex-wrap:wrap;">
+            <button type="button" id="btnTriggerHeadImpulse" class="btn-primary">
+              ⚡ Pusing Kepala Pesakit Dengan Pantas!
+            </button>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Perhatikan sama ada mata tersentak atau kekal terpaku sempurna.</span>
+          </div>
+
+          <div id="hintsCtrlNys" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap;">
+            <button type="button" class="chip-btn" data-gaze-dir="-1">⬅️ Lirik Kiri</button>
+            <button type="button" class="chip-btn active" data-gaze-dir="0">⏺️ Pandang Tengah</button>
+            <button type="button" class="chip-btn" data-gaze-dir="1">➡️ Lirik Kanan</button>
+            <button type="button" class="chip-btn" data-gaze-dir="2">⬆️ Pandang Atas (Uji Vertical)</button>
+          </div>
+
+          <div id="hintsCtrlSkew" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap;">
+            <button type="button" class="chip-btn" data-skew-cover="left">🙈 Tutup Mata Kiri</button>
+            <button type="button" class="chip-btn" data-skew-cover="right">🙈 Tutup Mata Kanan</button>
+            <button type="button" class="chip-btn active" data-skew-cover="none">👀 Buka Kedua-dua Mata</button>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div id="hintsClinicalVerdict" class="alert-banner alert-critical" style="margin-bottom:12px;"></div>
+          <p id="hintsStepDetail" style="font-size:0.9rem; color:var(--text-secondary); margin:0 0 18px;"></p>
+
+          <h4 style="margin:0 0 10px; font-size:0.95rem;">🚑 Senarai Semak Pantas Amaran 5D &amp; Imbangan:</h4>
+          <div class="redflag-grid" style="margin-bottom:12px;">
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Diplopia:</strong> Penglihatan berganda</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysarthria:</strong> Percakapan pelat / cadel</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysphagia:</strong> Sukar menelan air/makanan</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Dysmetria:</strong> Tangan tersasar capai objek</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Kebas Sebelah:</strong> Muka atau anggota badan</span></label>
+            <label class="check-tile"><input type="checkbox" class="five-d-check" /> <span><strong>Ataksia Teruk:</strong> Gagal berdiri tegak tanpa dipapah</span></label>
+          </div>
+          <div id="fiveDStatusBox" class="alert-banner alert-safe"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== BAB 4 & 7B: SIMULATOR FIZIKAL DIX-HALLPIKE & EPLEY ======== -->
+    <section id="sec-epley" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 4 • Pelaksanaan Fizikal BPPV (Kadar Kejayaan 80%–90%)</div>
+        <h2>Simulator Ujian Dix-Hallpike &amp; 5 Langkah Epley Maneuver</h2>
+        <p>
+          Bagi kes BPPV kanal posterior (disahkan apabila ujian baring kepala tergantung <em>Dix-Hallpike</em> mencetuskan pusing singkat selepas sela masa <strong>2 hingga 10 saat</strong>), <strong>Epley Maneuver</strong> menggolekkan semula hablur <em>otoliths</em> keluar dari saluran separuh bulat kembali ke dalam <em>utricle</em>. Pilih telinga yang terjejas dan ikuti pemasa 30–60 saat!
+        </p>
+      </div>
+
+      <div class="two-col">
+        <div class="panel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+            <span id="epleyEarBadge" class="pill-badge pill-info">Telinga Kiri Terjejas (Urutan Playbook)</span>
+            <div class="segmented-toggle" role="group" aria-label="Pilih Telinga Terjejas">
+              <button type="button" data-epley-ear="left" class="active">👂 Telinga Kiri Sakit</button>
+              <button type="button" data-epley-ear="right">👂 Telinga Kanan Sakit</button>
+            </div>
+          </div>
+
+          <div class="chip-group" role="group" aria-label="Langkah Epley Maneuver">
+            <button type="button" class="chip-btn active" data-epley-step="0">Langkah 1</button>
+            <button type="button" class="chip-btn" data-epley-step="1">Langkah 2</button>
+            <button type="button" class="chip-btn" data-epley-step="2">Langkah 3</button>
+            <button type="button" class="chip-btn" data-epley-step="3">Langkah 4</button>
+            <button type="button" class="chip-btn" data-epley-step="4">Langkah 5</button>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="epleyCanvas" width="600" height="310"></canvas>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; gap:10px; margin-top:12px;">
+            <button type="button" id="epleyPrevBtn" class="btn-secondary">⬅️ Langkah Sebelum</button>
+            <button type="button" id="epleyNextBtn" class="btn-primary">Langkah Seterusnya ➡️</button>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h3 id="epleyStepTitle" style="margin-top:0; font-size:1.12rem;">Langkah 1/5</h3>
+          <p id="epleyStepInstruction" style="font-size:0.93rem; color:var(--text-primary);"></p>
+
+          <div style="background:var(--bg-surface); border-left:3px solid #38bdf8; padding:11px 14px; border-radius:0 8px 8px 0; margin:12px 0;">
+            <strong style="font-size:0.82rem; color:var(--accent-cyan); display:block;">⚙️ Apa Berlaku Di Dalam Telinga?</strong>
+            <span id="epleyStepMechanism" style="font-size:0.86rem; color:var(--text-secondary);"></span>
+          </div>
+
+          <div class="epley-timer-bar">
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Pemasa Posisi (Sasaran 30–60s)</div>
+              <div id="epleyTimerDisplay" class="timer-digits">00:15</div>
+            </div>
+            <button type="button" id="epleyTimerToggleBtn" class="btn-primary">⏱️ Mulakan Pemasa Langkah Ini</button>
+          </div>
+
+          <div class="alert-banner alert-critical" style="margin-top:16px;">
+            <strong>⚠️ Kontraindikasi Wajib:</strong> Elakkan melakukan manuver ini sendiri tanpa pengawasan doktor jika terdapat <strong>kecederaan tulang leher servikal yang teruk</strong>, <strong>penyempitan arteri karotid yang kritikal</strong>, atau masalah <strong>lekangan retina mata</strong>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== BAB 5: KESILAPAN LAZIM, VRT & KAWALAN GAYA HIDUP ======== -->
+    <section id="sec-pemulihan" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 5 • Kesilapan Lazim &amp; Strategi Pemulihan Gaya Hidup</div>
+        <h2>Elak Perangkap Ubat Tahan Pening, Latih Semula Otak (VRT) &amp; Kawal Garam</h2>
+        <p>
+          Ubat penindas vestibular (<em>prochlorperazine, cinnarizine, dimenhydrinate</em>) hanya wajar diambil dalam fasa muntah akut <strong>kurang daripada 72 jam</strong>. Pengambilan berpanjangan menghalang otak membina pampasan semula jadi (<em>central compensation</em>).
+        </p>
+      </div>
+
+      <div class="two-col" style="margin-bottom:22px;">
+        <!-- Compensation Curve -->
+        <div class="panel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+            <strong>📈 Lengkung Pemulihan Otak (Central Compensation)</strong>
+            <div class="chip-group" style="margin-bottom:0;">
+              <button type="button" class="chip-btn active" data-comp-mode="compare">Bandingkan</button>
+              <button type="button" class="chip-btn" data-comp-mode="optimal">Henti &lt;72j + VRT</button>
+              <button type="button" class="chip-btn" data-comp-mode="trap">Bergantung Pil</button>
+            </div>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas id="compensationCanvas" width="520" height="230"></canvas>
+          </div>
+
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin:12px 0 0;">
+            Bagi kes pasca-neuritis atau pening baki yang berlarutan, menghentikan ubat penindas selepas 72 jam dan memulakan senaman <strong>Cawthorne-Cooksey / Gaze Stabilization (VRT)</strong> membolehkan otak menentukur semula keseimbangan.
+          </p>
+        </div>
+
+        <!-- Interactive VRT Gaze Stabilization Trainer -->
+        <div class="panel-card">
+          <strong>🎯 Jurulatih Interaktif VRT: Gaze Stabilization (VOR x1)</strong>
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin:6px 0 10px;">
+            Duduk selesa. Renung tepat pada huruf <strong>X</strong> di bawah sambil menggerakkan kepala kecil ke kiri dan kanan (~20°) mengikut rentak tanpa membiarkan huruf X menjadi kabur.
+          </p>
+
+          <div class="vrt-arena">
+            <div class="vrt-fixation-x" aria-hidden="true">X</div>
+            <div id="vrtHeadArrow" style="font-weight:700; font-size:0.9rem; color:#e2e8f0;">
+              Renung huruf 'X' &amp; sedia gerakkan kepala kecil kiri-kanan
+            </div>
+            <div style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">
+              Baki Sesi: <strong id="vrtSessionTimer" style="color:#38bdf8;">30s</strong>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+            <label for="vrtBpmSlider" style="font-size:0.82rem; font-weight:600;">
+              Kelajuan Rentak (<span id="vrtBpmVal">80 rentak/min</span>):
+            </label>
+            <input type="range" id="vrtBpmSlider" min="50" max="130" value="80" style="flex:1; accent-color:#38bdf8;" />
+          </div>
+
+          <button type="button" id="vrtStartBtn" class="btn-primary" style="width:100%;">
+            ▶️ Mulakan Latihan Gaze Stabilization (30s)
+          </button>
+        </div>
+      </div>
+
+      <!-- Meniere Sodium Calculator & Migraine Checklist -->
+      <div class="two-col">
+        <div class="panel-card">
+          <h3 style="margin-top:0; font-size:1.05rem;">🧂 Kalkulator Natrium Harian Penyakit Meniere (&lt;1,500–2,000 mg)</h3>
+          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 10px;">
+            Pesakit Penyakit Meniere perlu mengehadkan pengambilan natrium bawah <strong>1,500 hingga 2,000 mg sehari</strong> serta mengurangkan kafein. Tandakan makanan harian untuk menyemak jumlah garam:
+          </p>
+
+          <div id="sodiumFoodList" class="food-grid"></div>
+
+          <div class="mastery-bar-head" style="margin-top:10px;">
+            <span>Anggaran Natrium Hari Ini:</span>
+            <strong id="sodiumTotalVal">1,110 mg / 2,000 mg</strong>
+          </div>
+          <div class="progress-track" style="height:10px; margin-bottom:8px;">
+            <div id="sodiumProgressFill" class="progress-fill" style="width:55%;"></div>
+          </div>
+          <div id="sodiumAdviceMsg" style="font-size:0.83rem; font-weight:600;"></div>
+        </div>
+
+        <div class="panel-card">
+          <h3 style="margin-top:0; font-size:1.05rem;">🌙 Pelan Stabiliti Penghidap Vestibular Migraine</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);">
+            Otak penghidap Vestibular Migraine sangat peka terhadap perubahan fisiologi mendadak. Tandakan tabiat pelindung harian anda:
+          </p>
+          <div style="display:grid; gap:9px;">
+            <label class="check-tile"><input type="checkbox" checked /> <span><strong>Jadual Tidur Tetap:</strong> Tidur &amp; bangun pada waktu sama setiap hari (7–8 jam)</span></label>
+            <label class="check-tile"><input type="checkbox" checked /> <span><strong>Hidrasi Sekata:</strong> Minum air kosong mencukupi sepanjang hari; elak berlapar lama</span></label>
+            <label class="check-tile"><input type="checkbox" /> <span><strong>Kawal Kafein &amp; Pencetus:</strong> Hadkan kopi pekat, keju peram, MSG berlebihan</span></label>
+            <label class="check-tile"><input type="checkbox" /> <span><strong>Urus Silau Skrin &amp; Stres:</strong> Gunakan saringan cahaya selesa &amp; rehat mata berkala</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== BAB 6: SUDUT KOMUNIKASI EDUKATIF (3 ANALOGI VISUAL) ======== -->
+    <section id="sec-analogi" class="section-block">
+      <div class="section-head">
+        <div class="section-num">Bab 6 • Sudut Komunikasi Edukatif &amp; Skrip Video Kesedaran</div>
+        <h2>3 Analogi Visual Mudah Hadam (Faham Dalam Beberapa Saat)</h2>
+        <p>
+          Gunakan tiga analogi ini untuk penerangan pesakit di klinik atau skrip video kesedaran kesihatan. Klik <strong>Salin Skrip Komunikasi</strong> untuk menyalin dialog penuh!
+        </p>
+      </div>
+
+      <div id="analogiesGrid" class="three-col"></div>
+    </section>
+
+    <!-- ======== BAB 7C: KUIZ KLINIKAL INTERAKTIF (5 SENARIO TRIAJ) ======== -->
+    <section id="sec-kuiz" class="section-block">
+      <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap;">
+        <div>
+          <div class="section-num">Bab 7 • Uji Ketajaman Keputusan Klinikal</div>
+          <h2>Kuiz Klinikal Interaktif: 5 Senario Triaj &amp; Pengurusan Vertigo</h2>
+          <p>Uji kefahaman anda membezakan BPPV, Strok Posterior (HINTS), Vestibular Neuritis, Vestibular Migraine, dan Presyncope.</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span id="quizScoreDisplay" class="pill-badge pill-info" style="font-size:0.85rem; padding:7px 14px;">
+            Skor Ketajaman Klinikal: 0 / 5
+          </span>
+          <button type="button" id="quizResetBtn" class="btn-secondary">🔄 Cuba Semula Kuiz</button>
+        </div>
+      </div>
+
+      <div id="clinicalQuizContainer" class="quiz-grid"></div>
+    </section>
+
+    <footer class="footer">
+      <p>
+        <strong>VertigoLab — Playbook Pintar, Interaktif &amp; Edukatif Sistem Keseimbangan</strong><br />
+        Dibangunkan untuk pendidikan kesihatan pesakit, latihan komunikasi klinikal, dan kesedaran triaj kecemasan vertigo. Jika mengalami vertigo akut bersama tanda 5D atau kegagalan berdiri, dapatkan rawatan kecemasan hospital dengan segera.
+      </p>
+    </footer>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/simulators.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

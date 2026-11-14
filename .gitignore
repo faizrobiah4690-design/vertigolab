@@ -1,0 +1,13 @@
+# Local reference documents (do not publish prompt PDF)
+*.pdf
+
+# Dependencies & build artifacts
+node_modules/
+.wrangler/
+dist/
+
+# Environment & OS files
+.env
+.env.*
+.DS_Store
+Thumbs.db
