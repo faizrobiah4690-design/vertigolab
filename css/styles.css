@@ -1,5 +1,6 @@
 /* ============================================================================
-   VertigoLab — Sistem Reka Bentuk Klinikal Pintar & Interaktif
+   VertigoLab — Sistem Reka Bentuk Klinikal Pintar, Aksesibel & Interaktif
+   WCAG AA Audited • Calm-Motion Safe • Ergonomic 44px Touch • Dual-Mode Print
    ============================================================================ */
 
 :root {
@@ -7,8 +8,8 @@
   --bg-surface: #0f172a;
   --bg-card: #131f35;
   --bg-elevated: #1e293b;
-  --border-subtle: rgba(148, 163, 184, 0.16);
-  --border-strong: rgba(56, 189, 248, 0.42);
+  --border-subtle: rgba(148, 163, 184, 0.18);
+  --border-strong: rgba(56, 189, 248, 0.45);
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
@@ -17,6 +18,10 @@
   --accent-emerald: #10b981;
   --accent-amber: #f59e0b;
   --accent-danger: #ef4444;
+  --status-danger-fg: #fca5a5;
+  --status-warn-fg: #fcd34d;
+  --status-ok-fg: #6ee7b7;
+  --status-info-fg: #7dd3fc;
   --shadow-card: 0 14px 34px rgba(2, 6, 23, 0.45);
   --radius-lg: 16px;
   --radius-md: 11px;
@@ -24,16 +29,22 @@
 }
 
 body.light-theme {
-  --bg-base: #f1f5f9;
-  --bg-surface: #ffffff;
+  --bg-base: #eef2f6;
+  --bg-surface: #f8fafc;
   --bg-card: #ffffff;
   --bg-elevated: #e2e8f0;
-  --border-subtle: rgba(15, 23, 42, 0.12);
-  --border-strong: rgba(2, 132, 199, 0.45);
+  --border-subtle: rgba(15, 23, 42, 0.14);
+  --border-strong: rgba(2, 132, 199, 0.48);
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
-  --shadow-card: 0 10px 26px rgba(15, 23, 42, 0.07);
+  --text-muted: #475569;
+  --accent-cyan: #0284c7;
+  --accent-blue: #0284c7;
+  --status-danger-fg: #b91c1c;
+  --status-warn-fg: #b45309;
+  --status-ok-fg: #047857;
+  --status-info-fg: #0369a1;
+  --shadow-card: 0 10px 26px rgba(15, 23, 42, 0.08);
 }
 
 *,
@@ -44,6 +55,17 @@ body.light-theme {
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 76px;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.text-large {
+  font-size: 19px;
+}
+
+html.calm-motion {
+  scroll-behavior: auto !important;
 }
 
 body {
@@ -55,38 +77,160 @@ body {
   color: var(--text-primary);
   line-height: 1.62;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body.light-theme {
+  background: radial-gradient(circle at 15% 0%, rgba(14, 165, 233, 0.08), transparent 40%),
+    radial-gradient(circle at 88% 8%, rgba(99, 102, 241, 0.06), transparent 36%),
+    var(--bg-base);
+}
+
+/* Crisp WCAG Keyboard Focus Ring */
+:focus-visible {
+  outline: 3px solid var(--accent-cyan);
+  outline-offset: 2px;
+}
+
+/* Calm Mode & Reduced Motion Safeguards for Vertigo Patients */
+html.calm-motion *,
+html.calm-motion *::before,
+html.calm-motion *::after,
+body.calm-motion *,
+body.calm-motion *::before,
+body.calm-motion *::after {
+  transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+body.calm-motion .btn-primary:hover,
+body.calm-motion .btn-sos-primary:hover,
+body.calm-motion .floating-sos-btn:hover,
+html.calm-motion .btn-primary:hover,
+html.calm-motion .btn-sos-primary:hover,
+html.calm-motion .floating-sos-btn:hover {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn-primary:hover,
+  .btn-sos-primary:hover,
+  .floating-sos-btn:hover {
+    transform: none !important;
+  }
 }
 
 /* Audience Mode Visibility Helpers */
 body.mode-layman .clinical-only {
   display: none;
 }
+
 body.mode-clinical .layman-only {
   display: none;
 }
 
-/* Sticky Navigation Header */
+/* WCAG AA Semantic Status Text Colors (Dark & Light Theme Safe) */
+.text-status-danger {
+  color: var(--status-danger-fg) !important;
+}
+
+.text-status-warn {
+  color: var(--status-warn-fg) !important;
+}
+
+.text-status-ok {
+  color: var(--status-ok-fg) !important;
+}
+
+.text-status-info {
+  color: var(--status-info-fg) !important;
+}
+
+/* ============================================================================
+   STICKY NAVIGATION HEADER & MOBILE DRAWER
+   ============================================================================ */
+
 .topbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 18, 34, 0.88);
+  background: rgba(11, 18, 34, 0.92);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-subtle);
 }
 
 body.light-theme .topbar {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .topbar-inner {
-  max-width: 1260px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.topbar-mobile-quick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.mobile-menu-toggle:hover,
+.topbar.menu-open .mobile-menu-toggle {
+  border-color: var(--accent-cyan);
+}
+
+.topbar-collapsible {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1;
   flex-wrap: wrap;
 }
 
@@ -96,11 +240,13 @@ body.light-theme .topbar {
   gap: 10px;
   text-decoration: none;
   color: var(--text-primary);
+  min-height: 44px;
 }
 
 .brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
   border-radius: 10px;
   background: linear-gradient(135deg, #0ea5e9, #6366f1);
   display: grid;
@@ -110,31 +256,43 @@ body.light-theme .topbar {
   box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
 }
 
+.brand-mark img,
+.brand-mark svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
 .brand-title {
   font-weight: 800;
   font-size: 1.05rem;
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .brand-sub {
   font-size: 0.72rem;
   color: var(--text-muted);
   display: block;
+  line-height: 1.25;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 
 .nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
   text-decoration: none;
   color: var(--text-secondary);
-  font-size: 0.82rem;
+  font-size: 0.81rem;
   font-weight: 600;
-  padding: 6px 10px;
+  padding: 6px 11px;
   border-radius: 999px;
   transition: background 0.18s, color 0.18s;
 }
@@ -151,33 +309,48 @@ body.light-theme .topbar {
 }
 
 body.light-theme .nav-links a.nav-emergency {
-  color: #b91c1c;
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: rgba(220, 38, 38, 0.4);
 }
 
 .top-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .segmented-toggle {
   display: inline-flex;
+  align-items: center;
   background: var(--bg-elevated);
   padding: 3px;
   border-radius: 999px;
   border: 1px solid var(--border-subtle);
+  min-height: 44px;
 }
 
 .segmented-toggle button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 44px;
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 5px 11px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 12px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.18s;
+}
+
+.segmented-toggle button:hover {
+  color: var(--text-primary);
 }
 
 .segmented-toggle button.active {
@@ -185,14 +358,16 @@ body.light-theme .nav-links a.nav-emergency {
   color: #ffffff;
 }
 
-/* Main Container */
+/* ============================================================================
+   MAIN CONTAINER & HERO
+   ============================================================================ */
+
 .container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 28px 20px 72px;
+  padding: 28px 20px calc(96px + env(safe-area-inset-bottom, 0px));
 }
 
-/* Hero Section */
 .hero {
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.82));
   border: 1px solid var(--border-subtle);
@@ -227,11 +402,12 @@ body.light-theme .hero {
 
 body.light-theme .hero-eyebrow {
   color: #0369a1;
+  background: #e0f2fe;
 }
 
 .hero h1 {
   margin: 0 0 12px;
-  font-size: clamp(1.75rem, 3.2vw, 2.45rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.45rem);
   line-height: 1.18;
   letter-spacing: -0.025em;
 }
@@ -276,7 +452,7 @@ body.light-theme .hero-eyebrow {
 }
 
 body.light-theme .stat-num {
-  color: #0284c7;
+  color: #0369a1;
 }
 
 .stat-label {
@@ -310,7 +486,10 @@ body.light-theme .stat-num {
   transition: width 0.35s ease;
 }
 
-/* Section Blocks */
+/* ============================================================================
+   SECTIONS, GRIDS & CARDS
+   ============================================================================ */
+
 .section-block {
   margin-bottom: 42px;
   scroll-margin-top: 80px;
@@ -329,12 +508,12 @@ body.light-theme .stat-num {
 }
 
 body.light-theme .section-num {
-  color: #0284c7;
+  color: #0369a1;
 }
 
 .section-head h2 {
   margin: 4px 0 6px;
-  font-size: clamp(1.35rem, 2.4vw, 1.78rem);
+  font-size: clamp(1.32rem, 2.4vw, 1.78rem);
   letter-spacing: -0.02em;
 }
 
@@ -344,7 +523,6 @@ body.light-theme .section-num {
   max-width: 850px;
 }
 
-/* Grid Cards & Panels */
 .two-col {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -370,7 +548,7 @@ body.light-theme .section-num {
   width: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid rgba(148, 163, 184, 0.24);
   background: #0f172a;
 }
 
@@ -380,7 +558,10 @@ body.light-theme .section-num {
   height: auto;
 }
 
-/* Buttons & Chips */
+/* ============================================================================
+   ERGONOMIC BUTTONS, CHIPS & BADGES (>=44px TAP TARGETS)
+   ============================================================================ */
+
 .btn-primary,
 .btn-secondary,
 .chip-btn {
@@ -388,11 +569,12 @@ body.light-theme .section-num {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 44px;
   font-family: inherit;
   font-weight: 600;
   font-size: 0.85rem;
   border-radius: 10px;
-  padding: 9px 15px;
+  padding: 9px 16px;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.16s ease;
@@ -426,6 +608,12 @@ body.light-theme .section-num {
   color: #fca5a5 !important;
 }
 
+body.light-theme .btn-danger-active {
+  color: #991b1b !important;
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+}
+
 .chip-group {
   display: flex;
   flex-wrap: wrap;
@@ -437,13 +625,14 @@ body.light-theme .section-num {
   background: var(--bg-elevated);
   color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
-  padding: 7px 12px;
-  font-size: 0.8rem;
+  padding: 8px 14px;
+  font-size: 0.81rem;
   border-radius: 999px;
 }
 
 .chip-btn:hover {
   border-color: var(--accent-cyan);
+  color: var(--text-primary);
 }
 
 .chip-btn.active {
@@ -462,12 +651,16 @@ body.light-theme .chip-btn.active {
   border-color: rgba(16, 185, 129, 0.55);
 }
 
+body.light-theme .chip-btn.completed {
+  border-color: #059669;
+}
+
 /* Badges & Alerts */
 .pill-badge {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: 0.73rem;
   font-weight: 700;
   border: 1px solid transparent;
 }
@@ -497,16 +690,27 @@ body.light-theme .chip-btn.active {
 }
 
 body.light-theme .pill-ok {
+  background: #ecfdf5;
   color: #047857;
+  border-color: rgba(4, 120, 87, 0.32);
 }
+
 body.light-theme .pill-warn {
+  background: #fffbeb;
   color: #b45309;
+  border-color: rgba(180, 83, 9, 0.32);
 }
+
 body.light-theme .pill-danger {
+  background: #fef2f2;
   color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.35);
 }
+
 body.light-theme .pill-info {
+  background: #f0f9ff;
   color: #0369a1;
+  border-color: rgba(3, 105, 161, 0.32);
 }
 
 .alert-banner {
@@ -537,17 +741,25 @@ body.light-theme .pill-info {
 body.light-theme .alert-critical {
   color: #7f1d1d;
   background: #fef2f2;
+  border-color: rgba(220, 38, 38, 0.4);
 }
+
 body.light-theme .alert-safe {
   color: #064e3b;
   background: #ecfdf5;
+  border-color: rgba(5, 150, 105, 0.38);
 }
+
 body.light-theme .alert-warn {
   color: #78350f;
   background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.42);
 }
 
-/* Telemetry Readouts */
+/* ============================================================================
+   TELEMETRY READOUTS & ANATOMY CARDS
+   ============================================================================ */
+
 .sensor-readouts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -559,22 +771,22 @@ body.light-theme .alert-warn {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 10px 12px;
 }
 
 .readout-tile small {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.71rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .readout-tile strong {
-  font-size: 0.83rem;
+  font-size: 0.84rem;
   color: var(--text-primary);
 }
 
-/* Anatomy Cards */
 .anatomy-cards-list {
   display: grid;
   gap: 10px;
@@ -583,12 +795,14 @@ body.light-theme .alert-warn {
 
 .anatomy-item-btn {
   width: 100%;
+  min-height: 48px;
   text-align: left;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 12px 14px;
   color: var(--text-primary);
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.16s;
 }
@@ -609,7 +823,10 @@ body.light-theme .alert-warn {
   color: var(--text-muted);
 }
 
-/* Causes Matrix Table */
+/* ============================================================================
+   CAUSES MATRIX TABLE
+   ============================================================================ */
+
 .matrix-toolbar {
   display: flex;
   justify-content: space-between;
@@ -620,23 +837,27 @@ body.light-theme .alert-warn {
 }
 
 .search-input {
+  min-height: 44px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
-  padding: 8px 13px;
+  padding: 9px 15px;
   border-radius: 999px;
-  font-size: 0.84rem;
+  font-family: inherit;
+  font-size: 0.86rem;
   min-width: 240px;
 }
 
 .table-scroll {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
 }
 
 .matrix-table {
   width: 100%;
+  min-width: 660px;
   border-collapse: collapse;
   font-size: 0.87rem;
   background: var(--bg-surface);
@@ -694,7 +915,10 @@ body.light-theme .treatment-highlight {
   color: #0369a1;
 }
 
-/* Intelligent Triage Form & Output */
+/* ============================================================================
+   INTELLIGENT TRIAGE FORM, CHECKBOXES, RANGE SLIDERS & OUTPUT
+   ============================================================================ */
+
 .form-group {
   margin-bottom: 15px;
 }
@@ -708,13 +932,32 @@ body.light-theme .treatment-highlight {
 
 .form-select {
   width: 100%;
+  min-height: 44px;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
   font-family: inherit;
-  font-size: 0.87rem;
+  font-size: 0.88rem;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  accent-color: #0284c7;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 100%;
+  min-height: 44px;
+  accent-color: #0284c7;
+  cursor: pointer;
 }
 
 .redflag-grid {
@@ -726,13 +969,23 @@ body.light-theme .treatment-highlight {
 .check-tile {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
+  min-height: 44px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-size: 0.8rem;
+  padding: 10px 12px;
+  font-size: 0.82rem;
   cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.check-tile input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #0284c7;
+  flex-shrink: 0;
 }
 
 .check-tile:hover {
@@ -758,6 +1011,7 @@ body.light-theme .treatment-highlight {
 .prob-row-head {
   display: flex;
   justify-content: space-between;
+  gap: 8px;
   font-size: 0.88rem;
   margin-bottom: 6px;
 }
@@ -809,7 +1063,45 @@ body.light-theme .treatment-highlight {
   margin-bottom: 5px;
 }
 
-/* Epley Timer Box */
+/* ============================================================================
+   BPPV SIDE-FINDER & MULTI-MANEUVER COACH (EPLEY / BBQ ROLL / GUFONI)
+   ============================================================================ */
+
+.sidefinder-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.sidefinder-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.sidefinder-option,
+.sidefinder-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidefinder-result {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+
 .epley-timer-bar {
   display: flex;
   align-items: center;
@@ -830,14 +1122,22 @@ body.light-theme .treatment-highlight {
   color: var(--accent-cyan);
 }
 
-/* VRT Target Trainer */
+body.light-theme .timer-digits {
+  color: #0369a1;
+}
+
+/* ============================================================================
+   VRT TARGET TRAINER & SODIUM FOOD CHIPS
+   ============================================================================ */
+
 .vrt-arena {
   background: #0b1120;
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  border: 1px solid rgba(56, 189, 248, 0.35);
   border-radius: var(--radius-md);
   padding: 22px;
   text-align: center;
   margin: 12px 0;
+  color: #f1f5f9;
 }
 
 .vrt-fixation-x {
@@ -854,7 +1154,6 @@ body.light-theme .treatment-highlight {
   margin-bottom: 10px;
 }
 
-/* Sodium Food Chips */
 .food-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -866,13 +1165,26 @@ body.light-theme .treatment-highlight {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
+  min-height: 44px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-size: 0.8rem;
+  padding: 9px 12px;
+  font-size: 0.82rem;
   cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.food-chip input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #0284c7;
+  flex-shrink: 0;
+}
+
+.food-chip:hover {
+  border-color: var(--accent-cyan);
 }
 
 .food-chip.active {
@@ -880,7 +1192,109 @@ body.light-theme .treatment-highlight {
   background: rgba(14, 165, 233, 0.1);
 }
 
-/* Analogy Cards */
+/* ============================================================================
+   PATIENT EPISODE DIARY & TRIGGER TRACKER
+   ============================================================================ */
+
+.diary-card,
+.diary-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.diary-stats-row,
+.diary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.diary-stat-box,
+.diary-stats-row > div,
+.diary-stats-grid > div {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.diary-stat-box strong,
+.diary-stats-row strong,
+.diary-stats-grid strong {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+body.light-theme .diary-stat-box strong,
+body.light-theme .diary-stats-row strong,
+body.light-theme .diary-stats-grid strong {
+  color: #0369a1;
+}
+
+.diary-stat-box small,
+.diary-stats-row small,
+.diary-stats-grid small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.diary-list {
+  display: grid;
+  gap: 10px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.diary-entry,
+.diary-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.diary-entry-head,
+.diary-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.diary-entry-meta,
+.diary-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.79rem;
+  color: var(--text-secondary);
+}
+
+.empty-state-box {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 18px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+/* ============================================================================
+   ANALOGY CARDS, CLINICAL QUIZ & FOOTER
+   ============================================================================ */
+
 .analogy-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -908,7 +1322,7 @@ body.light-theme .treatment-highlight {
 }
 
 body.light-theme .analogy-use {
-  color: #0284c7;
+  color: #0369a1;
 }
 
 .analogy-summary {
@@ -921,7 +1335,7 @@ body.light-theme .analogy-use {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 9px 12px;
+  padding: 10px 12px;
   font-size: 0.82rem;
   margin-top: auto;
 }
@@ -929,6 +1343,7 @@ body.light-theme .analogy-use {
 .script-drawer summary {
   cursor: pointer;
   font-weight: 600;
+  min-height: 28px;
 }
 
 .script-quote {
@@ -937,7 +1352,6 @@ body.light-theme .analogy-use {
   color: var(--text-secondary);
 }
 
-/* Clinical Quiz */
 .quiz-grid {
   display: grid;
   gap: 18px;
@@ -981,6 +1395,7 @@ body.light-theme .analogy-use {
   align-items: flex-start;
   gap: 10px;
   width: 100%;
+  min-height: 46px;
   text-align: left;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -1007,15 +1422,26 @@ body.light-theme .analogy-use {
   background: rgba(239, 68, 68, 0.14);
 }
 
+body.light-theme .quiz-opt-btn.opt-correct {
+  border-color: #059669;
+  background: #ecfdf5;
+}
+
+body.light-theme .quiz-opt-btn.opt-wrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
 .opt-letter {
   display: inline-grid;
   place-items: center;
-  min-width: 24px;
-  height: 24px;
+  min-width: 26px;
+  height: 26px;
   border-radius: 6px;
   background: var(--bg-elevated);
   font-weight: 800;
   font-size: 0.76rem;
+  flex-shrink: 0;
 }
 
 .footer {
@@ -1028,13 +1454,17 @@ body.light-theme .analogy-use {
 }
 
 /* ============================================================================
-   PAUTAN PANTAS PESAKIT PENING & MODAL BANTUAN KECEMASAN / KENDIRI
+   QUICK SOS BAR, FLOATING SOS BUTTON & PATIENT HELPER MODAL
    ============================================================================ */
 
 .quick-sos-bar {
   background: linear-gradient(90deg, rgba(14, 165, 233, 0.16), rgba(16, 185, 129, 0.14), rgba(239, 68, 68, 0.14));
   border-bottom: 1px solid var(--border-strong);
-  padding: 9px 20px;
+  padding: 10px 20px;
+}
+
+body.light-theme .quick-sos-bar {
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.1), rgba(16, 185, 129, 0.09), rgba(239, 68, 68, 0.09));
 }
 
 .quick-sos-inner {
@@ -1066,14 +1496,16 @@ body.light-theme .analogy-use {
 .btn-sos-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-height: 44px;
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #ffffff;
   border: none;
   border-radius: 999px;
-  padding: 7px 15px;
+  padding: 8px 16px;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.83rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
@@ -1090,25 +1522,30 @@ body.light-theme .analogy-use {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 44px;
   background: #dc2626;
   color: #ffffff;
   text-decoration: none;
-  padding: 9px 16px;
+  padding: 10px 16px;
   border-radius: 10px;
+  border: none;
+  font-family: inherit;
   font-weight: 800;
   font-size: 0.88rem;
+  cursor: pointer;
 }
 
 .floating-sos-btn {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   z-index: 150;
+  min-height: 48px;
   background: linear-gradient(135deg, #ef4444, #be123c);
   color: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  padding: 12px 20px;
+  padding: 11px 20px;
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 800;
@@ -1135,6 +1572,7 @@ body.light-theme .analogy-use {
   z-index: 300;
   background: rgba(2, 6, 23, 0.82);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: grid;
   place-items: center;
   padding: 16px;
@@ -1158,6 +1596,7 @@ body.light-theme .analogy-use {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+  flex-wrap: wrap;
   margin-bottom: 14px;
 }
 
@@ -1169,6 +1608,7 @@ body.light-theme .analogy-use {
 }
 
 .qh-tab-btn {
+  min-height: 44px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
@@ -1182,9 +1622,14 @@ body.light-theme .analogy-use {
   transition: all 0.15s;
 }
 
+.qh-tab-btn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+}
+
 .qh-tab-btn.active {
   background: rgba(14, 165, 233, 0.18);
-  border-color: #38bdf8;
+  border-color: var(--accent-cyan);
   color: var(--text-primary);
 }
 
@@ -1229,9 +1674,13 @@ body.light-theme .analogy-use {
   box-shadow: 0 0 8px rgba(56, 189, 248, 0.18);
 }
 
-body.calm-motion .breathing-orb {
+.breathing-orb.static-dot,
+body.calm-motion .breathing-orb,
+html.calm-motion .breathing-orb {
   transition: none !important;
+  animation: none !important;
   transform: scale(1) !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2) !important;
 }
 
 .pattern-cards-grid {
@@ -1242,6 +1691,7 @@ body.calm-motion .breathing-orb {
 }
 
 .pattern-card-btn {
+  min-height: 52px;
   text-align: left;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -1272,16 +1722,21 @@ body.calm-motion .breathing-orb {
 
 .doc-note-textarea {
   width: 100%;
-  min-height: 175px;
+  min-height: 185px;
   background: var(--bg-surface);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 12px;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.5;
   resize: vertical;
+}
+
+/* Dedicated Print-Only Clinical Doctor Summary Container */
+.print-doctor-report {
+  display: none;
 }
 
 /* Medical Evidence Audit Strip */
@@ -1307,7 +1762,7 @@ body.calm-motion .breathing-orb {
 }
 
 body.light-theme .audit-pill-card strong {
-  color: #0284c7;
+  color: #0369a1;
 }
 
 .audit-pill-card span {
@@ -1315,19 +1770,94 @@ body.light-theme .audit-pill-card strong {
   color: var(--text-secondary);
 }
 
-/* Responsive Breakpoints */
+/* ============================================================================
+   RESPONSIVE BREAKPOINTS (MOBILE DRAWER, iOS ZOOM GUARD & 360px POLISH)
+   ============================================================================ */
+
 @media (max-width: 960px) {
+  /* Single-row compact sticky mobile header + collapsible dropdown drawer */
+  .topbar-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 14px;
+  }
+
+  .topbar-main-row {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+  }
+
+  .topbar-collapsible {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 0 6px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border-subtle);
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+
+  .topbar.menu-open .topbar-collapsible,
+  .topbar-collapsible.menu-open,
+  .topbar-collapsible.open,
+  .topbar-collapsible.is-open {
+    display: flex;
+  }
+
+  .topbar-collapsible .nav-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .topbar-collapsible .nav-links a {
+    min-height: 44px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .topbar-collapsible .nav-links a.nav-emergency {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.38);
+  }
+
+  body.light-theme .topbar-collapsible .nav-links a.nav-emergency {
+    background: #fee2e2;
+    border-color: rgba(220, 38, 38, 0.42);
+  }
+
+  .topbar-collapsible .top-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .hero,
   .two-col,
   .three-col,
   .first-aid-grid,
   .pattern-cards-grid,
-  .audit-strip {
+  .audit-strip,
+  .sidefinder-grid,
+  .diary-stats-row,
+  .diary-stats-grid {
     grid-template-columns: 1fr;
   }
+
   .qh-tabs {
     grid-template-columns: 1fr 1fr;
   }
+
   .sensor-readouts,
   .redflag-grid,
   .food-grid {
@@ -1335,33 +1865,200 @@ body.light-theme .audit-pill-card strong {
   }
 }
 
+@media (max-width: 768px) {
+  /* Prevent iOS Safari auto-zoom on input/select focus (minimum 16px / 1rem) */
+  .form-select,
+  .search-input,
+  .doc-note-textarea,
+  input[type="text"],
+  input[type="number"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  .search-input {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-sub {
+    display: none;
+  }
+
+  .topbar-collapsible .nav-links {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 18px 14px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hero {
+    padding: 20px 16px;
+    border-radius: 16px;
+    gap: 18px;
+  }
+
+  .panel-card,
+  .quiz-card,
+  .diary-card,
+  .diary-panel,
+  .sidefinder-card {
+    padding: 16px;
+  }
+
+  .quick-sos-bar {
+    padding: 8px 14px;
+  }
+
+  .qh-modal-backdrop {
+    padding: 10px;
+  }
+
+  .qh-modal-card {
+    padding: 16px;
+    max-height: 92vh;
+  }
+
+  .qh-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-sos-btn {
+    right: 12px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    padding: 10px 16px;
+    font-size: 0.84rem;
+    max-width: calc(100vw - 24px);
+  }
+}
+
+@media (max-width: 380px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   DUAL-MODE CLINICAL PRINT STYLESHEET
+   1) Normal Ctrl+P -> Prints main.container cleanly in black-on-white
+   2) body.printing-doc-note -> Prints ONLY .print-doctor-report cleanly
+   ============================================================================ */
+
 @media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    overflow: visible !important;
+  }
+
+  /* Always hide sticky chrome, floating overlays & modal dialogs on print */
   .topbar,
   .quick-sos-bar,
   .floating-sos-btn,
-  main.container,
-  .qh-tabs,
-  .qh-modal-header button,
-  #copyDocNoteBtn,
-  #printDocNoteBtn {
+  .qh-modal-backdrop {
     display: none !important;
   }
-  .qh-modal-backdrop {
-    position: static !important;
-    background: #fff !important;
+
+  /* Mode 1: Normal Ctrl+P (without body.printing-doc-note) */
+  body:not(.printing-doc-note) .print-doctor-report {
+    display: none !important;
+  }
+
+  body:not(.printing-doc-note) main.container {
+    display: block !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
     padding: 0 !important;
   }
-  .qh-modal-card {
-    max-height: none !important;
+
+  body:not(.printing-doc-note) .hero,
+  body:not(.printing-doc-note) .panel-card,
+  body:not(.printing-doc-note) .hero-stats-card,
+  body:not(.printing-doc-note) .stat-box,
+  body:not(.printing-doc-note) .audit-pill-card,
+  body:not(.printing-doc-note) .readout-tile,
+  body:not(.printing-doc-note) .prob-item,
+  body:not(.printing-doc-note) .reasoning-box,
+  body:not(.printing-doc-note) .sidefinder-card,
+  body:not(.printing-doc-note) .diary-card,
+  body:not(.printing-doc-note) .diary-panel,
+  body:not(.printing-doc-note) .diary-entry,
+  body:not(.printing-doc-note) .diary-item,
+  body:not(.printing-doc-note) .analogy-card,
+  body:not(.printing-doc-note) .quiz-card,
+  body:not(.printing-doc-note) .alert-banner,
+  body:not(.printing-doc-note) .matrix-table,
+  body:not(.printing-doc-note) .matrix-table th,
+  body:not(.printing-doc-note) .matrix-table td {
+    background: #ffffff !important;
+    color: #000000 !important;
     box-shadow: none !important;
-    border: none !important;
-    color: #000 !important;
-    background: #fff !important;
+    border-color: #94a3b8 !important;
   }
-  .doc-note-textarea {
-    border: 1px solid #000 !important;
-    color: #000 !important;
-    background: #fff !important;
-    min-height: 320px !important;
+
+  body:not(.printing-doc-note) p,
+  body:not(.printing-doc-note) li,
+  body:not(.printing-doc-note) span,
+  body:not(.printing-doc-note) small,
+  body:not(.printing-doc-note) strong,
+  body:not(.printing-doc-note) h1,
+  body:not(.printing-doc-note) h2,
+  body:not(.printing-doc-note) h3,
+  body:not(.printing-doc-note) h4 {
+    color: #000000 !important;
+  }
+
+  body:not(.printing-doc-note) .panel-card,
+  body:not(.printing-doc-note) .quiz-card,
+  body:not(.printing-doc-note) .analogy-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Mode 2: Dedicated Clinical Doctor Note Print (body.printing-doc-note) */
+  body.printing-doc-note main.container,
+  body.printing-doc-note .footer {
+    display: none !important;
+  }
+
+  body.printing-doc-note .print-doctor-report {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1.5px solid #0f172a !important;
+    border-radius: 8px !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Segoe UI", monospace !important;
+    font-size: 10.5pt !important;
+    line-height: 1.55 !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    overflow: visible !important;
+  }
+
+  body.printing-doc-note .print-doctor-report * {
+    color: #000000 !important;
+    background: transparent !important;
+    white-space: pre-wrap !important;
   }
 }
