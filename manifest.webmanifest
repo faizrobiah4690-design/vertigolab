@@ -1,0 +1,27 @@
+{
+  "name": "VertigoLab — Smart Vertigo Guide & Patient Helper",
+  "short_name": "VertigoLab",
+  "description": "Bilingual interactive inner-ear vertigo lab, emergency 5D/HINTS stroke triage, BPPV repositioning coach (Epley, BBQ Roll, Gufoni), episode diary, and patient quick-relief helper.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070d19",
+  "theme_color": "#0ea5e9",
+  "lang": "ms",
+  "categories": ["medical", "health", "education"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

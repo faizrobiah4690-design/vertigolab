@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VertigoLab Inner-Ear Equilibrium Icon">
+  <defs>
+    <linearGradient id="vlBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="vlGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded Medical App Tile -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#vlBgGrad)" />
+  <rect x="3" y="3" width="58" height="58" rx="14" fill="none" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.5" />
+
+  <!-- Subtle Equilibrium Crosshair -->
+  <g stroke="#ffffff" stroke-opacity="0.34" stroke-width="1.5" stroke-linecap="round">
+    <line x1="32" y1="8" x2="32" y2="15" />
+    <line x1="32" y1="49" x2="32" y2="56" />
+    <line x1="8" y1="32" x2="15" y2="32" />
+    <line x1="49" y1="32" x2="56" y2="32" />
+    <circle cx="32" cy="32" r="21" stroke-opacity="0.18" stroke-dasharray="3 3" fill="none" />
+  </g>
+
+  <!-- Stylized Semicircular Canals & Vestibular Labyrinth -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Superior / Posterior Canal Arc -->
+    <path d="M 24 34 C 16 24, 21 12, 33 13 C 44 14, 48 25, 40 33" stroke-width="3.6" />
+    <!-- Horizontal (Lateral) Canal Loop -->
+    <path d="M 23 33 C 12 31, 12 44, 25 44 C 31 44, 35 41, 37 37" stroke-width="3.2" stroke-opacity="0.92" />
+    <!-- Cochlear / Vestibular Spiral Tail -->
+    <path d="M 36 36 C 44 36, 49 41, 47 47 C 45 51, 39 51, 38 47 C 37 44, 40 42, 42 43" stroke-width="3" />
+  </g>
+
+  <!-- Gold Equilibrium Fixation / Otolith Core -->
+  <circle cx="32" cy="32" r="6.2" fill="#070d19" fill-opacity="0.32" />
+  <circle cx="32" cy="32" r="4.6" fill="url(#vlGoldGrad)" stroke="#ffffff" stroke-width="1.6" />
+</svg>
