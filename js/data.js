@@ -3,7 +3,17 @@
 // Audited against Bárány Society (ICVD), AAO-HNS BPPV & GRACE-3 (2023) Guidelines
 // ============================================================================
 
-window.currentLang = localStorage.getItem("vertigolab_lang") === "en" ? "en" : "ms";
+(function () {
+  var savedLang = "ms";
+  try {
+    if (window.localStorage && window.localStorage.getItem("vertigolab_lang") === "en") {
+      savedLang = "en";
+    }
+  } catch (err) {
+    savedLang = "ms";
+  }
+  window.currentLang = savedLang;
+})();
 
 window.VERTIGO_DATA_BY_LANG = {
   // ==========================================================================
@@ -174,11 +184,12 @@ window.VERTIGO_DATA_BY_LANG = {
         duration: "5 minit hingga 72 jam",
         durationTag: "variable",
         trigger: "Kurang tidur, stres, silau cahaya/skrin, lapar/dehidrasi, haid, makanan pencetus",
-        earSymptoms: "Pendengaran lazimnya normal; kerap ada sensitif bunyi (fonofobia) & silau cahaya (fotofobia)",
+        earSymptoms:
+          "Pendengaran lazimnya normal; kerap ada fonofobia (sensitif bunyi) dua belah telinga, fotofobia (silau cahaya) & aura visual",
         treatment: "Stabilkan tidur, waktu makan & hidrasi, senaman aerobik ringan, elak pencetus & ubat profilaksis migrain",
         dangerLevel: "low",
         pearl:
-          "FAKTA PENTING: Sehingga 30%–50% episod Vestibular Migraine berlaku bersama fotofobia/aura TANPA sakit kepala berdenyut pada waktu yang sama!"
+          "FAKTA PENTING: Sehingga 30%–50% episod Vestibular Migraine berlaku bersama fotofobia, fonofobia (sensitif bunyi) dua hala, atau aura visual TANPA sakit kepala berdenyut pada waktu yang sama!"
       },
       {
         id: "stroke",
@@ -188,9 +199,10 @@ window.VERTIGO_DATA_BY_LANG = {
         prevalence: "~10%–20% kes Acute Vestibular Syndrome di Jabatan Kecemasan",
         duration: "Berterusan akut mendadak (atau serangan sepintas TIA vaskular beberapa minit)",
         durationTag: "continuous",
-        trigger: "Spontan mendadak; risiko tinggi pada darah tinggi, diabetes, fibrilasi atrium (AF), kolesterol, perokok, atau sakit leher akut",
+        trigger:
+          "Spontan mendadak; risiko tinggi pada darah tinggi, diabetes, fibrilasi atrium (AF), kolesterol, perokok, atau diseksi arteri vertebra (sakit leher akut / trauma atau manipulasi leher)",
         earSymptoms: "Lazimnya tiada, KECUALI strok arteri AICA yang menyebabkan pekak mendadak sebelah telinga!",
-        treatment: "KECEMASAN HOSPITAL SEGERA (999) — Penilaian neuro-vaskular & tingkap rawatan strok akut",
+        treatment: "KECEMASAN HOSPITAL SEGERA (999 / 911) — Penilaian neuro-vaskular & tingkap rawatan strok akut",
         dangerLevel: "critical",
         pearl:
           "Dalam 24–48 jam pertama vertigo berterusan akut, CT otak hampir selalu terlepas strok iskemia posterior dan MRI awal masih boleh negatif palsu dalam ~15–20% kes; pemeriksaan HINTS Plus yang betul mempunyai sensitiviti ~99%!"
@@ -212,6 +224,7 @@ window.VERTIGO_DATA_BY_LANG = {
       }
     ],
 
+    // Posterior Semicircular Canal BPPV — Epley Maneuver (5 Steps)
     epleySteps: {
       left: [
         {
@@ -224,7 +237,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Duduk tegak memanjang di atas katil. Letakkan sebiji bantal di belakang supaya apabila anda berbaring nanti, bantal berada di bawah BAHU (bukan di bawah kepala). Pusingkan kepala 45° ke arah KIRI (sebelah telinga yang bermasalah).",
           mechanism:
-            "Menjajarkan saluran separuh bulat posterior kiri tepat selari dengan arah gerakan rebah badan."
+            "Menjajarkan saluran separuh bulat posterior kiri tepat selari dengan arah gerakan rebah badan.",
+          holdHint: "Persediaan (15 saat)"
         },
         {
           step: 2,
@@ -236,7 +250,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Rebahkan badan ke belakang sehingga bahu terletak di atas bantal dan kepala mendongak sedikit ke bawah (20°–30°) sambil kekal berpusing 45° ke KIRI. Tunggu sekurang-kurangnya 30–60 saat (atau sehingga rasa pusing berhenti sepenuhnya + 30 saat).",
           mechanism:
-            "Selepas sela masa 2–10 saat, hablur kristal mula bergerak menjauhi sensor ampulla mengikut graviti. Rasa pusing seketika pada langkah ini menandakan kristal sedang bergerak ke arah yang betul!"
+            "Selepas sela masa 2–10 saat, hablur kristal mula bergerak menjauhi sensor ampulla mengikut graviti. Rasa pusing seketika pada langkah ini menandakan kristal sedang bergerak ke arah yang betul!",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 3,
@@ -248,7 +263,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "JANGAN angkat kepala dari tilam! Pusingkan kepala 90° perlahan-lahan tetapi lancar ke arah KANAN (kini muka menghadap 45° ke kanan, leher masih mendongak sedikit). Kekalkan selama 30–60 saat.",
           mechanism:
-            "Graviti menarik hablur kristal melepasi puncak lengkungan kanal menuju ke laluan keluar."
+            "Graviti menarik hablur kristal melepasi puncak lengkungan kanal menuju ke laluan keluar.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 4,
@@ -260,7 +276,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Golekkan bahu dan seluruh badan mengiring ke sisi KANAN, kemudian tundukkan kepala sedikit lagi supaya hidung menghala serong 45° ke arah lantai/tilam. Kekalkan selama 30–60 saat.",
           mechanism:
-            "Hablur kristal meluncur turun melalui hujung saluran (common crus) terus menuju pintu utricle."
+            "Hablur kristal meluncur turun melalui hujung saluran (common crus) terus menuju pintu utricle.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 5,
@@ -272,7 +289,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Sambil mengekalkan dagu tunduk sedikit, tolak badan naik perlahan-lahan ke posisi duduk di tepi katil (kaki terjuntai). Duduk tenang selama 10–15 minit sebelum berdiri dan berjalan.",
           mechanism:
-            "Hablur kristal jatuh semula ke dalam utricle (tempat asalnya). Mengikut garis panduan terkini AAO-HNS, anda TIDAK perlu memakai pendakap leher atau tidur duduk selama 48 jam!"
+            "Hablur kristal jatuh semula ke dalam utricle (tempat asalnya). Mengikut garis panduan terkini AAO-HNS, anda TIDAK perlu memakai pendakap leher atau tidur duduk selama 48 jam!",
+          holdHint: "Duduk tenang 10–15 minit"
         }
       ],
       right: [
@@ -286,7 +304,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Duduk tegak memanjang di atas katil. Letakkan sebiji bantal di belakang supaya apabila anda berbaring nanti, bantal berada di bawah BAHU (bukan di bawah kepala). Pusingkan kepala 45° ke arah KANAN (sebelah telinga yang bermasalah).",
           mechanism:
-            "Menjajarkan saluran separuh bulat posterior kanan tepat selari dengan arah gerakan rebah badan."
+            "Menjajarkan saluran separuh bulat posterior kanan tepat selari dengan arah gerakan rebah badan.",
+          holdHint: "Persediaan (15 saat)"
         },
         {
           step: 2,
@@ -298,7 +317,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Rebahkan badan ke belakang sehingga bahu terletak di atas bantal dan kepala mendongak sedikit ke bawah (20°–30°) sambil kekal berpusing 45° ke KANAN. Tunggu sekurang-kurangnya 30–60 saat (atau sehingga rasa pusing berhenti sepenuhnya + 30 saat).",
           mechanism:
-            "Selepas sela masa 2–10 saat, hablur kristal bergerak menjauhi sensor ampulla kanan mengikut graviti."
+            "Selepas sela masa 2–10 saat, hablur kristal bergerak menjauhi sensor ampulla kanan mengikut graviti.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 3,
@@ -310,7 +330,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "JANGAN angkat kepala dari tilam! Pusingkan kepala 90° ke arah KIRI (kini muka menghadap 45° ke kiri, leher masih mendongak sedikit). Kekalkan selama 30–60 saat.",
           mechanism:
-            "Graviti menarik hablur kristal melepasi puncak lengkungan kanal kanan menuju ke laluan keluar."
+            "Graviti menarik hablur kristal melepasi puncak lengkungan kanal kanan menuju ke laluan keluar.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 4,
@@ -322,7 +343,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Golekkan bahu dan seluruh badan mengiring ke sisi KIRI, kemudian tundukkan kepala sedikit lagi supaya hidung menghala serong 45° ke arah lantai/tilam. Kekalkan selama 30–60 saat.",
           mechanism:
-            "Hablur kristal meluncur turun melalui hujung saluran terus menuju pintu utricle."
+            "Hablur kristal meluncur turun melalui hujung saluran terus menuju pintu utricle.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
         },
         {
           step: 5,
@@ -334,7 +356,258 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Sambil mengekalkan dagu tunduk sedikit, tolak badan naik perlahan-lahan ke posisi duduk di tepi katil (kaki terjuntai). Duduk tenang selama 10–15 minit sebelum berdiri dan berjalan.",
           mechanism:
-            "Hablur kristal kembali selamat ke dalam utricle. Mengikut garis panduan AAO-HNS, tiada keperluan memakai kolar leher atau tidur duduk 48 jam!"
+            "Hablur kristal kembali selamat ke dalam utricle. Mengikut garis panduan AAO-HNS, tiada keperluan memakai kolar leher atau tidur duduk 48 jam!",
+          holdHint: "Duduk tenang 10–15 minit"
+        }
+      ]
+    },
+
+    // Geotropic Horizontal Canal BPPV — Lempert 360° BBQ Roll (5 Steps)
+    bbqSteps: {
+      left: [
+        {
+          step: 1,
+          title: "Baring Terlentang & Pusing Kepala 90° ke Kiri (Telinga Terlibat)",
+          timerSec: 30,
+          headAngle: -90,
+          bodyState: "supine-flat",
+          canalProgress: 0.15,
+          instruction:
+            "Baring rata di atas katil (bantal nipis di bawah kepala untuk fleksi lembut 0°–30°; TIDAK perlu dongakkan leher ke belakang). Pusingkan kepala 90° ke arah KIRI (telinga yang bermasalah). Kekalkan selama 30–60 saat sehingga rasa pusing berhenti.",
+          mechanism:
+            "Menempatkan hablur kristal di bahagian bawah saluran separuh bulat mendatar (lateral) kiri sebagai titik mula putaran 360°.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 15–30s (30–60s)"
+        },
+        {
+          step: 2,
+          title: "Pusing Kepala 90° Kembali ke Tengah (Hidung Menghadap Siling)",
+          timerSec: 45,
+          headAngle: 0,
+          bodyState: "supine-flat",
+          canalProgress: 0.38,
+          instruction:
+            "Pusingkan kepala 90° kembali ke tengah supaya hidung menghala tegak ke atas menghadap siling. Kekalkan posisi ini selama 30–60 saat sehingga sebarang rasa berpusing reda sepenuhnya.",
+          mechanism:
+            "Graviti menggerakkan hablur kristal 90° pertama menjauhi ampulla di sepanjang lengkungan kanal mendatar kiri.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
+        },
+        {
+          step: 3,
+          title: "Pusing Kepala 90° ke Kanan (Telinga Sihat)",
+          timerSec: 45,
+          headAngle: 90,
+          bodyState: "supine-flat",
+          canalProgress: 0.62,
+          instruction:
+            "Teruskan putaran dengan memusingkan kepala 90° ke arah KANAN (sebelah telinga yang sihat). Kekalkan selama 30–60 saat sehingga rasa pusing berhenti.",
+          mechanism:
+            "Hablur kristal kini telah berputar 180° menjauhi sensor ampulla menuju ke bahagian belakang saluran mendatar.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
+        },
+        {
+          step: 4,
+          title: "Golek Meniarap Atas Siku (Hidung Menghadap Tilam)",
+          timerSec: 45,
+          headAngle: 180,
+          bodyState: "prone-elbows",
+          canalProgress: 0.86,
+          instruction:
+            "Golekkan seluruh badan mengikut arah yang sama (ke kanan) sehingga meniarap bertongkatkan siku dan hidung menghala terus ke BAWAH menghadap tilam. Kekalkan selama 30–60 saat.",
+          mechanism:
+            "Melengkapkan putaran 270°–360° menjauhi telinga kiri supaya hablur kristal meluncur keluar dari hujung kanal terus ke pintu utricle.",
+          holdHint: "Kekalkan 30–60 saat (hidung menghadap tilam)"
+        },
+        {
+          step: 5,
+          title: "Bangun Duduk Perlahan & Rehat 10–15 Minit",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Golek perlahan ke sisi kanan dan tolak badan naik kembali ke posisi duduk tegak di tepi katil. Duduk tenang selama 10–15 minit sebelum berdiri.",
+          mechanism:
+            "Hablur kristal mendap semula dengan selamat di dalam utricle tanpa merangsang kanal mendatar.",
+          holdHint: "Duduk tenang 10–15 minit"
+        }
+      ],
+      right: [
+        {
+          step: 1,
+          title: "Baring Terlentang & Pusing Kepala 90° ke Kanan (Telinga Terlibat)",
+          timerSec: 30,
+          headAngle: 90,
+          bodyState: "supine-flat",
+          canalProgress: 0.15,
+          instruction:
+            "Baring rata di atas katil (bantal nipis di bawah kepala untuk fleksi lembut 0°–30°; TIDAK perlu dongakkan leher ke belakang). Pusingkan kepala 90° ke arah KANAN (telinga yang bermasalah). Kekalkan selama 30–60 saat sehingga rasa pusing berhenti.",
+          mechanism:
+            "Menempatkan hablur kristal di bahagian bawah saluran separuh bulat mendatar (lateral) kanan sebagai titik mula putaran 360°.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 15–30s (30–60s)"
+        },
+        {
+          step: 2,
+          title: "Pusing Kepala 90° Kembali ke Tengah (Hidung Menghadap Siling)",
+          timerSec: 45,
+          headAngle: 0,
+          bodyState: "supine-flat",
+          canalProgress: 0.38,
+          instruction:
+            "Pusingkan kepala 90° kembali ke tengah supaya hidung menghala tegak ke atas menghadap siling. Kekalkan posisi ini selama 30–60 saat sehingga rasa berpusing reda.",
+          mechanism:
+            "Graviti menggerakkan hablur kristal 90° pertama menjauhi ampulla kanan di sepanjang lengkungan kanal mendatar.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
+        },
+        {
+          step: 3,
+          title: "Pusing Kepala 90° ke Kiri (Telinga Sihat)",
+          timerSec: 45,
+          headAngle: -90,
+          bodyState: "supine-flat",
+          canalProgress: 0.62,
+          instruction:
+            "Teruskan putaran dengan memusingkan kepala 90° ke arah KIRI (sebelah telinga yang sihat). Kekalkan selama 30–60 saat sehingga rasa pusing berhenti.",
+          mechanism:
+            "Hablur kristal kini telah bergerak 180° menjauhi sensor ampulla kanan menuju ke laluan keluar kanal mendatar.",
+          holdHint: "Kekalkan sehingga pusing berhenti + 30 saat (45–60s)"
+        },
+        {
+          step: 4,
+          title: "Golek Meniarap Atas Siku (Hidung Menghadap Tilam)",
+          timerSec: 45,
+          headAngle: -180,
+          bodyState: "prone-elbows",
+          canalProgress: 0.86,
+          instruction:
+            "Golekkan seluruh badan mengikut arah yang sama (ke kiri) sehingga meniarap bertongkatkan siku dan hidung menghala terus ke BAWAH menghadap tilam. Kekalkan selama 30–60 saat.",
+          mechanism:
+            "Melengkapkan putaran 270°–360° menjauhi telinga kanan supaya hablur kristal keluar dari kanal mendatar masuk ke utricle.",
+          holdHint: "Kekalkan 30–60 saat (hidung menghadap tilam)"
+        },
+        {
+          step: 5,
+          title: "Bangun Duduk Perlahan & Rehat 10–15 Minit",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Golek perlahan ke sisi kiri dan tolak badan naik kembali ke posisi duduk tegak di tepi katil. Duduk tenang selama 10–15 minit sebelum berdiri.",
+          mechanism:
+            "Hablur kristal kembali mendap dengan stabil di dalam utricle.",
+          holdHint: "Duduk tenang 10–15 minit"
+        }
+      ]
+    },
+
+    // Geotropic Horizontal Canal BPPV — Gufoni Maneuver (4 Steps, Neck-Friendly)
+    gufoniSteps: {
+      left: [
+        {
+          step: 1,
+          title: "Duduk Tegak Menghadap Hadapan",
+          timerSec: 15,
+          headAngle: 0,
+          bodyState: "sitting",
+          canalProgress: 0.15,
+          instruction:
+            "Duduk tegak di tepi katil dengan kaki terjuntai dan pandangan menghadap lurus ke hadapan. Manuver Gufoni ini sangat mesra leher dan warga emas kerana langsung TIDAK memerlukan leher mendongak ke belakang.",
+          mechanism:
+            "Menstabilkan kedudukan asal saluran mendatar kiri sebelum gerakan rebah sisi yang pantas.",
+          holdHint: "Persediaan duduk tegak (15 saat)"
+        },
+        {
+          step: 2,
+          title: "Baring Pantas ke Sisi Kanan (Sisi Sihat)",
+          timerSec: 90,
+          headAngle: 0,
+          bodyState: "side-lying",
+          canalProgress: 0.50,
+          instruction:
+            "Rebahkan badan dengan agak pantas mengiring terus ke sisi KANAN (sebelah telinga yang SIHAT) sambil mengekalkan kepala lurus selari dengan badan. Kekalkan selama 1 hingga 2 minit (60–120 saat) sehingga rasa pusing berhenti.",
+          mechanism:
+            "Pecutan rebah sisi serta graviti memindahkan hablur kristal menjauhi ampulla menuju ke bahagian keluar kanal mendatar kiri.",
+          holdHint: "Kekalkan di sisi sihat 60–120 saat sehingga pusing berhenti"
+        },
+        {
+          step: 3,
+          title: "Pusingkan Hidung 45° ke Bawah Menghadap Tilam",
+          timerSec: 120,
+          headAngle: 135,
+          bodyState: "side-lying",
+          canalProgress: 0.85,
+          instruction:
+            "Tanpa mengangkat badan, pusingkan kepala dengan pantas 45° ke BAWAH supaya hidung anda menghadap ke arah tilam. Kekalkan posisi ini selama 2 minit penuh (120 saat).",
+          mechanism:
+            "Sudut 45° ke bawah mengarahkan bukaan saluran mendatar kiri tegak mengikut graviti supaya kristal mengalir keluar ke dalam utricle.",
+          holdHint: "Kekalkan hidung 45° ke tilam selama 2 minit (120s)"
+        },
+        {
+          step: 4,
+          title: "Bangun Duduk Tegak & Rehat 10 Minit",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Tolak badan naik kembali ke posisi duduk di tepi katil sambil mengekalkan kepala berpusing ke arah bahu kanan, kemudian luruskan kepala perlahan-lahan dan berehat tenang selama 10 minit.",
+          mechanism:
+            "Memastikan hablur kristal kekal di dalam utricle dan tidak berpatah balik ke dalam saluran mendatar.",
+          holdHint: "Bangun duduk & rehat tenang 10 minit"
+        }
+      ],
+      right: [
+        {
+          step: 1,
+          title: "Duduk Tegak Menghadap Hadapan",
+          timerSec: 15,
+          headAngle: 0,
+          bodyState: "sitting",
+          canalProgress: 0.15,
+          instruction:
+            "Duduk tegak di tepi katil dengan kaki terjuntai dan pandangan menghadap lurus ke hadapan. Manuver Gufoni ini sangat sesuai untuk pesakit sakit leher atau warga emas kerana tiada dongakan leher diperlukan.",
+          mechanism:
+            "Menstabilkan kedudukan asal saluran mendatar kanan sebelum gerakan rebah sisi.",
+          holdHint: "Persediaan duduk tegak (15 saat)"
+        },
+        {
+          step: 2,
+          title: "Baring Pantas ke Sisi Kiri (Sisi Sihat)",
+          timerSec: 90,
+          headAngle: 0,
+          bodyState: "side-lying",
+          canalProgress: 0.50,
+          instruction:
+            "Rebahkan badan dengan agak pantas mengiring terus ke sisi KIRI (sebelah telinga yang SIHAT) sambil mengekalkan kepala lurus selari dengan badan. Kekalkan selama 1 hingga 2 minit (60–120 saat) sehingga rasa pusing berhenti.",
+          mechanism:
+            "Pecutan rebah sisi serta graviti memindahkan hablur kristal menjauhi ampulla menuju ke bahagian keluar kanal mendatar kanan.",
+          holdHint: "Kekalkan di sisi sihat 60–120 saat sehingga pusing berhenti"
+        },
+        {
+          step: 3,
+          title: "Pusingkan Hidung 45° ke Bawah Menghadap Tilam",
+          timerSec: 120,
+          headAngle: -135,
+          bodyState: "side-lying",
+          canalProgress: 0.85,
+          instruction:
+            "Tanpa mengangkat badan, pusingkan kepala dengan pantas 45° ke BAWAH supaya hidung anda menghadap ke arah tilam. Kekalkan posisi ini selama 2 minit penuh (120 saat).",
+          mechanism:
+            "Sudut 45° ke bawah membuka laluan graviti supaya hablur kristal meluncur keluar dari kanal mendatar kanan terus ke utricle.",
+          holdHint: "Kekalkan hidung 45° ke tilam selama 2 minit (120s)"
+        },
+        {
+          step: 4,
+          title: "Bangun Duduk Tegak & Rehat 10 Minit",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Tolak badan naik kembali ke posisi duduk di tepi katil sambil mengekalkan kepala berpusing ke arah bahu kiri, kemudian luruskan kepala perlahan-lahan dan berehat tenang selama 10 minit.",
+          mechanism:
+            "Memastikan hablur kristal kekal selamat di dalam utricle selepas reposisi.",
+          holdHint: "Bangun duduk & rehat tenang 10 minit"
         }
       ]
     },
@@ -352,7 +625,7 @@ window.VERTIGO_DATA_BY_LANG = {
 
     analogies: [
       {
-        id: "stone-in-tube",
+        id: "a1",
         icon: "🫧",
         title: "Analogi Batu Dalam Gelung Air (BPPV)",
         targetUse: "Menerangkan kenapa pil tidak boleh menyembuhkan BPPV & kenapa Epley diperlukan",
@@ -362,7 +635,7 @@ window.VERTIGO_DATA_BY_LANG = {
           "\"Tuan/Puan, di dalam telinga kita ada tiub gelung kecil berisi air yang mengesan pusingan kepala. Masalah sekarang ialah sebutir kristal kalsium halus telah tercabut lalu jatuh ke dalam tiub itu seperti sebutir batu di dalam gelung air. Setiap kali Tuan/Puan baring atau mengiring, batu itu bergolek mengocak air dan melanggar sensor deria—sebab itu dunia rasa berpusing kencang selama 20 hingga 40 saat. Makan pil tahan pening berbulan-bulan tidak boleh 'mencairkan' batu kristal ini; cara paling tepat ialah kita golekkan semula batu itu keluar ke tempat asalnya melalui gerakan Epley Maneuver.\""
       },
       {
-        id: "three-gps",
+        id: "a2",
         icon: "📡",
         title: "Analogi Tiga Kamera GPS Bercanggah (Loya & Muntah)",
         targetUse: "Menenangkan pesakit yang cemas apabila vertigo diiringi loya dan muntah teruk",
@@ -372,7 +645,7 @@ window.VERTIGO_DATA_BY_LANG = {
           "\"Rasa loya dan muntah yang teruk ini berlaku kerana otak menerima tiga laporan sensor yang bercanggah serentak. Mata Tuan/Puan melapor 'kita sedang duduk diam', tapak kaki melapor 'lantai stabil', tetapi sensor telinga dalam yang terganggu menghantar isyarat seolah-olah kepala sedang berpusing laju. Konflik deria ini mengaktifkan refleks pusat muntah di batang otak—sama seperti mekanisme mabuk laut yang kuat.\""
       },
       {
-        id: "crutch-trap",
+        id: "a3",
         icon: "🩼",
         title: "Analogi Tongkat Selepas Terseliuh (Bahaya Bergantung Pil Tahan Pening)",
         targetUse: "Mendidik pesakit supaya tidak makan cinnarizine / prochlorperazine berbulan-bulan",
@@ -573,6 +846,82 @@ window.VERTIGO_DATA_BY_LANG = {
               "Salah dan berbahaya; dehidrasi akan memburukkan lagi penurunan tekanan darah ortostatik!"
           }
         ]
+      },
+      {
+        id: 6,
+        badge: "Senario 6 • Strok AICA vs Labyrinthitis Virus (HINTS Plus)",
+        patient: "Haji Razak, 61 tahun (Diabetes & Kolesterol Tinggi)",
+        vignette:
+          "Tiba-tiba mengalami vertigo berterusan yang teruk sejak 3 jam lalu DISERTAI pekak mendadak dan bunyi berdesing kuat pada telinga kanan sahaja. Tiada demam atau jangkitan telinga sebelum ini. Sesetengah pemeriksa menganggap 'ada simptom telinga bermakna punca telinga dalam yang tidak berbahaya (Labyrinthitis virus)'.",
+        question: "Mengapakah komponen 'Plus' (pendengaran) dalam HINTS Plus sangat kritikal pada kes ini?",
+        options: [
+          {
+            id: "a",
+            text: "Pekak mendadak sebelah telinga membuktikan 100% masalah telinga periferi biasa; rawat sebagai jangkitan virus di rumah.",
+            correct: false,
+            feedback:
+              "PERANGKAP KLINIKAL MAUT! Arteri Labirintin (yang membekalkan koklea & telinga dalam) lazimnya bercabang terus daripada Arteri Serebelum Inferior Anterior (AICA). Infarksi AICA menyebabkan vertigo + pekak mendadak sebelah telinga!"
+          },
+          {
+            id: "b",
+            text: "Pekak mendadak sebelah telinga dalam Acute Vestibular Syndrome ialah tanda amaran SENTRAL 'HINTS Plus' untuk Strok Arteri AICA; wajib rujuk kecemasan strok dan pengimejan neuro-vaskular segera!",
+            correct: true,
+            feedback:
+              "Tepat sekali! Dalam garis panduan GRACE-3, kehilangan pendengaran baharu sebelah telinga bersama vertigo berterusan akut adalah komponen 'Plus' dalam HINTS Plus yang meningkatkan sensitiviti mengesan strok AICA kepada ~99%."
+          },
+          {
+            id: "c",
+            text: "Ini hanyalah BPPV kanal mendatar; terus lakukan BBQ Roll Maneuver.",
+            correct: false,
+            feedback:
+              "Salah! BPPV berlangsung <1 minit apabila posisi kepala berubah dan tidak menyebabkan pekak mendadak."
+          },
+          {
+            id: "d",
+            text: "Tunggu 2 minggu dahulu sebelum membuat sebarang pemeriksaan lanjut.",
+            correct: false,
+            feedback:
+              "Berbahaya! Menangguhkan penilaian strok AICA boleh mengakibatkan pembengkakan serebelum atau strok batang otak yang mengancam nyawa."
+          }
+        ]
+      },
+      {
+        id: 7,
+        badge: "Senario 7 • PPPD & Pertukaran Kanal Selepas BPPV",
+        patient: "Encik Hafiz, 39 tahun (Sejarah BPPV 5 Bulan Lalu)",
+        vignette:
+          "Lima bulan lalu beliau mengalami BPPV yang telah pulih selepas manuver reposisi (kini ujian Dix-Hallpike & Supine Roll bagi pertukaran kanal mendatar adalah negatif, tiada lagi pusingan katil). Namun sejak itu, beliau mengalami rasa terhuyung-hayang tidak berputar hampir setiap hari yang bertambah teruk apabila berdiri, berjalan di lorong pasar raya yang sibuk, atau menatal skrin telefon. Beliau masih menelan cinnarizine setiap hari kerana takut pusing berulang.",
+        question: "Apakah diagnosis dan pelan rawatan paling tepat selepas menolak BPPV aktif / pertukaran kanal?",
+        options: [
+          {
+            id: "a",
+            text: "PPPD (Persistent Postural-Perceptual Dizziness); hentikan cinnarizine harian secara berperingkat, beri jaminan bahawa telinga sudah pulih, dan mulakan latihan habituasi VRT secara beransur-ansur.",
+            correct: true,
+            feedback:
+              "Cemerlang! Selepas menolak sisa BPPV atau pertukaran kanal mendatar melalui ujian posisi, gejala terhuyung >3 bulan yang dicetuskan oleh postur tegak dan rangsangan visual kompleks adalah klasik bagi PPPD. Menghentikan penindas vestibular + latihan habituasi VRT memulihkan pemberatan deria otak."
+          },
+          {
+            id: "b",
+            text: "Teruskan cinnarizine seumur hidup dan elakkan keluar ke pasar raya selama-lamanya.",
+            correct: false,
+            feedback:
+              "Salah! Pengelakan visual dan pengambilan cinnarizine berpanjangan mengekalkan kebergantungan visual maladaptif serta memburukkan PPPD."
+          },
+          {
+            id: "c",
+            text: "Lakukan Epley Maneuver 5 kali sehari walaupun ujian posisi sudah negatif.",
+            correct: false,
+            feedback:
+              "Tidak berkesan! Apabila hablur kristal sudah tiada di dalam kanal (ujian Dix-Hallpike dan Supine Roll negatif), mengulang Epley tidak merawat PPPD."
+          },
+          {
+            id: "d",
+            text: "Penyakit Meniere peringkat akhir.",
+            correct: false,
+            feedback:
+              "Tidak tepat; tiada episod vertigo spontan berjam-jam mahupun kurang pendengaran dan tinnitus sebelah telinga."
+          }
+        ]
       }
     ]
   },
@@ -745,11 +1094,12 @@ window.VERTIGO_DATA_BY_LANG = {
         duration: "5 minutes to 72 hours",
         durationTag: "variable",
         trigger: "Poor sleep, stress, bright/flickering lights, skipped meals, dehydration, hormonal shifts",
-        earSymptoms: "Hearing usually normal; prominent light sensitivity (photophobia) & sound sensitivity (phonophobia)",
+        earSymptoms:
+          "Hearing usually normal; prominent bilateral phonophobia (sound sensitivity), photophobia (light sensitivity) & visual aura",
         treatment: "Regular sleep/meals/hydration, trigger management, aerobic exercise & migraine prophylaxis",
         dangerLevel: "low",
         pearl:
-          "KEY CLINICAL FACT: Up to 30%–50% of Vestibular Migraine attacks occur with photophobia or aura WITHOUT a concurrent throbbing headache!"
+          "KEY CLINICAL FACT: Up to 30%–50% of Vestibular Migraine attacks occur with photophobia, bilateral phonophobia (sound sensitivity), or visual aura WITHOUT a concurrent throbbing headache!"
       },
       {
         id: "stroke",
@@ -759,9 +1109,10 @@ window.VERTIGO_DATA_BY_LANG = {
         prevalence: "~10%–20% of Acute Vestibular Syndrome cases in Emergency Departments",
         duration: "Abrupt continuous vertigo (or brief vascular TIA episodes lasting minutes)",
         durationTag: "continuous",
-        trigger: "Sudden spontaneous onset; high risk with hypertension, diabetes, AFib, smoking, or acute neck pain (vertebral dissection)",
+        trigger:
+          "Sudden spontaneous onset; high risk with hypertension, diabetes, AFib, dyslipidemia, smoking, or vertebral artery dissection (acute neck pain / neck trauma or manipulation)",
         earSymptoms: "Usually absent, EXCEPT AICA territory stroke which causes acute unilateral deafness!",
-        treatment: "IMMEDIATE HOSPITAL EMERGENCY (999) — Acute stroke protocol & neuro-vascular imaging",
+        treatment: "IMMEDIATE HOSPITAL EMERGENCY (999 / 911) — Acute stroke protocol & neuro-vascular imaging",
         dangerLevel: "critical",
         pearl:
           "Within the first 24–48 hours of continuous vertigo, head CT misses most posterior ischemic strokes and early DWI-MRI still misses ~15–20%; a trained HINTS Plus exam achieves ~99% sensitivity!"
@@ -783,6 +1134,7 @@ window.VERTIGO_DATA_BY_LANG = {
       }
     ],
 
+    // Posterior Semicircular Canal BPPV — Epley Maneuver (5 Steps)
     epleySteps: {
       left: [
         {
@@ -795,7 +1147,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Sit upright lengthwise on the bed. Place a pillow behind you positioned so that when you lie back, it rests beneath your SHOULDERS (not your head). Turn your head 45° to the LEFT (the affected ear).",
           mechanism:
-            "Aligns the left posterior semicircular canal directly with the plane in which you will lie back."
+            "Aligns the left posterior semicircular canal directly with the plane in which you will lie back.",
+          holdHint: "Setup (15s)"
         },
         {
           step: 2,
@@ -807,7 +1160,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Lie back briskly onto your shoulders on the pillow so your neck extends slightly backward (20°–30°) while keeping your head turned 45° LEFT. Hold for at least 30–60 seconds (until any spinning stops + 30 seconds).",
           mechanism:
-            "After a 2–10s latency, gravity pulls the otoconia crystals away from the ampulla sensor along the bottom curve of the canal."
+            "After a 2–10s latency, gravity pulls the otoconia crystals away from the ampulla sensor along the bottom curve of the canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 3,
@@ -819,7 +1173,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "DO NOT lift your head off the bed! Smoothly rotate your head 90° to the RIGHT (now facing 45° right, neck still slightly extended). Hold for 30–60 seconds.",
           mechanism:
-            "Gravity guides the crystals over the apex of the posterior canal toward the exit limb."
+            "Gravity guides the crystals over the apex of the posterior canal toward the exit limb.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 4,
@@ -831,7 +1186,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Roll your shoulders and body onto your RIGHT side, rotating your head further so your nose points 45° downward toward the mattress/floor. Hold for 30–60 seconds.",
           mechanism:
-            "Crystals slide down through the common crus exit straight toward the utricle opening."
+            "Crystals slide down through the common crus exit straight toward the utricle opening.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 5,
@@ -843,7 +1199,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Keeping your chin slightly tucked, push yourself slowly up to a seated position on the edge of the bed. Sit calmly for 10–15 minutes before standing up and walking.",
           mechanism:
-            "Crystals settle safely back inside the utricle. Per updated AAO-HNS guidelines, strict 48-hour neck collars or sleeping upright are NOT required!"
+            "Crystals settle safely back inside the utricle. Per updated AAO-HNS guidelines, strict 48-hour neck collars or sleeping upright are NOT required!",
+          holdHint: "Sit quietly 10–15 mins"
         }
       ],
       right: [
@@ -857,7 +1214,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Sit upright lengthwise on the bed. Place a pillow behind you so it rests beneath your SHOULDERS when lying down. Turn your head 45° to the RIGHT (the affected ear).",
           mechanism:
-            "Aligns the right posterior semicircular canal with the reclining plane."
+            "Aligns the right posterior semicircular canal with the reclining plane.",
+          holdHint: "Setup (15s)"
         },
         {
           step: 2,
@@ -869,7 +1227,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Lie back briskly with your shoulders on the pillow and neck extended 20°–30° while keeping your head turned 45° RIGHT. Hold for 30–60 seconds (until spinning stops + 30s).",
           mechanism:
-            "After a 2–10s latency, gravity moves the crystals away from the right ampulla."
+            "After a 2–10s latency, gravity moves the crystals away from the right ampulla.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 3,
@@ -881,7 +1240,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "DO NOT lift your head! Rotate your head 90° to the LEFT (now facing 45° left, neck still slightly extended). Hold for 30–60 seconds.",
           mechanism:
-            "Gravity guides the crystals over the top arch of the right posterior canal."
+            "Gravity guides the crystals over the top arch of the right posterior canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 4,
@@ -893,7 +1253,8 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "Roll your shoulders and body onto your LEFT side and turn your head so your nose points 45° downward toward the floor. Hold for 30–60 seconds.",
           mechanism:
-            "Crystals travel down the exit limb into the utricle."
+            "Crystals travel down the exit limb into the utricle.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
         },
         {
           step: 5,
@@ -905,7 +1266,258 @@ window.VERTIGO_DATA_BY_LANG = {
           instruction:
             "With your chin slightly tucked, push up slowly to sit on the side of the bed. Sit calmly for 10–15 minutes before walking.",
           mechanism:
-            "Crystals return safely to the utricle. Per AAO-HNS guidelines, 48-hour upright sleeping restrictions are unnecessary!"
+            "Crystals return safely to the utricle. Per AAO-HNS guidelines, 48-hour upright sleeping restrictions are unnecessary!",
+          holdHint: "Sit quietly 10–15 mins"
+        }
+      ]
+    },
+
+    // Geotropic Horizontal Canal BPPV — Lempert 360° BBQ Roll (5 Steps)
+    bbqSteps: {
+      left: [
+        {
+          step: 1,
+          title: "Lie Flat on Back & Turn Head 90° Left (Affected Ear)",
+          timerSec: 30,
+          headAngle: -90,
+          bodyState: "supine-flat",
+          canalProgress: 0.15,
+          instruction:
+            "Lie flat on your back (use a thin pillow under your head for gentle 0°–30° flexion; NO neck hyperextension needed). Turn your head 90° toward your LEFT (affected) ear. Hold for 30–60 seconds until spinning stops.",
+          mechanism:
+            "Positions loose otoconia at the dependent portion of the left horizontal (lateral) semicircular canal to start the 360° roll.",
+          holdHint: "Hold until spinning stops + 15–30s (30–60s)"
+        },
+        {
+          step: 2,
+          title: "Rotate Head 90° Back to Center (Nose Straight Up)",
+          timerSec: 45,
+          headAngle: 0,
+          bodyState: "supine-flat",
+          canalProgress: 0.38,
+          instruction:
+            "Rotate your head 90° back to the center so your nose points straight UP toward the ceiling. Hold for 30–60 seconds until any vertigo subsides.",
+          mechanism:
+            "Gravity sweeps the crystals through the first 90° away from the left ampulla along the horizontal canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
+        },
+        {
+          step: 3,
+          title: "Rotate Head 90° to the Right (Unaffected Healthy Ear)",
+          timerSec: 45,
+          headAngle: 90,
+          bodyState: "supine-flat",
+          canalProgress: 0.62,
+          instruction:
+            "Continue rotating your head 90° toward your RIGHT (unaffected, healthy) ear. Hold for 30–60 seconds until spinning subsides.",
+          mechanism:
+            "Crystals have now traveled 180° away from the cupula toward the posterior non-ampullated exit of the horizontal canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
+        },
+        {
+          step: 4,
+          title: "Roll onto Stomach / Elbows (Nose Pointing Straight Down)",
+          timerSec: 45,
+          headAngle: 180,
+          bodyState: "prone-elbows",
+          canalProgress: 0.86,
+          instruction:
+            "Roll your body in the same direction (to the right) onto your stomach propped on your elbows so your nose points straight DOWN toward the mattress. Hold for 30–60 seconds.",
+          mechanism:
+            "Completes the 270°–360° rotation away from the affected left ear, allowing crystals to exit the horizontal canal into the utricle.",
+          holdHint: "Hold 30–60s (nose facing mattress)"
+        },
+        {
+          step: 5,
+          title: "Slowly Return to Upright Sitting & Rest 10–15 Minutes",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Slowly roll onto your right side and push up into a comfortable upright seated position on the edge of the bed. Rest quietly for 10–15 minutes.",
+          mechanism:
+            "Crystals settle safely back inside the utricle without re-entering the horizontal canal.",
+          holdHint: "Sit quietly 10–15 mins"
+        }
+      ],
+      right: [
+        {
+          step: 1,
+          title: "Lie Flat on Back & Turn Head 90° Right (Affected Ear)",
+          timerSec: 30,
+          headAngle: 90,
+          bodyState: "supine-flat",
+          canalProgress: 0.15,
+          instruction:
+            "Lie flat on your back (use a thin pillow under your head for gentle 0°–30° flexion; NO neck hyperextension needed). Turn your head 90° toward your RIGHT (affected) ear. Hold for 30–60 seconds until spinning stops.",
+          mechanism:
+            "Positions loose otoconia at the dependent portion of the right horizontal (lateral) semicircular canal to start the 360° roll.",
+          holdHint: "Hold until spinning stops + 15–30s (30–60s)"
+        },
+        {
+          step: 2,
+          title: "Rotate Head 90° Back to Center (Nose Straight Up)",
+          timerSec: 45,
+          headAngle: 0,
+          bodyState: "supine-flat",
+          canalProgress: 0.38,
+          instruction:
+            "Rotate your head 90° back to the center so your nose points straight UP toward the ceiling. Hold for 30–60 seconds until any vertigo subsides.",
+          mechanism:
+            "Gravity sweeps the crystals through the first 90° away from the right ampulla along the horizontal canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
+        },
+        {
+          step: 3,
+          title: "Rotate Head 90° to the Left (Unaffected Healthy Ear)",
+          timerSec: 45,
+          headAngle: -90,
+          bodyState: "supine-flat",
+          canalProgress: 0.62,
+          instruction:
+            "Continue rotating your head 90° toward your LEFT (unaffected, healthy) ear. Hold for 30–60 seconds until spinning subsides.",
+          mechanism:
+            "Crystals have now traveled 180° away from the right cupula toward the posterior exit limb of the horizontal canal.",
+          holdHint: "Hold until spinning stops + 30s (45–60s)"
+        },
+        {
+          step: 4,
+          title: "Roll onto Stomach / Elbows (Nose Pointing Straight Down)",
+          timerSec: 45,
+          headAngle: -180,
+          bodyState: "prone-elbows",
+          canalProgress: 0.86,
+          instruction:
+            "Roll your body in the same direction (to the left) onto your stomach propped on your elbows so your nose points straight DOWN toward the mattress. Hold for 30–60 seconds.",
+          mechanism:
+            "Completes the 270°–360° rotation away from the affected right ear, guiding crystals out of the horizontal canal into the utricle.",
+          holdHint: "Hold 30–60s (nose facing mattress)"
+        },
+        {
+          step: 5,
+          title: "Slowly Return to Upright Sitting & Rest 10–15 Minutes",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Slowly roll onto your left side and push up into an upright seated position on the edge of the bed. Rest quietly for 10–15 minutes.",
+          mechanism:
+            "Crystals settle stably inside the utricle.",
+          holdHint: "Sit quietly 10–15 mins"
+        }
+      ]
+    },
+
+    // Geotropic Horizontal Canal BPPV — Gufoni Maneuver (4 Steps, Neck-Friendly)
+    gufoniSteps: {
+      left: [
+        {
+          step: 1,
+          title: "Sit Upright Facing Straight Ahead",
+          timerSec: 15,
+          headAngle: 0,
+          bodyState: "sitting",
+          canalProgress: 0.15,
+          instruction:
+            "Sit upright on the edge of the bed with your legs hanging down and look straight ahead. The Gufoni Maneuver requires ZERO neck hyperextension—making it ideal for older adults or patients with neck stiffness.",
+          mechanism:
+            "Establishes a neutral horizontal-canal baseline before the brisk side-lying movement.",
+          holdHint: "Upright setup (15s)"
+        },
+        {
+          step: 2,
+          title: "Lie Briskly onto Right (Unaffected) Side",
+          timerSec: 90,
+          headAngle: 0,
+          bodyState: "side-lying",
+          canalProgress: 0.50,
+          instruction:
+            "Lie down briskly onto your RIGHT (unaffected, healthy) side while keeping your head straight in line with your body. Hold for 1 to 2 minutes (60–120 seconds) until spinning stops.",
+          mechanism:
+            "Brisk lateral deceleration plus gravity shifts loose crystals away from the ampulla toward the exit end of the left horizontal canal.",
+          holdHint: "Hold on healthy side 60–120s until spinning stops"
+        },
+        {
+          step: 3,
+          title: "Turn Nose 45° Downward Toward Mattress",
+          timerSec: 120,
+          headAngle: 135,
+          bodyState: "side-lying",
+          canalProgress: 0.85,
+          instruction:
+            "Without lifting your torso, quickly turn your head 45° DOWNWARD so your nose faces the mattress. Hold this position for a full 2 minutes (120 seconds).",
+          mechanism:
+            "Tilting the nose 45° downward angles the posterior limb of the left horizontal canal vertically so crystals drain directly into the utricle.",
+          holdHint: "Hold nose 45° down toward mattress for 2 mins (120s)"
+        },
+        {
+          step: 4,
+          title: "Sit Back Up & Rest Quietly for 10 Minutes",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Push yourself back up to sit on the edge of the bed while keeping your head turned toward your right shoulder, then gently face forward and rest for 10 minutes.",
+          mechanism:
+            "Prevents repositioned crystals from refluxing back into the horizontal semicircular canal.",
+          holdHint: "Sit up & rest quietly 10 mins"
+        }
+      ],
+      right: [
+        {
+          step: 1,
+          title: "Sit Upright Facing Straight Ahead",
+          timerSec: 15,
+          headAngle: 0,
+          bodyState: "sitting",
+          canalProgress: 0.15,
+          instruction:
+            "Sit upright on the edge of the bed with your legs hanging down and look straight ahead. The Gufoni Maneuver requires ZERO neck extension—making it gentle on cervical spines and older adults.",
+          mechanism:
+            "Establishes a neutral horizontal-canal baseline before the brisk side-lying movement.",
+          holdHint: "Upright setup (15s)"
+        },
+        {
+          step: 2,
+          title: "Lie Briskly onto Left (Unaffected) Side",
+          timerSec: 90,
+          headAngle: 0,
+          bodyState: "side-lying",
+          canalProgress: 0.50,
+          instruction:
+            "Lie down briskly onto your LEFT (unaffected, healthy) side while keeping your head straight in line with your body. Hold for 1 to 2 minutes (60–120 seconds) until spinning stops.",
+          mechanism:
+            "Brisk lateral deceleration plus gravity shifts loose crystals away from the ampulla toward the exit end of the right horizontal canal.",
+          holdHint: "Hold on healthy side 60–120s until spinning stops"
+        },
+        {
+          step: 3,
+          title: "Turn Nose 45° Downward Toward Mattress",
+          timerSec: 120,
+          headAngle: -135,
+          bodyState: "side-lying",
+          canalProgress: 0.85,
+          instruction:
+            "Without lifting your torso, quickly turn your head 45° DOWNWARD so your nose faces the mattress. Hold this position for a full 2 minutes (120 seconds).",
+          mechanism:
+            "Tilting the nose 45° downward aligns the exit of the right horizontal canal with gravity so crystals empty into the utricle.",
+          holdHint: "Hold nose 45° down toward mattress for 2 mins (120s)"
+        },
+        {
+          step: 4,
+          title: "Sit Back Up & Rest Quietly for 10 Minutes",
+          timerSec: 60,
+          headAngle: 0,
+          bodyState: "sitting-recovery",
+          canalProgress: 1.0,
+          instruction:
+            "Push yourself back up to sit on the edge of the bed while keeping your head turned toward your left shoulder, then gently face forward and rest for 10 minutes.",
+          mechanism:
+            "Keeps otoconia safely settled inside the utricle after canal clearance.",
+          holdHint: "Sit up & rest quietly 10 mins"
         }
       ]
     },
@@ -923,7 +1535,7 @@ window.VERTIGO_DATA_BY_LANG = {
 
     analogies: [
       {
-        id: "stone-in-tube",
+        id: "a1",
         icon: "🫧",
         title: "Pebble in a Water Loop Analogy (BPPV)",
         targetUse: "Explains why anti-dizziness pills cannot cure BPPV & why the Epley Maneuver works",
@@ -933,7 +1545,7 @@ window.VERTIGO_DATA_BY_LANG = {
           "\"Inside your ear are tiny fluid-filled loops that detect head rotation. Right now, a microscopic calcium crystal has slipped loose into one of those loops like a pebble in a water tube. Every time you lie down or roll over in bed, that pebble rolls through the fluid and trips the motion sensor—making the room spin for 20 to 40 seconds. Taking dizziness pills for months cannot 'dissolve' a calcium crystal; instead, we gently roll the crystal back to its home pouch using the Epley Maneuver.\""
       },
       {
-        id: "three-gps",
+        id: "a2",
         icon: "📡",
         title: "Three Conflicting GPS Cameras Analogy (Nausea & Spinning)",
         targetUse: "Reassures anxious patients when vertigo triggers intense nausea and vomiting",
@@ -943,7 +1555,7 @@ window.VERTIGO_DATA_BY_LANG = {
           "\"The intense nausea happens because your brain is receiving three conflicting sensor reports at the exact same moment. Your eyes report 'the room is still', your feet report 'the floor is solid', but the inflamed inner-ear nerve shouts 'we are spinning rapidly!'. That mismatch activates your brainstem's motion-sickness alarm, just like severe seasickness.\""
       },
       {
-        id: "crutch-trap",
+        id: "a3",
         icon: "🩼",
         title: "The Forever-Crutch Trap (Danger of Prolonged Suppressant Pills)",
         targetUse: "Educates patients to stop vestibular suppressants after the acute 48–72 hour phase",
@@ -1142,6 +1754,82 @@ window.VERTIGO_DATA_BY_LANG = {
             correct: false,
             feedback:
               "Harmful—dehydration worsens orthostatic blood pressure drops!"
+          }
+        ]
+      },
+      {
+        id: 6,
+        badge: "Scenario 6 • AICA Stroke vs Viral Labyrinthitis (HINTS Plus)",
+        patient: "Mr. Razak, 61 years old (Diabetes & Hyperlipidemia)",
+        vignette:
+          "Develops sudden, severe continuous vertigo 3 hours ago PLUS acute unilateral hearing loss and loud tinnitus in his right ear. He has no prior ear infection or fever. A colleague remarks, 'Hearing loss means it's just benign inner-ear viral labyrinthitis.'",
+        question: "Why is the 'Plus' (hearing) component of HINTS Plus critical in this patient?",
+        options: [
+          {
+            id: "a",
+            text: "Acute unilateral hearing loss proves a benign peripheral ear infection; discharge home on oral antivirals.",
+            correct: false,
+            feedback:
+              "DEADLY CLINICAL PITFALL! The labyrinthine artery (supplying the cochlea and vestibule) usually branches directly off the Anterior Inferior Cerebellar Artery (AICA). An AICA stroke causes acute vertigo PLUS unilateral deafness!"
+          },
+          {
+            id: "b",
+            text: "New unilateral hearing loss in Acute Vestibular Syndrome is a CENTRAL 'HINTS Plus' red flag for AICA territory stroke; activate urgent stroke imaging and evaluation!",
+            correct: true,
+            feedback:
+              "Spot on! Per GRACE-3 guidelines, new unilateral hearing loss accompanying acute continuous vertigo counts as a central HINTS Plus sign, raising stroke-detection sensitivity to ~99%."
+          },
+          {
+            id: "c",
+            text: "Horizontal canal BPPV; perform the Lempert BBQ Roll immediately.",
+            correct: false,
+            feedback:
+              "Incorrect! BPPV causes brief (<1 min) positional episodes and never causes acute unilateral deafness."
+          },
+          {
+            id: "d",
+            text: "Wait 2 weeks for outpatient audiometry before considering vascular causes.",
+            correct: false,
+            feedback:
+              "Unsafe! Delaying evaluation of an AICA stroke risks cerebellar edema and brainstem progression."
+          }
+        ]
+      },
+      {
+        id: 7,
+        badge: "Scenario 7 • PPPD & Post-BPPV Canal Switch Check",
+        patient: "Mr. Hafiz, 39 years old (Resolved BPPV 5 Months Ago)",
+        vignette:
+          "Five months after recovering from BPPV (repeat Dix-Hallpike and Supine Roll tests for horizontal canal switch are now completely negative, with no bedtime spinning), he experiences daily non-spinning swaying and rocking that worsens when standing upright, walking down busy supermarket aisles, or scrolling on his phone. He still takes cinnarizine daily out of fear.",
+        question: "After ruling out active BPPV or a horizontal canal switch, what is the best diagnosis and management?",
+        options: [
+          {
+            id: "a",
+            text: "PPPD (Persistent Postural-Perceptual Dizziness); stop daily cinnarizine, reassure him that structural ear disease has resolved, and start graded habituation VRT.",
+            correct: true,
+            feedback:
+              "Excellent! Once positional testing rules out residual BPPV or horizontal canal switch, >3 months of daily swaying worsened by upright posture and busy visual motion is classic PPPD. Stopping vestibular suppressants and starting graded VRT habituation recalibrates sensory weighting."
+          },
+          {
+            id: "b",
+            text: "Continue lifelong cinnarizine and avoid supermarkets or screens permanently.",
+            correct: false,
+            feedback:
+              "Incorrect! Ongoing vestibular suppressants and visual avoidance reinforce maladaptive visual dependence and perpetuate PPPD."
+          },
+          {
+            id: "c",
+            text: "Perform self-Epley maneuvers 5 times every day despite negative positional tests.",
+            correct: false,
+            feedback:
+              "Ineffective! When crystals are no longer in the canals (negative Dix-Hallpike and Supine Roll), repeating Epley maneuvers will not resolve PPPD."
+          },
+          {
+            id: "d",
+            text: "End-stage Meniere's Disease.",
+            correct: false,
+            feedback:
+              "Incorrect; there are no multi-hour spontaneous spinning attacks or fluctuating unilateral auditory symptoms."
           }
         ]
       }
